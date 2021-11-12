@@ -1,0 +1,321 @@
+\chapter{ Problèmes mixtes}
+
+Dans ce chapitre, on considère un problème modèle qui s'exprime sous la forme d'un système d'équations aux dérivées partielles où interviennent plusieurs fonctions inconnues qui ne jouent pas le même rôle mathématique et physique. 
+
+Par exemple, dans le problème de Stokes,
+$$
+\begin{aligned}
+-\Delta u+\nabla p=f & \text { dans } \Omega \\
+\nabla \cdot u=g & \text { dans } \Omega
+\end{aligned}
+$$
+le champ $u: \Omega \rightarrow \mathbb{R}^{d}$ représente une vitesse et la fonction $p: \Omega \rightarrow \mathbb{R}$ une pression. 
+
+Dans le problème de Darcy,
+$$
+\begin{aligned}
+\sigma+\nabla u &=f & & \text { dans } \Omega \\
+\nabla \cdot \sigma &=g & & \text { dans } \Omega
+\end{aligned}
+$$
+le champ $\sigma: \Omega \rightarrow \mathbb{R}^{d}$ représente une vitesse et la fonction $u: \Omega \rightarrow \mathbb{R}$ une charge hydraulique. 
+
+On établira la   formulation variationnelle de l'équation de Stokes et on étudiera son caractère bien posé.
+En général, le caractère bien posé de ces problèmes résulte d'une condition inf-sup qui, comme on l'a vu dans le Chapitre 2, n'est pas automatiquement transférée au niveau discret. En pratique, cela veut dire que pour que l'approximation par éléments finis soit bien posée, il faut que les espaces d'approximation pour les deux fonctions inconnues satisfassent une condition de compatibilité donnant lieu à une condition inf-sup discrète. Dans ce cas, on parle d'éléments finis mixtes.
+
+\section{Equation de Stokes}
+
+
+Soient $\Omega\subset \mathbb{R}^n$, $u,f :  \Omega\longrightarrow \mathbb{R}^n$ et $g :  \Omega\longrightarrow \mathbb{R}$.   On considère l'équation de Stokes suivante:
+$$
+\begin{aligned}
+-\Delta u+\nabla p=f & \text { dans } \Omega \\
+\nabla \cdot u=g & \text { dans } \Omega\\
+u=0& \text { sur  } \partial \Omega.
+\end{aligned}
+$$
+
+La première équation est dite l'équation de la quantité de mouvement et la deuxième est dite l'équation de la conservation de la masse.
+\subsection{Formulation Variationnelle}
+
+
+
+
+On multiplie la première équation par $v\in \left[H_{0}^{1}(\Omega)\right]^{d}$. En utilsant la formule de Green, on trouve
+
+\begin{eqnarray*}
+-\int_{\Omega} v \cdot \Delta u+\int_{\Omega} v \cdot \nabla p&=\sum_{i=1}^{d}-\int_{\Omega} v_{i} \Delta u_{i}-\int_{\Omega} p \nabla \cdot v\\
+&=\sum_{i=1}^{d} \int_{\Omega} \nabla u_{i} \cdot \nabla v_{i}-\int_{\Omega} p \nabla \cdot v\\
+&=\int_{\Omega} \nabla u: \nabla v-\int_{\Omega} p \nabla \cdot v.
+\end{eqnarray*}
+
+
+puisque  $v=0$  sur $\partial\Omega$.  D'où, on obtient 
+$$
+\int_{\Omega} \nabla u: \nabla v-\int_{\Omega} p \nabla \cdot v=\int_{\Omega} f \cdot v
+$$
+
+
+Les trois  intégrales sont bien-définies si  $u$  et $v$ sont  $\left[H_{0}^{1}(\Omega)\right]^{d}, p$  dans  $L^{2}(\Omega)$,  et $f \in\left[L^{2}(\Omega)\right]^{d} .$
+
+De même de la deuxième équation, on obtient
+
+$$
+-\int_{\Omega} q \nabla \cdot u 
+=-\int_{\Omega} g q,  \qquad \forall q\in L^2(\Omega)
+$$
+
+et pour $q=c$, on a 
+
+$$
+\int_{\Omega} gc=\int_{\Omega} c\nabla \cdot u =\int_{\partial \Omega} u \cdot n=0.
+$$
+
+La condition $\displaystyle \int_{\Omega} g=0$ est donc une condition nécessaire à l'existence d'une solution $(u, p)$ pour l'équation  de Stokes avec  conditions aux limites de Dirchlet homogènes.
+
+Donc,  il est inutile de tester la deuxième équation par les constantes. Ceci exige l'introduction de l'espace  fonctionnel
+$$
+L_{0}^{2}(\Omega)=\left\{q \in L^{2}(\Omega) ; \int_{\Omega} q=0\right\}.
+$$
+
+On observera aussi que dans l'équation  de Stokes, la pression n'est déterminée qu'à une constante additive près,  donc pour assurer l'unicité de la solution, on se restreint au cas de  champ de pression de moyenne nulle sur $\Omega $, i.e.,  $p\in L_{0}^{2}(\Omega)$. 
+
+
+On obtient alors la formulation variationnelle suivante : 
+
+$$
+\left\{\begin{array}{c}
+\text { Chercher }(u, p) \in\left[H_{0}^{1}(\Omega)\right]^{d} \times L_{0}^{2}(\Omega) \text { tel que } \\
+\int_{\Omega} \nabla u: \nabla v-\int_{\Omega} p \nabla \cdot v=\int_{\Omega} f \cdot v, \quad \forall v \in\left[H_{0}^{1}(\Omega)\right]^{d} \\
+-\int_{\Omega} q \nabla \cdot u 
+=-\int_{\Omega} g q, \quad \forall q \in L_{0}^{2}(\Omega)
+\end{array}\right.
+$$
+
+Nous obtenons alors un problème de point selle abstrait 
+
+$$
+(FVS)\quad \left\{\begin{array}{l}
+\text {Trouver  } u \in X \text { et  } p \in M \text { tels que  } \\
+a(u, v)+b(v, p)=f(v), \quad \forall v \in X \\
+b(u, q)=g(q), \quad \forall q \in M, 
+\end{array}\right.
+$$
+dans les espaces 
+$X=\left[H_{0}^{1}(\Omega)\right]^{d}$ et $M=L_{0}^{2}(\Omega)$, et pour les formes bilinéaires
+
+$$
+a(u, v)=\int_{\Omega} \nabla u: \nabla v \quad \text { et } \quad b(v, p)=-\int_{\Omega} p \nabla \cdot v
+$$
+et les formes linéaires $f(v)=\int_{\Omega} f \cdot v$ et $g(q)=-\int_{\Omega} g q$.
+
+\subsection{Solutions fortes et faibles} 
+
+
+Avant de montrer l'existence d'une solution faible du problème variationnel $(FVS)$, on montre que toute solution faible est forte:
+
+
+\begin{proposition}\
+	
+ Si $f$ et $g$ sont dans $\left[L^{2}(\Omega)\right]^{d}$ et $L_{0}^{2}(\Omega)$, respectivement, la solution faible $(u, p)$  satisfait
+$$
+\left\{\begin{aligned}
+-\Delta u+\nabla p=f & \text { p.p. dans  } \Omega \\
+\nabla \cdot u=g & \text { p.p.  dans  } \Omega \\
+u=0 & \text { p.p.  sur  } \partial \Omega.
+\end{aligned}\right.
+$$
+
+\end{proposition}
+
+\begin{proof}
+Considérons les  fonctions  tests dans  $[\mathcal{D}(\Omega)]^{d}$ pour la première équation. Intégration par parties  montre que 
+$$
+\forall v \in[\mathcal{D}(\Omega)]^{d}, \quad\langle-\Delta u+\nabla p, v\rangle_{\mathcal{D}^{\prime}, \mathcal{D}}=\int_{\Omega} f \cdot v
+$$
+puisque $f \in\left[L^{2}(\Omega)\right]^{d}$. Par densité de  $[\mathcal{D}(\Omega)]^{d}$ dans  $\left[L^{2}(\Omega)\right]^{d}$, l'égalité  $-\Delta u+$ $\nabla p=f$ est satisfaite dans  $\left[L^{2}(\Omega)\right]^{d}$,  qui implique une égalité p.p.  dans  $\Omega$. 
+\end{proof}
+
+
+De même, pour pour la deuxième équations.  La condition aux bords sur  $u$ vient du fait que  $u\in \left[H_{0}^{1}(\Omega)\right]^{d}$.
+
+Le caractère bien posé du problème de Stokes  repose de manière fondamentale sur le résultat suivant: 
+
+\begin{lemma}\label{lemmeAO}\
+
+
+Soit $\Omega$ un domaine de $\mathbb{R}^{d}$ avec $d \geqslant 2 .$
+ Alors, 
+ 
+ 
+ 1. l'opérateur
+$$
+B:=\nabla \cdot:\left[H_{0}^{1}(\Omega)\right]^{d} \longrightarrow L_{0}^{2}(\Omega)
+$$
+est surjectif.
+
+2.  Il existe $\beta>0: $ pour tout $q\in L_{0}^{2}(\Omega)$, il existe $v\in  \left[H_{0}^{1}(\Omega)\right]^{d}  : \nabla \cdot v=q$ et $\|v\|_{1}\leq \frac1\beta \|q\|_0$.
+\end{lemma}	
+
+La 2ème assertion repose sur le Théorème de l'application ouverte.
+
+
+\begin{theorem}
+	
+Le problème variationnel $(FVS)$ est bien posé et  il existe $c_{1}$ et  $c_{2}$ telles que, pour tout  $f \in\left[L^{2}(\Omega)\right]^{d}$ et  $g \in L_{0}^{2}(\Omega)$
+$$
+\|u\|_{1}+\|p\|_{0} \leq\left. c_{1}\|f\|_{0}\right|_{\Omega}+c_{2}\|g\|_{0}. 
+$$
+
+\end{theorem}
+
+
+\begin{proof}
+Nous appliquons le Théorème \ref{pointselle}. 
+
+On a  $\operatorname{Ker}(B)=V_{0}=\left\{v \in\left[H_{0}^{1}(\Omega)\right]^{d} : \nabla \cdot v=0\right\} $ est un Hilbert puisque c'est un sous-espace fermé de  $\left[H_{0}^{1}(\Omega)\right]^{d}$.
+
+On peut voir que la forme bilinéaire $a$ est  coercive sur  $\left[H_{0}^{1}(\Omega)\right]^{d}$, par l'inégalité de  Poincaré et donc  coercive sur  $V_{0}$.  Comme conséquence, les deux conditions \eqref{psp} sont satisfaites. 
+\end{proof}
+
+En plus,  par le lemme ci-dessus et par l'Appendice A.42, dans livre Alexander Earn, l'inégalité suivante 
+
+$$
+\inf _{q \in L_{0}^{2}(\Omega)} \sup _{v \in\left[H_{0}^{1}(\Omega)\right]^{d}} \frac{\int_{\Omega} q \nabla \cdot v}{\|v\|_{1, \Omega}\|q\|_{0, \Omega}} \geq \beta ???
+$$
+
+
+est satisfaite. C'est exactement  l'inégalité \eqref{psp1}.  D'où, le Théorème   \ref{pointselle} permet de conclure. 
+\subsection{Formulation variationnelle alternative}
+
+
+Dans cette sous-section, nous donnons une  formulation variationnellle alternative  de 
+
+l'équation de Stokes, qui fait inclure la contrainte sur la divergence  dans l'espace 
+
+des solutions.   D'après le lemme \ref{lemmeAO},   nous avons  :
+
+Il existe $\beta>0: $ pour tout $g\in L_{0}^{2}(\Omega)$, il existe $u_g\in  \left[H_{0}^{1}(\Omega)\right]^{d} : $ 
+
+
+$$
+ \nabla \cdot u_g=g, \qquad \|u_g\|_{1}\leq \frac1\beta \|g\|_0.
+ $$
+
+
+Définissons l'espace de Hilbert suivant
+
+$$
+V_{0}=\left\{v \in\left[H_{0}^{1}(\Omega)\right]^{d} : \nabla \cdot v=0\right\} .
+$$
+
+Si $u$ vérifie la condition $\nabla \cdot u=g$, la fonction $u'=u-u_g$ vérifie $\nabla \cdot u'=0$ et 
+
+donc appartient à $V_0$. 
+
+Si on se restreint aux fonctions testes $v\in V\in V_0$, dans le problème variationnel
+
+$$
+(FVS)\quad \left\{\begin{array}{l}
+\text {Trouver  } u \in X=\left[H_{0}^{1}(\Omega)\right]^{d} \text { et  } p \in M =L_{*}^{2}(\Omega)\text { tels que  } \\
+a(u, v)+b(v, p)=f(v), \quad \forall v \in X \\
+b(u, q)=g(q), \quad \forall q \in M=L_{0}^{2}(\Omega), 
+\end{array}\right.
+$$
+
+avec  $b(v, p)=-\int_{\Omega} p \nabla \cdot v$, on aura $b(v, p)=0$ et donc  
+
+$a(u, v)+b(v, p)=f(v)$ devient  $a(u, v)=f(v)$.  
+
+L'équation $b(u, q)=g(q)$ s'écrit 
+
+$$
+-\int_{\Omega} q (\nabla \cdot u-g)=0=-\int_{\Omega} q (\nabla \cdot u-\nabla \cdot u_g)=-\int_{\Omega} q \nabla \cdot( u- u_g).
+$$ 
+
+ Or  $u'=u-u_g\in V_0$, cette dernière équation est toujours vérifiée. 
+
+Donc, on obtient la formulation  variationnelle suivante 
+
+$$
+(FVS)'\quad \left\{\begin{array}{l}
+\text {Trouver  } u' \in V_0\text { tels que  } \\
+a(u', v)=f(v)-a(u_g, v), \quad \forall v \in V_0.
+\end{array}\right.
+$$
+
+
+Cette formulation ne fait pas intervenir la pression $p$.
+
+
+Il est facile de voir que : 
+
+(i) la forme  bilinéaire $a$ est  continue et coercive sur  $V_{0} \times V_{0}$.
+
+(ii)  La forme linéaire  $f(\cdot)-a\left(u_{g}, \cdot\right)$ est  continue  sur  $V_{0}$. En effet, 
+$$
+\forall v \in V_{0}, \quad\left|f(v)-a\left(u_{g}, v\right)\right| \leq\left(\|f\|_{0}+c\|g\|_{0}\right)\|v\|_{1}.
+$$
+
+
+Donc, par Théorème de Lax-Milgram, on a 
+
+\begin{proposition}
+	
+	Le problème $(FVS)'$ est bien posé.
+	
+\end{proposition}
+
+La  relation entre la formulation mixte $(FVS)$  et la formulation  $(FVS)'$ est donnée par : 
+
+\begin{proposition}
+	
+Soit $u$  une  fonction  dans  $\left[H_{0}^{1}(\Omega)\right]^{d}$ et soit $u^{\prime}=u-u_{g}$.  Alors, les assertions suivantes sont équivalentes.
+
+(a)  Il existe  $p\in L_{0}^{2}(\Omega)$ telle que $(u, p)$ est solution de $(FVS)$.
+
+(b) $u^{\prime}$ est solution de $(FVS)'$.
+
+\end{proposition} 
+
+
+\begin{proof}
+L'implication (a) $\Longrightarrow$ (b) est déja faite en haut. 
+
+Montrons l'implication inverse  (b) $\Longrightarrow$ (a).  Supposons  que  $a(u', v)=f(v)-a(u_g, v), \quad \forall v \in V_0$.  Donc l'application  linéaire  $v\longmapsto a(u, v)-f(v)$ est  nulle sur $V_0.$  Il est aussi linéaire continue sur  $\left[H_{0}^{1}(\Omega)\right]^{d}$.  Par le Théorème de  Rham's,  voir Theorem B. 73 dans livre de Alexander Earn, il existe  $p\in L_{0}^{2}(\Omega)$ tel que  
+
+$$a(u, v)-f(v)=\langle\nabla p, v\rangle_{H^{-1}, H_{0}^{1}}, \qquad \forall v \in \left[H_{0}^{1}(\Omega)\right]^{d}.
+$$
+
+ D'où, le résultat. 
+\end{proof}
+
+ 
+ 
+%\section{Approximation par éléments finis mixtes}
+%
+%
+%\end{document}
+%On s'intéresse maintenant à une approximation conforme du problème (6.21) par éléments finis mixtes dans le cadre de la méthode de Galerkin standard; voir la section 6.1.2. Étant donné deux espaces d'approximation $X_{h} \subset\left[H_{0}^{1}(\Omega)\right]^{d}$ et $M_{h} \subset L_{*}^{2}(\Omega)$, on considère le problème approché suivant :
+%$$
+%\left\{\begin{aligned}
+%\text { Chercher }\left(u_{h}, p_{h}\right) & \in X_{h} \times M_{h} & \text { tel que } & \\
+%\int_{\Omega} \nabla u_{h}: \nabla v_{h}-\int_{\Omega} p_{h} \nabla \cdot v_{h} &=\int_{\Omega} f \cdot v_{h}, & \forall v_{h} \in X_{h} & \\
+%-\int_{\Omega} q_{h} \nabla \cdot u_{h} & &=-\int_{\Omega} g q_{b}, & & \forall q_{h} \in M_{b}
+%\end{aligned}\right.
+%$$
+%D'après le théorème $6.5$, ce problème est bien posé si et seulement si les espaces $X_{h}$ et $M_{b}$ sont tels qu'il existe une constante $\beta_{b}>0$ telle que
+%$$
+%\inf _{q_{b} \in M_{b}} \sup _{v_{h} \in X_{b}} \frac{\int_{\Omega} q_{b} \nabla \cdot v_{h}}{\left\|q_{b}\right\|_{0, \Omega}\left\|v_{h}\right\|_{1, \Omega}} \geqslant \beta_{h}
+%$$
+%
+%Lorsque cette condition est satisfaite avec une constante $\beta$ indépendante de $h$, on dit que les espaces $X_{h}$ et $M_{b}$ satisfont (6.26) uniformément en $h$.
+%Lorsque la condition de compatibilité $(6.26)$ est satisfaite, le lemme $6.6$ permet d'obtenir une estimation d'erreur pour la vitesse en norme $H^{1}$ et une estimation d'erreur pour la pression en norme $L^{2}$. De plus, afin d'obtenir des estimations d'erreur pour la vitesse en norme $L^{2}$, on utilise la notion suivante.
+
+\section{Problems}
+
+\begin{exercise}
+  TODO
+\end{exercise}
+
+

@@ -1,0 +1,278 @@
+\chapter{Topology}
+Dans ce chapitre, on s'intéresse à l'approximation numérique d'équations aux dérivées partielles linéaires qui admettent une formulation variationnelle. 
+
+Exemple :  Considérons le problème suivant. 
+
+Étant donné $f \in \mathrm{C}([a, b])$ trouver une fonction $u$ vérifiant
+$$
+(1)\;  \left\{\begin{array}{l}
+	-u^{\prime \prime}+u=f \quad \text { sur } \quad]a, b[ \\
+	u(a)=u(b)=0.
+\end{array}\right.
+$$
+Une solution classique $-$ ou solution forte $-$ du problème (1) est une fonction de classe $\mathrm{C}^{2}$ sur $[a, b]$ vérifiant (1) au sens usuel. Bien entendu (1) peut être résolu explicitement par un calcul très simple, mais nous ignorerons cet aspect des choses afin d'illustrer la méthode sur cet exemple élémentaire.
+On multiplie (1) par $\varphi \in C^{1}([a, b])$ et on intègre par parties; il vient
+$$(2) \; \int_{a}^{b} u^{\prime} \varphi^{\prime}+\int_{a}^{b} u \varphi=\int_{a}^{b} f \varphi,    \qquad \forall \varphi \in \mathrm{C}^{1}([a, b]), \quad \varphi(a)=\varphi(b)=0.
+$$
+On notera que (2) a un sens dès que $u \in \mathrm{C}^{1}([a, b])$ (contrairement à (1) qui suppose $u$ deux fois dérivable); en fait il suffirait même d'avoir $u, u^{\prime} \in \mathrm{L}^{1}(a, b), u^{\prime}$, dérivée généralisée, ou dérivée au  un sens faible, voir plus loin. 
+
+ Disons (provisoirement) qu'une fonction $u$ de classe $\mathrm{C}^{1}$ qui vérifie (2) est une solution faible de (1).
+
+Le programme suivant décrit les grandes lignes de l'approche variationnelle en théorie des équations aux dérivées partielles :
+
+Etape A. - On précise la notion de solution faible ; celle-ci fait intervenir les espaces de Sobolev qui sont les outils de base.
+
+Etape B. - On établit l'existence et l'unicité d'une solution faible par la méthode variationnelle, via le théorème de Lax-Milgram.
+
+Etape C. - On prouve quc la solution faible est de classe $\mathrm{C}^{2}$ (par exemple): c'est un résultat de régularité.
+
+
+Etape D. - Retour aux solutions classiques. On montre qu'une solution faible de classe $\mathrm{C}^{2}$ est une solution classique.
+
+
+L'équation (2),  peut être écrite sous la forme du problème "abstrait" général suivant :
+
+$$
+(PV) \text{ trouver } u \in W\;  \text{tel que } a(u, v)=L(v) \;\, \text{pour tout}\;\;  v \in V.
+$$
+
+ $W$ et  $V$ sont des espaces vectoriels normés. Dans plusieurs applications, $W$ and $V$ sont des espaces de Hilbert, mais  des cas où $V, W$ sont des  espace de  Banach  réflexifs  peuvent être considérés, $a:W\times V\longrightarrow \mathbb{R}$ une application bilinéaire continue
+et $L$ une forme linéaire continue sur $V$, i.e. $L\in V'$. 
+
+Ces formulations sont importantes pour les raisons suivantes :
+
+1. De nombreux problèmes issus de la physique et de la mécanique admettent de telles formulations, et celles-ci reflètent souvent une propriété fondamentale du modèle, typiquement la minimisation d'une énergie sous-jacente.
+
+2. Ces formulations donnent accès à des résultats fondamentaux sur le caractère bien posé de l'équation, c'est à dire l'existence et l'unicité de la solution, et la stabilité de cette solution par rapport à des perturbations des données.
+
+3. Elles sont à la base de méthodes performantes pour l'approximation numérique des solutions, par la résolution d'un problème approché : 
+\bigskip
+
+\centerline{
+trouver $u_{h} \in X_{h}$ tel que $a\left(u_{h}, v_{h}\right)=L\left(v_{h}\right)$ pour tout $v_{h} \in X_{h}$,} 
+
+où $X_{h}$ est un sous-espace de dimension finie de $X$.
+
+Le cours se concentre autour de ce dernier aspect qui pose la question du contrôle de l'erreur $u-u_{h}$ entre la solution exacte et la solution approchée. On s'interessera tout particulièrement à la méthode des éléments finis dans laquelle les fonctions de $X_{h}$ sont polynomiales par morceaux sur une partition du domaine de la solution de l'équation.
+
+
+On définit quelques outils mathématiques nécessaires pour développer cette étude.
+
+\section{Espaces Complets}
+
+
+\subsection{ Normes et produits scalaires}
+Soit $E$ un espace vectoriel.
+\begin{definition}\
+	
+	$\|\cdot\|: E \rightarrow \mathbb{R}_{+}$ est une norme sur $E$ s'elle vérifie:
+	
+(N1) $\|x\|=0\Longrightarrow x=0$.
+
+(N2) $\forall \lambda \in \mathbb{R}, \forall x \in E, \quad\|\lambda x\|=|\lambda|\|x\|$.
+
+(N3) $\forall x, y \in E, \quad\|x+y\| \leq\|x\|+\|y\|$
+(inégalité triangulaire).
+
+
+- Un espace vectoriel muni d'une norme est appelé espace normé ou un evn.
+
+
+\end{definition}
+Exemples : 
+
+1. Pour $E=\mathbb{R}^{n}$ et $x=\left(x_{1}, \ldots, x_{n}\right) \in \mathbb{R}^{n}$, on définit les normes
+$$
+\|x\|_{1}=\sum_{i=1}^{n}\left|x_{i}\right|,  \quad\|x\|_{2}=\left(\sum_{i=1}^{n} x_{i}^{2}\right)^{1 / 2},    \quad\|x\|_{\infty}=\sup _{i}\left|x_{i}\right|.
+$$
+
+2. Sur $E=\mathcal{C}([0,1], \R)$, le $\R$-espace vectoriel des fonction réelles continues sur $[0,1]$,  l'application 
+$$
+f\longmapsto\|f\|=\sup_{t\in[0,1]}|f(t)|
+$$
+est une  norme.
+
+
+
+\begin{definition}\
+	
+On appelle produit scalaire sur $E$ toute forme bilinéaire symétrique définie positive : 
+
+1. \; L'application $<\cdot, \cdot >: E \times E \rightarrow \mathbb{R}$ est donc un produit scalaire sur $E$ s'elle   vérifie :
+
+(S1) $\forall x, y \in E, \quad\langle x, y\rangle =\langle y, x\rangle $.
+
+(S2) $\forall x_{1}, x_{2}, y \in E, \quad\langle x_{1}+x_{2}, y\rangle =\langle x_{1}, y\rangle +\langle x_{2}, y\rangle $.
+
+(S3) $\forall x, y \in E, \forall \lambda \in \mathbb{R}, \quad\langle \lambda x, y\rangle =\lambda\langle x, y\rangle $.
+
+(S4) $\forall x \in E, x \neq 0, \quad\langle x, x\rangle >0$.
+
+
+2.\; Un espace vectoriel $E$ muni d'un produit scalaire est appelé espace préhilbertien. 
+\end{definition}
+
+A partir d'un produit scalaire, on peut définir une norme induite: $\|x\|=\sqrt{\langle x, x\rangle}$.
+
+ On a alors, d'après (N3), l'inégalité de Cauchy-Schwarz: $|\langle x, y\rangle | \leq\|x\|\|y\|$.
+
+Exemple: 
+
+Pour $E=\mathbb{R}^{n}$, on définit le produit scalaire $\langle x, y\rangle =\sum_{i=1}^{n} x_{i} y_{i} .$ 
+
+Sa norme induite est $\|\cdot \|_{2}$ définie précédemment.
+
+En général, si $E$ et $F$ sont deux evn, on peut définir l'espace produit 
+
+$E\times F=\{ (x,y): x\in E, y\in F\}$, qui est un evn pour les normes 
+$$
+\|(x,y) \|_{1}= \|x \|_E+\|y \|_F,\quad  \|(x,y) \|_{2}= \sqrt{\|x \|_E^2+\|y \|_F^2}, \quad \|(x,y) \|_{\infty}=max(\|x \|_E,\|y \|_F). 
+$$ 
+
+Si $E$ et $F$ sont deux Hilbert, l'espace produit $E\times F$ est un Hilbert. 
+\subsection{Suites de Cauchy : espaces et complets}
+
+\begin{definition} \
+	
+1. 	\; Soit $E$ un espace vectoriel et $\left(x_{n}\right)_{n}$ une suite de $E $. $\left(x_{n}\right)_{n}$ est une suite de Cauchy ssi 
+$$
+\forall \varepsilon>0, \exists N >0 : \forall p>N, \forall q>N, \quad\left\|x_{p}-x_{q}\right\|<\varepsilon.
+$$
+	
+
+2. \; Un espace vectoriel est complet si toute suite de Cauchy y est convergente.
+
+3. \;  Un espace normé complet est un espace de Banach.
+
+4. \; Un espace préhilbertien complet est un espace de Hilbert.
+
+5. \;  Un espace de Hilbert de dimension finie est appelé espace euclidien.
+
+\end{definition}
+
+
+\subsection{Espaces fonctionnels}
+\begin{definition}
+	
+Un espace fonctionnel est un espace vectoriel dont les éléments sont des fonctions.
+
+\end{definition} 
+
+
+Exemples :
+
+1. L'espace des fonctions continues sur un intervale $[a, b]$ à valeurs réelles, noté $\mathcal{C}^{0}([a ; b])$ ou juste $\mathcal{C}([a ; b])$.   $\mathcal{C}([a ; b])$ muni de la norme $\|f\|_{\infty}= \sup_{[a, b]} |f(x)|$ est un espace complet (Banach).
+
+2.  $\mathcal{C}^{p}([a ; b])$ désigne l'espace des fonctions définies sur l'intervalle $[a, b]$ à valeurs dans $\mathbb{R}$, dont toutes les dérivées jusqu'à l'ordre $p$ existent et sont continues sur $[a, b]$.
+
+Dans la suite, les fonctions seront définies sur un sous-ensemble de $\mathbb{R}^{n}$ (le plus souvent un ouvert noté $\Omega$ ), à valeurs dans $\mathbb{R}$ ou $\mathbb{R}^{m}$.
+
+Exemple: La température $T(x, y, z, t)$ en tout point d'un objet $\Omega \subset \mathbb{R}^{3}$ est une fonction de $\Omega \times \mathbb{R} \longrightarrow \mathbb{R}$.
+
+Les normes usuelles les plus simples sur les espaces fonctionnels sont les normes $L^p$  définies par :
+$$
+\|u\|_{L^p}=\left(\int_{\Omega}|u(x)|^{p}\right)^{1 / p},  \quad p \in[1,+\infty[, \quad \text{ et } \quad\|u\|_{L^{\infty}}= \sup_{\Omega} |u(x)|. 
+$$
+
+Ces applications  ne sont pas nécessairement des normes; et lorsqu'elles le sont, les espaces fonctionnels munis de ces normes ne sont pas nécessairement des espaces de Banach. Par exemple, les applications  $\|\cdot \|_{L^1}, \|\cdot \|_{L^{\infty}}$  sont bien des normes sur l'espace $\mathcal{C}^{0}([a ; b])$, et cet espace est complet si on le munit de la norme $\|\cdot \|_{L^{\infty}}$, mais ne l'est pas si on le munit de la norme $\|\cdot \|_{L^1}$.
+
+Pour cette raison, on va définir les espaces $\mathcal{L}^{p}(\Omega)(p \in[1,+\infty[)$ par
+$$
+\mathcal{L}^{p}(\Omega)=\left\{u: \Omega \rightarrow \mathbb{R}, \text { mesurable, et telle que } \int_{\Omega}|u|^{p}<\infty\right\}.
+$$
+(on rappelle qu'une fonction $u$ est mesurable ssi $\{x \in \Omega /|u(x)|<r\}$ est mesurable dans $\mathbb{R}^n$,  pour tout $ r>0$. )
+
+Sur ces espaces $\mathcal{L}^{p}(\Omega)$, les applications  $\|\cdot \|_{L^p}$ ne sont pas des normes. En effet, 
+
+$\|u\|_{L^{p}}=0$ implique que $u$ est nulle presque partout dans $\mathcal{L}^{p}(\Omega)$, et non pas $u=0$. 
+
+C'est pourquoi on va définir les espaces $L^p(\Omega)$ :
+
+\begin{definition}\
+	
+L'espace  $L^{p}(\Omega), p\geq 1,$ est l'ensemble des classes d'équivalence des fonctions de $\mathcal{L}^{p}(\Omega)$ pour la relation d'équivalence "égalité presque partout". Autrement dit, on confondra deux fonctions dès lors qu'elles sont égales presque partout, c'est à dire qu'elles ne different que sur un ensemble de mesure nulle.
+
+\end{definition}
+
+\begin{theorem}\
+	
+L'application  $\|\cdot \|_{L^p}$ est une norme sur $L^{p}(\Omega)$, et $L^{p}(\Omega)$ muni de cette  norme  est un espace de Banach.
+
+Pour  $p=2$,   l'espace fonctionnel $L^{2}(\Omega)$,  des fonctions de carré sommable sur $\Omega$, la norme $\|\cdot \|_{L^{2}}$, est la norme induite  du produit scalaire $$<u, v>_{L^{2}}=\int_{\Omega} u v dx,
+$$
+
+ et donc   $L^{2}(\Omega)$ est un espace de Hilbert.
+ 
+ On défint aussi l'espace $L^\infty(\Omega)$ par 
+ 
+ $$
+ \mathrm{L}^{\infty}(\Omega)=\{f: \quad \Omega \rightarrow \mathbb{R} ; f \; \text{mesurable et } \, \exists  \mathrm{C}>0 :  |f(x)| \leq \mathrm{C} \; \text{ p.p. sur } \Omega\}
+ $$
+ 
+ L'application 
+ $$
+ \|f\|_{L^{\infty}}= \sup_{\Omega} |f(x)|
+ $$
+
+est une norme sur $L^\infty(\Omega)$ et  $(L^\infty(\Omega), \|\cdot \|_{L^{\infty}})$ est un espace de Banach.
+
+\end{theorem}
+
+\section{Dual Topologique}
+
+Soit $V$ un espace de Banach (un $\mathbb{K}$-espace vectoriel),  muni d'une norme $\|\cdot \|_V$.  Le dual topologique de $V$ est l'ensemble des applications linéaires continues de $V$ dans $\mathbb{K}$,  noté $V'$. Donc, $V'=\mathcal{L}_c(V,\mathbb{K}),, \mathcal{L}(V,\mathbb{K})$ est un espace de Banach pour la norme 
+$$
+\displaystyle\|f \|=\sup_{v\in V,v\neq0}\frac{|f(v) |}{\|v\|_V} \quad = \sup_{v\in V,\|v\|_V\leq 1}|f(v) |, 
+$$  
+
+pour $f\in V'$.  Les éléments de $V'$ sont dites des formes linéaires de $V$. 
+
+Pour un espace de Hilbert $H$, on a $H'=H$. On identifie $H$ et son dual topologique 
+
+(via une isométrie, Théorème de représentation de  Riesz). 
+
+Un espcace de Banach $X$, est dit réflexif si $X^{\prime\prime}=X$.  
+
+Exemple :  Soit $p>1$, l'espace dual de $L^p(\Omega)$ est  l'espace $L^q(\Omega)$, avec $\frac1p+\frac1q=1$.  
+
+En particulier, pour $p=2$, $q=2$ ($\frac12+\frac12=1$) et  donc $(L^2(\Omega))^\prime=L^2(\Omega)$, 
+
+c'est normal puisque c'est un Hilbert.
+
+Pour $p=1$,  $(L^1(\Omega))^\prime=L^\infty(\Omega)$. 
+
+Pour $p>1$, l'espace $L^p(\Omega)$ est un Banach réflexif.   En effet ...
+
+\begin{remark}\
+	
+1. Si $V$ et $H$ sont deux espaces de Hilbert tels que $V\subset H$.   On identifie $H$ avec son dual $H'$, mais pas $V$ et on a 
+$$
+	V\subset H=H'\subset V',
+	$$
+	
+	car, en général,  si $V$ et $W$  sont deux Banach tel que $V\subset W$ alors $W'\subset V'$.  
+	
+	On dit que $V'$ est le dual de $V$ par rapport au pivot $H$.
+
+
+Exemple (exercice):	 Soient les epaces 
+$$
+\begin{aligned}
+	&H=l^{2}=\left\{u=\left(u_{n}\right) ; \sum u_{n}^{2}<\infty\right\}  \text { muni du produit scalaire }\langle u, v\rangle=\sum u_{n} v_{n} \\
+	&V=\left\{u=\left(u_{n}\right) ; \Sigma n^{2} u_{n}^{2}<\infty\right\} \text { muni du produit scalaire }\langle \langle u, v\rangle\rangle=\sum n^{2} u_{n} v_{n}
+\end{aligned}
+$$
+
+Calculer $V'$. 
+
+
+2.  Pour un $\phi\in V'$,   et $v\in V$, on note $\phi(v)=\langle \phi, v\rangle_{V^{\prime}, V}$, qu'on appelle  le crochet de dualité entre $V$ et $V'$. Ce crochet est identifié au produit scalaire dans le cas d'un Hiblbert $H$  tel que $H=H'$.
+
+\end{remark} 
+
+\section{Problems}
+
+\begin{exercise}
+  TODO
+\end{exercise}
+

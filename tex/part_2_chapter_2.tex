@@ -1,0 +1,437 @@
+\chapter{Problèmes Coercifs}
+Ce chapitre traite des problèmes dont la formulation faible est dotée d'une propriété de coercitivité. 
+
+Les exemples clés étudiés désormais sont des EDP elliptiques scalaires, i.e.,  la solution $u$ est une fonction à valeurs réelles. 
+L'objectif est double : Premièrement, mettre en place
+un cadre mathématique pour le caractère bien-posé de ces équations. Deuxièment, étudier les approximations  par éléments finis,  conformes et non-conformes,  basées sur les méthodes de Galerkin.
+
+Les estimations d'erreurs sont dérivées des résultats théoriques des chapitres  précédents 
+et sont illustrés numériquement. La dernière section de ce chapitre concerne la 
+ perte de la  coercitivité. 
+ 
+\section{Equations aux dérivées Partielles Scalaires}
+
+
+Soit  $\Omega$ un ouvert de  $\mathbb{R}^{d}$. Considérons  l'opérateur différential   $\mathcal{L}$ 
+$$
+\mathcal{L} u=-\nabla \cdot(\sigma \cdot \nabla u)+\beta \cdot \nabla u+\mu u
+$$
+
+où  $\sigma$ est une fonction définie sur $\Omega$ à valeurs  dans l'ensemble des matrices  carrées d'ordre $d$,  $\beta$ et $\mu$ des   fonctions, sur $\Omega$,  à valeurs dans $\mathbb{R}^{d}$ et  $\mathbb{R}$, respectivement. 
+
+Donnons une fonction $f: \Omega \rightarrow \mathbb{R}$, et considérons le  problème  de trouver une  fonction $u: \Omega \rightarrow \mathbb{R}$ telle que 
+
+\begin{equation}\label{eleq}
+\left\{\begin{array}{ll}
+	\mathcal{L} u=f & \text { in } \Omega \\
+	\mathcal{B} u=g & \text { on } \partial \Omega, 
+\end{array}\right.
+\end{equation}
+
+avec  $\mathcal{B}$  un opérateur qui donne les conditions aux bords.   Ce  modèle  apparait dans plusieurs  applications :
+
+
+(i) Transfert de Chaleur: 
+
+$u$ est la temérature, $\sigma=\kappa \mathcal{I}$,  le coefficient de  conductivité de la température, $\beta$ est le champ du flux de chaleur, $\mu=0$, and $f$ est une sourche de chaleur externe exercée sur $\Omega$.
+
+
+
+(ii) Advection-diffusion: 
+
+$u$ est  la concentration d'une sunstance  transportée dans un champ d'écoulemen t$\beta$. La matrice $\sigma$ modélise la diffusion de la substance.  La production ou la  destruction de la substance pour une réaction chimique est modilisée par le terme  $\mu u$, et  $f$ désigne une source fixée.
+
+Dans toute la suite,  les  hypothèses suivantes sont faites sur les données : 
+
+$$f \in L^{2}(\Omega), \sigma \in\left[L^{\infty}(\Omega)\right]^{d, d}, \beta \in\left[L^{\infty}(\Omega)\right]^{d}, \nabla \cdot \beta \in L^{\infty}(\Omega), \;\;
+\mu \in L^{\infty}(\Omega) .
+$$ 
+
+
+En plus, l'opérateur $\mathcal{L}$ est supposé "uniformément" elliptic dans le sense suivant : 
+
+\begin{definition}
+	
+L'opérateur $\mathcal{L}$ ci-dessus est dit elliptic s'il existe $\sigma_{0}>0$ telle que 
+
+\begin{equation}\label{elip}
+\forall \xi \in \mathbb{R}^{d}, \quad \sum_{i, j=1}^{d} \sigma_{i j} \xi_{i} \xi_{j} \geq \sigma_{0}\|\xi\|_{d}^{2} \quad \text { p.p. dans  } \;  \Omega.
+\end{equation}
+
+L'équation \eqref{eleq} est dit une EDP elleptic.
+\end{definition}
+
+
+Exemple : Un exemple fondamental d'opérateur elleptic est :  
+
+$\mathcal{L}=-\Delta$, obtenu pour $\sigma=\mathcal{I}, \beta=0$, et  $\mu=0$.
+
+
+Dans ce cas, l'équation est dite  un problème de  Poisson.
+
+\subsection{Formulation Variationnelle et Solutions Fortes}
+
+Nous donnons une formulation variationnelle du probléme 
+
+\begin{equation}\label{eleq1}
+	\left\{\begin{array}{ll}
+		\mathcal{L} u=f & \text { in } \Omega \\
+		\mathcal{B} u=g & \text { on } \partial \Omega, 
+	\end{array}\right.
+\end{equation}
+
+{\bf Condtions aux bords de Dirichlet homogènes}: 
+
+Considérons le cas des conditions aux bords de Dirichlet homogènes, i.e.,   
+
+$$\mathcal{B} u=u_{|\partial \Omega}=g=0.
+$$ 
+
+
+Multiplions  l'équation $\mathcal{L} u=f$ par une fonction test  $v\in H^1_0(\Omega)$, et intégrons  sur  $\Omega$. 
+
+Par la formule de  Green, 
+
+\begin{equation}\label{green}
+\int_{\Omega}-\nabla \cdot(\sigma \cdot \nabla u) v=\int_{\Omega} \nabla v \cdot \sigma \cdot \nabla u-\int_{\partial \Omega} v(n \cdot \sigma \cdot \nabla u),
+\end{equation}
+
+on a  
+
+$$
+\int_{\Omega} \nabla v \cdot \sigma \cdot \nabla u+v(\beta \cdot \nabla u)+\mu u v=\int_{\Omega} f v.
+$$
+
+On obtient alors le problème variationnel suivant 
+
+\begin{equation}\label{eqV1}
+\left\{\begin{array}{l}
+\text{Trouver} \; u\in H_{0}^{1}(\Omega) : \\
+	a_{\sigma,\beta,\mu}(u, v):=\int_{\Omega} \nabla v \cdot \sigma \cdot \nabla u+v(\beta \cdot \nabla u)+\mu u v=\int_{\Omega} f v=L(v), \forall v\in  H_{0}^{1}(\Omega).
+\end{array}\right.
+\end{equation}
+
+Une solution de ce  problème variationnel est une solution forte de l'EDP  \eqref{eleq1} :
+
+\begin{proposition}
+	
+ Si $u$ est solution de  \eqref{eqV1}, alors  $\mathcal{L} u=f$ p.p. dans  $\Omega$ et  $u=0$ p.p. sur  $\partial \Omega$.
+ 
+\end{proposition}
+
+\begin{proof}
+Soit    $u$  solution to  \eqref{eqV1}.  Donc,
+$$
+\begin{aligned}
+	&\int_{\Omega} \sigma \cdot \nabla u \cdot \nabla \varphi =\int_{\Omega}(f-\beta \cdot \nabla u-\mu u) \varphi, \quad \forall \varphi \in \mathcal{D}(\Omega).
+\end{aligned}
+$$
+
+Par définition de $H^1(\Omega)$, on a $ \sigma \cdot \nabla u\in  (H^1(\Omega))^d$ et 
+
+$$
+\nabla \cdot( \sigma \cdot \nabla u)=f-\beta \cdot \nabla u-\mu u\in L^2(\Omega),
+ $$
+i.e., $\mathcal{L} u=f$ dans  $L^{2}(\Omega) .$ D'où, $\mathcal{L} u=f$ p.p. dans  $\Omega$. En plus,  $u=0$ p.p. sur  $\partial \Omega$ par définition de  $H_{0}^{1}(\Omega)$.  D'où le résultat.
+\end{proof}
+
+{\bf Conditions aux bords de Dirichlet non-homgènes }:  
+
+Considérons maintenant le cas où  $u=g$ sur  $\partial \Omega$, pour une fonction  $g\in H^{\frac12}( \partial \Omega )$ donnée. Donc, il existe  $u_{g}\in H^{1}(\Omega)$ tel que  $u_{g}=g$ sur  $\partial \Omega$.    Comme ci-dessus, nous obtenons alors la formulation variationnelle :
+
+\begin{equation}\label{eqV2}
+\left\{\begin{array}{l}
+	\text { Trouver  } u \in H^{1}(\Omega) \text { telle que } \\
+	u=u_{g}+\phi, \quad \phi \in H_{0}^{1}(\Omega) \\
+	a_{\sigma, \beta, \mu}(\phi, v)=\int_{\Omega} f v-a_{\sigma, \beta, \mu}\left(u_{g}, v\right), \quad \forall v \in H_{0}^{1}(\Omega).
+\end{array}\right.
+\end{equation}
+
+Par un raisonnement similaire, nous montrons le résultat suivant :
+
+\begin{proposition}
+	
+Soit $g \in H^{\frac{1}{2}}(\partial \Omega) .$	Si $u$ est solution de  \eqref{eqV2}, alors  $\mathcal{L} u=f$ p.p. dans  $\Omega$ et  $u=g$ p.p. sur  $\partial \Omega$.
+	
+\end{proposition}
+
+
+
+{\bf Conditions aux bords de Neumann }: 
+
+Soit  $g: \partial \Omega \rightarrow \mathbb{R}$, et considérons le cas  $n \cdot \sigma \cdot \nabla u=g$ sur  $\partial \Omega$. Dans le cas  $\sigma=\mathcal{I}$, tla condition de  Neumann  fait intervenir  la dérivée normale de  $u$ puisque $n \cdot \nabla u=\partial_{n} u$. Dans le cas général, $n \cdot \sigma \cdot \nabla u$ est la dérivée conormale de $u$ par rapport à $\mathcal{L}$.  
+
+Par  la formule de Green \eqref{green},  et la condition de Neumann, $n \cdot \sigma \cdot \nabla u=g$,  nous obtenons le problème variationnel 
+
+
+
+\begin{equation}\label{eqv3}
+	\left\{\begin{array}{l}
+	\text { Trouver  } u \in H^{1}(\Omega) \text { telle que  } \\
+	a_{\sigma, \beta, \mu}(u, v)=\int_{\Omega} f v+\int_{\partial \Omega} g v, \quad \forall v \in H^{1}(\Omega).
+\end{array}\right.
+\end{equation}
+
+Nous avons le résultat de solution forte suivant :
+
+
+\begin{proposition}
+	Soit  $g \in L^{2}(\partial \Omega) .$ Si $u$ est solution de  \eqref{eqv3}, alors  $\mathcal{L} u=f$ p.p. dans  $\Omega$ et  $n \cdot \sigma \cdot \nabla u=g$ p.p. sur  $\partial \Omega$.
+\end{proposition} 
+
+\begin{proof}
+Comme pour le cas Dirichlet,  considérer les fonctions tests dans  $\mathcal{D}(\Omega)$  implique que  $\mathcal{L} u=f$ p.e.,  dans  $\Omega$.
+Par suite, $-\nabla \cdot(\sigma \cdot \nabla u) \in L^{2}(\Omega) .$
+
+Par la formule de Green et le faite, par le problème variationnel et $\mathcal{L} u=f$, on trouve 
+
+$$
+\forall \phi \in H^{\frac12}(\partial \Omega), \quad\int_{\partial \Omega} (n \cdot \sigma \cdot \nabla u)\phi =\int_{\partial \Omega} g \phi.
+$$
+
+D'où, 
+$n \cdot \sigma \cdot \nabla u=g$ dansd $L^{2}(\partial \Omega)$.  
+\end{proof}
+
+
+
+\textbf{Robin boundary condition :}
+
+Soeint  $g, \gamma: \partial \Omega \rightarrow \mathbb{R}$ deux fonctions données.  On considère maintenant la condition 
+
+aux bords  
+
+$$\gamma u+n \cdot \sigma \cdot \nabla u=g    \text{ sur }\;\; \partial \Omega, 
+$$ 
+
+dite conditions aux bords de Robin. 
+
+Comme au paravant, par la formule de Green, une solution de $\mathcal{L}u=f$ dans $L^2(\Omega)$ satisfait 
+
+le problème variationnel suivant :
+\begin{equation}\label{eqv4}
+\left\{\begin{array}{l}
+	 u \in H^{1}(\Omega) \\
+	a_{\sigma, \beta, \mu}(u, v)+\int_{\partial \Omega} \gamma u v=\int_{\Omega} f v+\int_{\partial \Omega} g v, \quad \forall v \in H^{1}(\Omega).
+\end{array}\right.
+\end{equation}
+
+Le résultat suivant se démontre de la même façon  que le précédent.
+
+
+\begin{proposition}
+	Soient  $g \in L^{2}(\partial \Omega) $ et $g \in L^{\infty}(\partial \Omega)$.  Si $u$ est solution de  \eqref{eqv4}, alors  $\mathcal{L} u=f$ p.p. dans  $\Omega$ et  $\gamma u+n \cdot \sigma \cdot \nabla u=g$ p.p. sur  $\partial \Omega$.
+\end{proposition} 
+
+
+\begin{remark}
+	
+	On peut considérer aussi  des problèmes elleptiues  avec conditions aux bords mixtes Dirichlet et Neumann, e.g.  si $\partial \Omega =\Gamma_1\cup \Gamma2$, $u=0$ sur $\Gamma_1$ et $n \cdot \sigma \cdot \nabla u=0$ sur  $\Gamma_2$? Cette EDP peut formulé comme un problème variationnelle similaire aux prcédents sur l'espace $V=\{v\in H^1(\Omega ):  u=0  \;  \text{ sur }  \; \;  \Gamma_1\}$. 
+\end{remark} 
+\subsection{Existence de solutions faible}
+
+Par  solutions faibles, on désigne les solutions des problèmes variationnels de la sous-section précédente. Pour montrer leur  existence, on appliquera le Théorème de Lax-Milgram. On vérfie facilement que les applications bilinéaires associées sont continues et que les seconds membres sont des forrmes linéaires coninues. Il restera à montrer la coercivité.
+
+Dans le théorème  suivant, nous rassemblons les résulats d'existence pour les différentes conditions aux bords.
+
+\begin{theorem}\label{thm12}\
+	
+Soient $f \in L^{2}(\Omega)$,  $\sigma \in\left[L^{\infty}(\Omega)\right]^{d, d}$  tel que  \eqref{elip} est satisfaites, et  $\beta \in\left[L^{\infty}(\Omega)\right]^{d}$ 
+
+avec  $\nabla \cdot \beta \in L^{\infty}(\Omega)$, et $\mu \in L^{\infty}(\Omega) .$ Posons 
+
+
+$p=\operatorname{infess}_{x \in \Omega}\left(\mu-\frac{1}{2} \nabla \cdot \beta\right)$ et  $c_{\Omega}$ la constante de l'inégalité de  Poincaré.
+
+
+
+(i) Les problèmes variationnels avec conditions aux bords  Dirichlet  homogènes  et  
+
+non-homogènes sont bien posés si
+$$
+\sigma_{0}+\min \left(0, \frac{p}{c_{\Omega}}\right)>0
+$$
+
+(ii) Le problèmes variationnel avec conditions aux bords  Neumann est bien-posé  si
+
+$$
+p>0 \quad \text { and } \quad \operatorname{infess}_{x \in \partial \Omega}(\beta \cdot n) \geq 0.
+$$
+
+(iii) Pour $q=\operatorname{infess}_{x \in \partial \Omega}\left(\gamma+\frac{1}{2} \beta \cdot n\right)$,   le problèmes variationnel avec 
+
+conditions aux bords  Robin est bien posé si
+$$
+p> 0, \quad q \geq 0.
+$$
+
+\end{theorem} 
+
+\begin{proof}
+Montrons  $(i)$.  Par la Formule de Green, voir Proposition 11, on obtient l'identité 
+\begin{equation}\label{ident}
+\int_{\Omega} u(\beta \cdot \nabla u)=-\frac{1}{2} \int_{\Omega}(\nabla \cdot \beta) u^{2}+\frac{1}{2} \int_{\partial \Omega}(\beta \cdot n) u^{2}
+\end{equation}
+
+pour $u\in H^1_0(\Omega)$.   Donc, par l'ellipticité  de  $\mathcal{L}$, on a 
+
+$$
+\forall u \in H_{0}^{1}(\Omega), \quad a_{\sigma, \beta, \mu}(u, u) \geq \sigma_{0}|u|_{1, \Omega}^{2}+p\|u\|_{0, \Omega}^{2}.
+$$
+
+Pour $\delta=\min \left(0, \frac{p}{c_{\Omega}}\right)$,  l'inégalité de Poincaré montre que 
+$$
+\forall u \in H_{0}^{1}(\Omega), \quad a_{\sigma, \beta, \mu}(u, u) \geq\left(\sigma_{0}+\frac{\delta}{c_{\Omega}}\right)|u|_{1, \Omega}^{2} \geq \alpha\|u\|_{1, \Omega}^{2}
+$$
+
+avec 
+$\alpha=\sigma_{0}+\frac{\delta}{c_{\Omega}}>0$, par hypothèse.  Le résultat découle par  Lax-Milgram. 
+\end{proof}
+
+
+Le problème non-homogène se déduit aussi de  la Proposition  \ref{nonH}.
+
+
+Pour le cas des conditions aux bords de  Neumann, on utilise aussi l'identité  \eqref{ident}, et un 
+
+raisonnement similaire.
+
+
+Pour le cas Robin, posons  $a(u, v)=a_{\sigma, \beta, \mu}(u, v)+\int_{\partial \Omega} \gamma u v .$ 
+
+On montre que  
+
+$$
+\forall u \in H^{1}(\Omega), \quad a(u, u) \geq \sigma_{0}|u|_{1, \Omega}^{2}+p\|u\|_{0, \Omega}^{2}+q\|u\|_{0, \partial \Omega}^{2}. 
+$$
+
+Si $p>0$ et   $q \geq 0$, la forme bilinéaire est  clairement  coercive sur $H^{1}(\Omega)$, avec la constante  $\alpha=\min \left(\sigma_{0}, p\right)$. 
+
+D'où le problème est bien posé par  le théorème de Lax-Milgram.
+
+\subsection{Approximation}
+
+
+\section{Perte de Coercivité}
+
+\subsection{Motivation}
+
+Soit le système linéaire 
+
+$$
+\left(\begin{matrix}
+\epsilon&\beta\\
+0&\epsilon
+\end{matrix}
+\right)\left( \begin{matrix}
+u_1\\u_2
+\end{matrix}\right)= \left( \begin{matrix}
+b_1\\b_2
+\end{matrix}\right)
+$$
+
+Pour $\epsilon=0$, la matrice n'est pas bijective et donc il n'y pas uncité de la solution. 
+
+Mais, pour $\epsilon>0$, elle est bijective.  
+
+Analytiquement, la solution  est unique  et elle est donnée par 
+$$
+\left( \begin{matrix}
+	u_1\\u_2
+\end{matrix}\right)= \left(\begin{matrix}
+\frac1{\epsilon}&-\frac{\beta}{\epsilon}\\
+0&\frac1{\epsilon}
+\end{matrix}
+\right) \left( \begin{matrix}
+	b_1\\b_2
+\end{matrix}\right).
+$$
+
+Mais, numériquement si $\epsilon$ est trop petit, la solution devient très grande.  La  matrice est mal conditionnée.  
+
+\subsection{Position du Problème}
+
+Considérons le problème  variationnel 
+
+$$
+\left\{\begin{array}{l}
+	\text { Trouver } u \in V \text { tel que } \\
+	a_{\eta}(u, v)=f(v), \quad \forall v \in V,
+\end{array}\right.
+$$
+
+où  $V$ est un  Hilbert, $f \in V^{\prime}$,  et  $a_{\eta}$ est continue, coercive, sur  $V \times V$. La forme $a_{\eta}$ dépend d'un parametre    $\eta$ qui peut prendre des petites valeurs. 
+
+Posons $\left\|a_{\eta}\right\|:=\left\|a_{\eta}\right\|_{V, V}$ et par  $\alpha_{\eta}$ la constante de  coercivité de  $a_{\eta}$, i.e.,
+$$
+\alpha_{\eta}=\inf _{u \in V} \frac{a_{\eta}(u, u)}{\|u\|_{V}^{2}}.
+$$
+\begin{definition}
+
+On a une perte de coercivité  si
+
+$$
+\lim _{\eta \rightarrow 0} \frac{\left\|a_{\eta}\right\|}{\alpha_{\eta}}=\infty. 
+$$
+
+\end{definition}
+Par analogie avec la motivation,   la perte de  coercivité ici désigne que  $a_\eta$ est mal-conditionée.
+
+Soit  $V_{h}$ une approximation conforme de  $V$ et supposons qu'on a l'estimation, vérifiée dans le cas des éléments finis,  
+$$
+\forall u \in W, \quad \inf _{v_{h} \in V_{h}}\left\|u-v_{h}\right\|_{V} \leq c_{i} h^{k}\|u\|_{W}, 
+$$
+
+où  $W$ est un sous-ensemble dense dans  $V$  et  $c_i$  est une constante d'interpolation.  
+
+Soit  $u_{h}$  la solution du problème approché:
+$$
+\left\{\begin{array}{l}
+	\text { Trouver  } u_{h} \in V_{h} : \\
+	a_{\eta}\left(u_{h}, v_{h}\right)=f\left(v_{h}\right), \quad \forall v_{h} \in V_{h}.
+\end{array}\right.
+$$
+
+Si la solution exacte $u$  est dans  $W$ et vérifie cette estimation, voir Chapitre 2, 
+$$
+\left\|u-u_{h}\right\|_{V} \leq \frac{\left\|a_{\eta}\right\|}{\alpha_{\eta}} c_{i} h^{k}\|u\|_{W}.
+$$
+
+Si le problème présente une perte de coercivité, cette estimation  ne donne aucun contrôle pratique pour  l'erreur. Évidemment, en gardant $\eta$ fixe, quand  $h \rightarrow 0$, la convergence est atteinte.  Mais, si $\eta$ est trop petite, le $h$ ne peut pas compenser la valeur très grande de $\frac{\left\|a_{\eta}\right\|}{\alpha_{\eta}}$. 
+
+
+Considérons l'exemple de l'équation  d'advection-diffusion :
+$$
+\begin{aligned}
+	-\nabla \cdot(\epsilon \nabla u)+b\cdot \nabla u &=f \quad \text { dans  } \Omega \\
+	u &=0\quad \text { sur   }  \partial\Omega, 
+\end{aligned}
+$$
+où  $\epsilon$ est  le  coefficient de diffusion, $b$ est le champ de  vitesse,  et $f$ est le terme  source.   
+
+On suppose $\nabla \cdot b=0$. 
+
+Nous avons montré dans le chapitre 2 (Théorème \ref{thm12}), que la forme bilinéaire $a_\epsilon$ associée 
+
+à ce problème est coercive avec $\alpha=\epsilon$.  
+
+Mais si $\epsilon =0$, $a_\epsilon$ n'est pas coercive.  On peut aussi montrer que 
+
+$\frac{\left\|a_{\epsilon}\right\|}{\alpha_{\epsilon}}\longrightarrow \infty$ quand  $\epsilon\rightarrow 0$. 
+
+
+
+
+
+
+
+
+
+
+\section{Problems}
+
+\begin{exercise}
+  TODO
+\end{exercise}
+
+

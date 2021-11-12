@@ -1,0 +1,160 @@
+%\chapter{Time evolution problems}
+%\label{ch:fem-mixed}
+%%
+%\section{Time Harmonic Maxwell problem}
+%%
+%The Time Harmonic Maxwell problem writes
+%%
+%\\
+%\textit{Find } $\EE \ne \mathbf{0}$ \textit{such that} 
+%\begin{align}
+%  \left\{
+%    \begin{array}{rll}
+%      \Rotv \Rots \EE &= \omega^2 \EE & \mbox{in} ~ \Omega, 
+%      \\
+%      \EE \times \nn                  &= 0   & \mbox{on} ~ \partial \Omega,
+%    \end{array}
+%    \right.
+%  \label{eq:maxwell_harmonic}
+%\end{align}
+%%
+%Two cases occure: either $\omega$ is provided and then we only look for $\EE$. The other case is known as an eigenvalue problem, and the problem must be solved for both $\EE$ and $\omega$. 
+%\\
+%If we multiply by a vector-valued function $\PsiPsi$, and integrating by parts using the \textit{curl/rotational} Green formula, we get
+%%
+%\begin{align}
+%  \int_{\Omega} \Rots \EE \cdot \Rots \PsiPsi = \omega^2 \int_{\Omega} \EE \cdot \PsiPsi
+%%  \label{}
+%\end{align}
+%%
+%Again, the space where $\EE$ lives was not mentioned; let us find what this space can be.
+%\\
+%We need both $\EE, \PsiPsi, \Rots \EE$ and $\Rots \PsiPsi$ to be in $L^2(\Omega)$, while satisfying the boundary condition $\EE \times \nn = 0$ on the boundary $\partial \Omega$. 
+%\\
+%Therefor, we need the Hilbert space $\Hcurlzero$ defined as
+%%
+%\begin{align}
+%  \boxed{
+%    \Hcurlzero = \left\{ \PsiPsi \in \Hcurl, ~ \PsiPsi \times \nn = 0 ~ \mbox{on} ~ \partial \Omega \right\} 
+%  }
+%%  \label{}
+%\end{align}
+%%
+%where
+%%
+%\begin{align}
+%  \boxed{
+%    \Hcurl = \left\{ \PsiPsi \in L^2(\Omega), ~ \Rots \PsiPsi \in L^2(\Omega) \right\} 
+%  }
+%%  \label{}
+%\end{align}
+%%
+%Therefor, in weak form, the problem writes
+%\\
+%%
+%\textit{Find } $\EE \in \Hcurlzero$, $\EE \ne \mathbf{0}$ \textit{such that}, $\forall \PsiPsi \in \Hcurlzero$ 
+%\begin{align}
+%  \int_{\Omega} \Rots \EE \cdot \Rots \PsiPsi = \omega^2 \int_{\Omega} \EE \cdot \PsiPsi
+%%  \label{}
+%\end{align}
+%%
+%\section{Time Domain Maxwell problem}
+%%
+%The Maxwell equations write
+%%
+%\begin{align}
+%  \left\{
+%    \begin{array}{rl}
+%      \Div \DD &= \rho
+%      \\
+%      \Div \BB &= 0
+%      \\
+%      \partial_t \BB &= - \Rots \EE
+%      \\
+%      \partial_t \DD &= \Rots \HH - \JJ
+%    \end{array}
+%    \right.
+%  \label{eq:maxwell}
+%\end{align}
+%%
+%In the case of linear, isotropic and non-dispersive materials, we have two additional relations: $\BB = \mu \HH$ and $\DD = \epsilon \EE$. Furthermore, we assume that $\JJ = \sigma \EE$. Pluging these relations in (Eq. \ref{eq:maxwell}), we get
+%%
+%\begin{align}
+%  \left\{
+%    \begin{array}{rl}
+%      \Div \left( \epsilon \EE \right) &= \rho
+%      \\
+%      \Div \left( \mu \HH \right) &= 0
+%      \\
+%      \mu \partial_t \HH &= - \Rots \EE
+%      \\
+%      \epsilon \partial_t \EE &= \Rots \HH - \JJ
+%    \end{array}
+%    \right.
+%  \label{eq:maxwell2}
+%\end{align}
+%%
+%Now, let us assume that both $\epsilon$ and $\mu$ are constants and equal to $1$. We also, restrict our study to the $2D$ case and we consider the Transverse Electric (TE) mode. Therefor, the problem is only involving the variables $E_x, E_y$ and $H_z$. In this case, the Time Domain Maxwell problem writes
+%%
+%\begin{align}
+%  \left\{
+%    \begin{array}{rl}
+%      \partial_t H &= - \Rots \EE
+%      \\
+%      \partial_t \EE &= \Rots H - \JJ
+%      \\
+%      \Div \EE  &= \rho
+%    \end{array}
+%    \right.
+%  \label{eq:maxwell_te_2d}
+%\end{align}
+%%
+%where we consider here that $\EE = (E_x, E_y)$ and $H=H_z$.
+%%
+%\subsection{First formulation}
+%%
+%The first variational formulation, in the case of perfectly conductin boundary conditions, can be derived using the \textit{curl/rotational} Green formula in Ampere's law. Therefor, the TE Maxwell problem reads
+%%
+%\\
+%\textit{Find} $(\EE,H)\in \Hcurlzero \times L^2(\Omega)$ 
+%\textit{such that} $(\PsiPsi,\varphi)\in \Hcurlzero \times L^2(\Omega)$  
+%\begin{align}
+%  \left\{
+%    \begin{array}{rl}
+%      \frac{d}{dt}\int_{\Omega} \EE \cdot \PsiPsi 
+%      - \int_{\Omega} H ~ \Rots \PsiPsi &=
+%      -\int_{\Omega}\JJ \cdot \PsiPsi 
+%      \\
+%      \frac{d}{dt}\int_{\Omega}H\varphi
+%      + \int_{\Omega}(\Rots \EE)\varphi &=0,
+%    \end{array}
+%    \right.
+%\end{align}
+%%
+%\subsection{Second formulation}
+%%
+%Using the \textit{divergence} Green formula in Faraday's law yields the second variational formulation.
+%\\
+%\textit{Find} $(\EE,H)\in \Hdiv \times H^1(\Omega)$
+%\textit{such that} $\forall (\PsiPsi,\varphi)\in \Hdiv \times H^1(\Omega)$ 
+%\begin{align}
+%  \left\{
+%    \begin{array}{rl}
+%      \frac{d}{dt}\int_{\Omega}\EE \cdot \PsiPsi 
+%      -\int_{\Omega}(\Rots H)\cdot \PsiPsi 
+%      &=
+%      -\int_{\Omega} \JJ \cdot \PsiPsi 
+%      \\
+%      \frac{d}{dt}\int_{\Omega} H \varphi 
+%      + \int_{\Omega}\EE \cdot(\Rots \varphi)
+%      &=0
+%    \end{array}
+%    \right.
+%\end{align}
+%
+%% ...................................................................
+%\section{Problems}
+%\label{sec:fem-mixed-problems}
+%TODO
+%
+%

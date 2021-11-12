@@ -1,0 +1,372 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% The Legrand Orange Book
+% LaTeX Template
+% Version 2.4 (26/09/2018)
+%
+% This template was downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Mathias Legrand (legrand.mathias@gmail.com) with modifications by:
+% Vel (vel@latextemplates.com)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+% Compiling this template:
+% This template uses biber for its bibliography and makeindex for its index.
+% When you first open the template, compile it from the command line with the 
+% commands below to make sure your LaTeX distribution is configured correctly:
+%
+% 1) pdflatex main
+% 2) makeindex main.idx -s StyleInd.ist
+% 3) biber main
+% 4) pdflatex main x 2
+%
+% After this, when you wish to update the bibliography/index use the appropriate
+% command above and make sure to compile with pdflatex several times 
+% afterwards to propagate your changes to the document.
+%
+% This template also uses a number of packages which may need to be
+% updated to the newest versions for the template to compile. It is strongly
+% recommended you update your LaTeX distribution if you have any
+% compilation errors.
+%
+% Important note:
+% Chapter heading images should have a 2:1 width:height ratio,
+% e.g. 920px width and 460px height.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[11pt,fleqn]{book} % Default font size and left-justified equations
+
+\input{structure.tex} % Insert the commands.tex file which contains the majority of the structure behind the template
+\usepackage{subcaption}
+\usepackage{float}
+\hypersetup{pdftitle={Variational Formulations and Finite Elements Method: Theory and Practice},pdfauthor={AL-KHWARIZMI}} % Uncomment and fill out to include PDF metadata for the author and title of the book
+
+%----------------------------------------------------------------------------------------
+
+%----------------------------------------------------------------------------------------
+%	USEFUL TEXT VARIABLES
+%----------------------------------------------------------------------------------------
+
+\newcommand{\repourl}{https://gitlab.com/bvermeir/book-cfd}
+\newcommand{\binderurl}{https://tinyurl.com/cfd-binder}
+
+%----------------------------------------------------------------------------------------
+%	USEFUL commands 
+%----------------------------------------------------------------------------------------
+\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+\usepackage{bm}
+\usepackage{tcolorbox} % box that includes text + math formula
+
+\newtheorem{lemma}{Lemma}
+\newcommand{\todo}[1]{\textcolor{red}{#1}}
+
+\newcommand{\nn}{\bm{n}}
+\newcommand{\ww}{\bm{w}}
+\newcommand{\ee}{\bm{e}}
+\newcommand{\ff}{\bm{f}}
+\newcommand{\uu}{\bm{u}}
+\newcommand{\vv}{\bm{v}}
+\newcommand{\ii}{\bm{i}}
+\newcommand{\jj}{\bm{j}}
+\newcommand{\pp}{\bm{p}}
+\newcommand{\kk}{\bm{k}}
+\newcommand{\xx}{\bm{x}}
+\newcommand{\UU}{\bm{U}}
+\newcommand{\EE}{\bm{E}}
+\newcommand{\FF}{\bm{F}}
+\newcommand{\HH}{\bm{H}}
+\newcommand{\GG}{\bm{G}}
+\newcommand{\JJ}{\bm{J}}
+\newcommand{\DD}{\bm{D}}
+\newcommand{\BB}{\bm{B}}
+\newcommand{\dotphi}{\dot{\phi}}
+\newcommand{\PsiPsi}{\boldsymbol{\Psi}}
+\newcommand{\etaeta}{\boldsymbol{\eta}}
+\newcommand{\ttheta}{\bm{\theta}}
+\newcommand{\mumu}{\boldsymbol{\mu}}
+\newcommand{\xixi}{\boldsymbol{\xi}}
+\newcommand{\intline}{\int_{\mathbb{R}}}
+\newcommand{\fracp}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\dd}{\,{\rm d} }
+\newcommand{\diff}{\mathrm{d}\,}
+\newcommand{\Rotv}{\boldsymbol{\nabla} \times}
+\newcommand{\Rots}{\nabla \times}
+\newcommand{\Curl}{\nabla \times}
+\newcommand{\Div}{\nabla \cdot}
+\newcommand{\Grad}{\boldsymbol{\nabla}}
+\newcommand{\Gradh}{\mathbb{G}}
+\newcommand{\Curlvh}{\pmb{\mathbb{C}}}
+\newcommand{\Curlh}{\mathbb{C}}
+\newcommand{\Divh}{\mathbb{D}}
+\newcommand{\Hgrad}{H^1(\Omega)}
+\newcommand{\Hgradv}{\bm{H}^1(\Omega)}
+\newcommand{\Hcurl}{\bm{H}(\mbox{curl}, \Omega)}
+\newcommand{\Hdiv}{\bm{H}(\mbox{div}, \Omega)}
+\newcommand{\Ltwo}{L^2(\Omega)}
+\newcommand{\Ltwov}{\bm{L}^2(\Omega)}
+\newcommand{\Hgradzero}{H^1_0(\Omega)}
+\newcommand{\Hgradvzero}{\bm{H}^1_0(\Omega)}
+\newcommand{\Hcurlzero}{\bm{H}_0(\mbox{curl}, \Omega)}
+\newcommand{\Hdivzero}{\bm{H}_0(\mbox{div}, \Omega)}
+\newcommand{\Ltwozero}{L^2_0(\Omega)}
+\newcommand{\Ltwovzero}{\bm{L}^2_0(\Omega)}
+\newcommand{\Vgrad}{V_h(\mbox{grad}, \Omega)}
+\newcommand{\Vgradv}{\bm{V}_h(\mbox{grad}, \Omega)}
+\newcommand{\Vcurl}{\bm{V}_h(\mbox{curl}, \Omega)}
+\newcommand{\Vdiv}{\bm{V}_h(\mbox{div}, \Omega)}
+\newcommand{\Vltwo}{V_h(L^2, \Omega)}
+\newcommand{\Cinfinity}{\mathcal{C}^{\infty}(\Omega)}
+\newcommand{\HgradLogical}{H^1(\hat{\Omega})}
+\newcommand{\HcurlLogical}{{H}(\mbox{curl}, \hat{\Omega})}
+\newcommand{\HdivLogical}{{H}(\mbox{div}, \hat{\Omega})}
+\newcommand{\LtwoLogical}{L^2(\hat{\Omega})}
+\newcommand{\VgradLogical}{V_h(\mbox{grad}, \hat{\Omega})}
+\newcommand{\VcurlLogical}{{V}_h(\mbox{curl}, \hat{\Omega})}
+\newcommand{\VdivLogical}{{V}_h(\mbox{div}, \hat{\Omega})}
+\newcommand{\VltwoLogical}{V_h(L^2, \hat{\Omega})}
+\newcommand{\igrad}{\imath^{0}}
+\newcommand{\icurl}{\imath^{1}}
+\newcommand{\idiv}{\imath^{2}}
+\newcommand{\iltwo}{\imath^{3}}
+\newcommand{\Pigrad}{P_h^{\mbox{\footnotesize{grad}}}}
+\newcommand{\Picurl}{P_h^{\mbox{\footnotesize{curl}}}}
+\newcommand{\Pidiv}{P_h^{\mbox{\footnotesize{div}}}}
+\newcommand{\Piltwo}{P_h^{\footnotesize{L^2}}}
+\newcommand{\Ker}[1]{\mbox{Ker}~ #1}
+\newcommand{\Nip}{{N_{\mumu,}^{\pp}}_{\ii}}
+\newcommand{\Njp}{{N_{\mumu,}^{\pp}}_{\jj}}
+\newcommand{\Nione}{{N_{\mumu_1,}^{p_1}}_{i_1}}
+\newcommand{\Njone}{{N_{\mumu_1,}^{p_1}}_{i_1}}
+\newcommand{\Nitwo}{{N_{\mumu_2,}^{p_2}}_{i_2}}
+\newcommand{\Njtwo}{{N_{\mumu_2,}^{p_2}}_{i_2}}
+\newcommand{\Nitre}{{N_{\mumu_3,}^{p_3}}_{i_3}}
+\newcommand{\Njtre}{{N_{\mumu_3,}^{p_3}}_{i_3}}
+\newcommand{\Vgradspline}{\mathcal{S}^{p,p,p}}
+\newcommand{\Vltwospline}{\mathcal{S}^{p-1,p-1,p-1}}
+\newcommand{\Vcurlspline}{
+  \begin{pmatrix}
+    \mathcal{S}^{p-1,p,p} \\ 
+    \mathcal{S}^{p,p-1,p} \\ 
+    \mathcal{S}^{p,p,p-1}
+  \end{pmatrix}
+}
+\newcommand{\Vdivspline}{
+  \begin{pmatrix}
+    \mathcal{S}^{p,p-1,p-1} \\ 
+    \mathcal{S}^{p-1,p,p-1} \\ 
+    \mathcal{S}^{p-1,p-1,p}
+  \end{pmatrix}
+}
+
+\newcommand{\Mione}{{M_{\mumu_1-1,}^{p_1-1}}_{i_1}}
+\newcommand{\Mjone}{{M_{\mumu_1-1,}^{p_1-1}}_{i_1}}
+\newcommand{\Mitwo}{{M_{\mumu_2-1,}^{p_2-1}}_{i_2}}
+\newcommand{\Mjtwo}{{M_{\mumu_2-1,}^{p_2-1}}_{i_2}}
+\newcommand{\Mitre}{{M_{\mumu_3-1,}^{p_3-1}}_{i_3}}
+\newcommand{\Mjtre}{{M_{\mumu_3-1,}^{p_3-1}}_{i_3}}
+\newcommand{\matrixIdentity}{\mathbb{I}}
+
+\newcommand{\glteq}{\sim_{\rm GLT}}
+\newcommand{\gltgrad}{\boldsymbol{\delta [\mathfrak{m}_{p}]}}
+\newcommand{\gltmm}{\boldsymbol{\mathfrak{m}}_{\mathbf{p}}}
+\newcommand{\TrialS}{\mathcal{T}(\mathcal{S}_n^p)}
+\newcommand{\TestS}{\mathcal{T}^{\prime}(\mathcal{S}_n^p)}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% Maths Operators 
+\newcommand{\abs}[2][]{\mathopen#1\lvert #2 \mathclose#1\rvert}
+\newcommand{\norme}[1]{\|#1\|}
+\newcommand{\intf}[2]{\left[#1,#2\right]}
+\newcommand{\into}[2]{\left]#1,#2\right[}
+\newcommand{\intr}{\operatorname{int}}
+\newcommand\fr[1]{\operatorname{fr}\!\left(#1\right)}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\dis}{\displaystyle}
+
+\newcommand{\rot}{\overrightarrow{\mbox{rot}}}
+\newcommand{\grad}{ \overrightarrow{\mbox{grad}}}
+\newcommand{\calC}{\mathcal{C}}
+\newcommand{\calF}{\mathcal{F}}
+\newcommand{\cN}{\mathcal N}
+\newcommand{\calO}{\mathcal{O}}
+\newcommand{\R}{\mathbb R}
+\newcommand{\C}{\mathbb C}
+\newcommand{\CC}{\mathbb C}
+\newcommand{\N}{\mathbb N}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\KK}{\mathbb K}
+\newcommand{\dx}{\,{\mathrm d}x}
+\newcommand{\dy}{\,{\mathrm d}y}
+\newcommand{\du}{\,{\mathrm d}u}
+\newcommand{\dv}{\,{\mathrm d}v}
+\newcommand{\dw}{\,{\mathrm d}w}
+\newcommand{\dt}{\,{\mathrm d}t}
+\newcommand{\dr}{\,{\mathrm d}r}
+\newcommand{\df}{\,{\mathrm d}f}
+\newcommand{\dl}{\,{\mathrm d}l}
+\newcommand{\ds}{\,{\mathrm d}s}
+\newcommand{\dz}{\,{\mathrm d}z}
+\newcommand{\dg}{\,{\mathrm d}g}
+\newcommand{\dA}{\,{\mathrm d}A}
+\newcommand{\Nabla}{\overrightarrow{\nabla}}
+\newcommand{\et}{\  \mbox{et} \ }
+\newcommand{\tq}{\  \mbox{tel que} \ }
+\newcommand{\V}{\overrightarrow{V}}
+\newcommand{\W}{\overrightarrow{W}}
+\newcommand{\U}{\overrightarrow{U}}
+\newcommand{\I}{\overrightarrow{i}}
+\newcommand{\J}{\overrightarrow{j}}
+\newcommand{\K}{\overrightarrow{k}}
+\newcommand{\oij}{(O, \overrightarrow{i}, \overrightarrow{j})}
+\newcommand{\oijk}{(O, \overrightarrow{i}, \overrightarrow{j}, \overrightarrow{k})}
+\newcommand{\veps}{\varepsilon}
+
+
+\begin{document}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\begingroup
+\thispagestyle{empty} % Suppress headers and footers on the title page
+\begin{tikzpicture}[remember picture,overlay]
+\node[inner sep=0pt] (background) at (current page.center) {\includegraphics[width=\paperwidth]{titlepage-fem.pdf}};
+\end{tikzpicture}
+\vfill
+\endgroup
+
+%%----------------------------------------------------------------------------------------
+%%	HALF TITLE PAGE
+%%----------------------------------------------------------------------------------------
+%
+%\begingroup
+%\newpage
+%\thispagestyle{empty} % Suppress headers and footers on the title page
+%\begin{tikzpicture}[remember picture,overlay]
+%\node[inner sep=0pt] (background) at (current page.center) {\includegraphics[width=\paperwidth]{halftitle.pdf}};
+%\end{tikzpicture}
+%\vfill
+%\endgroup
+
+
+%----------------------------------------------------------------------------------------
+%	COPYRIGHT PAGE
+%----------------------------------------------------------------------------------------
+
+\newpage
+~\vfill
+\thispagestyle{empty}
+
+\noindent Copyright \copyright\ 2021 AL-KHWARIZMI\\ % Copyright notice
+
+\noindent \textsc{Published by UM6P University}\\ % Publisher
+
+\noindent \textsc{um6p.ma}\\ % URL
+
+\noindent Licensed under the Creative Commons Attribution-NonCommercial 3.0 Unported License (the ``License''). You may not use this file except in compliance with the License. You may obtain a copy of the License at \url{http://creativecommons.org/licenses/by-nc/3.0}. Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \textsc{``as is'' basis, without warranties or conditions of any kind}, either express or implied. See the License for the specific language governing permissions and limitations under the License.\\ % License information, replace this with your own license (if any)
+
+\noindent \textit{First printing, October 2021} % Printing/edition date
+
+%----------------------------------------------------------------------------------------
+%	FOREWORD
+%----------------------------------------------------------------------------------------
+\input{foreword.tex}
+
+%----------------------------------------------------------------------------------------
+%	TABLE OF CONTENTS
+%----------------------------------------------------------------------------------------
+
+\usechapterimagefalse % If you don't want to include a chapter image, use this to toggle images off - it can be enabled later with \usechapterimagetrue
+
+\chapterimage{chapter_head_1.pdf} % Table of contents heading image
+
+\pagestyle{empty} % Disable headers and footers for the following pages
+
+\tableofcontents % Print the table of contents itself
+
+\cleardoublepage % Forces the first chapter to start on an odd page so it's on the right side of the book
+
+\pagestyle{fancy} % Enable headers and footers again
+
+%----------------------------------------------------------------------------------------
+%	PART 1: Functional Analysis 
+%----------------------------------------------------------------------------------------
+\part{Functional Analysis}
+\input{tex/part_1_chapter_1.tex}
+\input{tex/part_1_chapter_2.tex}
+\input{tex/part_1_historical_notes.tex}
+
+%----------------------------------------------------------------------------------------
+%	PART 2: Finite Elements method 
+%----------------------------------------------------------------------------------------
+\part{Abstract framework}
+\input{tex/part_2_chapter_1.tex}
+\input{tex/part_2_chapter_2.tex}
+\input{tex/part_2_chapter_3.tex}
+\input{tex/part_2_historical_notes.tex}
+
+%----------------------------------------------------------------------------------------
+%	PART 3: Finite Elements method 
+%----------------------------------------------------------------------------------------
+\part{Finite Elements method (TO REPLACE/UPDATE)}
+\input{tex/part_3_chapter_1.tex}
+\input{tex/part_3_chapter_2.tex}
+\input{tex/part_3_historical_notes.tex}
+
+%----------------------------------------------------------------------------------------
+%	PART 4: Finite Elements method 
+%----------------------------------------------------------------------------------------
+\part{Finite Elements method (TO REPLACE/UPDATE)}
+\input{tex/part_4_chapter_1.tex}
+\input{tex/part_4_chapter_2.tex}
+\input{tex/part_4_historical_notes.tex}
+
+%----------------------------------------------------------------------------------------
+%	PART 5: Linear Algebra 
+%----------------------------------------------------------------------------------------
+\part{Linear Algebra}
+\input{tex/part_5_chapter_1.tex}
+\input{tex/part_5_historical_notes.tex}
+
+%----------------------------------------------------------------------------------------
+%	BIBLIOGRAPHY
+%----------------------------------------------------------------------------------------
+
+\chapter*{Bibliography}
+\addcontentsline{toc}{chapter}{\textcolor{ocre}{Bibliography}} % Add a Bibliography heading to the table of contents
+
+%------------------------------------------------
+
+\section*{Articles}
+\addcontentsline{toc}{section}{Articles}
+\printbibliography[heading=bibempty,type=article]
+
+%------------------------------------------------
+
+\section*{Books}
+\addcontentsline{toc}{section}{Books}
+\printbibliography[heading=bibempty,type=book]
+
+%----------------------------------------------------------------------------------------
+%	INDEX
+%----------------------------------------------------------------------------------------
+
+%\cleardoublepage % Make sure the index starts on an odd (right side) page
+%\phantomsection
+%\setlength{\columnsep}{0.75cm} % Space between the 2 columns of the index
+%\addcontentsline{toc}{chapter}{\textcolor{ocre}{Index}} % Add an Index heading to the table of contents
+%\printindex % Output the index
+
+%----------------------------------------------------------------------------------------
+
+\end{document}

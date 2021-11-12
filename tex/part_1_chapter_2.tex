@@ -1,0 +1,417 @@
+\chapter{Introduction to Functional Analysis}
+\section{Dérivée généralisée et Espaces de Sobolev}
+Nous venons de définir des espaces fonctionnels complets, ce qui sera un bon cadre pour démontrer l'existence et l'unicité de solutions d'équations aux dérivées partielles, comme on le verra plus loin notamment avec le théorème de Lax-Milgram. Toutefois, on a vu que les éléments de ces espaces $L^{p}$ ne sont pas nécessairement des fonctions très régulières. Dès lors, les dérivées partielles de telles fonctions ne sont pas forcément définies partout. Pour s'affranchir de ce problème, on va étendre la notion de dérivation à  la notion  de dérivée généralisée.  Ceci  pertmettra d'introduire de nouveux espaces fonctionnels, sous espaces des $L^p$, analogue aux espaces $C^p(\Omega)$.  
+
+Dans la suite, $\Omega$ sera un ouvert (pas nécessairement borné) de $\mathbb{R}^{n}$.
+
+\subsection{Fonctions tests} 
+
+\begin{definition}\
+	
+	
+	Soit $\varphi: \Omega \rightarrow \mathbb{R}$. On appelle support de $\varphi$ l'adhérence de $\{x \in \Omega :  \varphi(x) \neq 0\}$. 
+	
+	On le note $supp(\varphi)$. 
+	\end{definition}
+Exemple : Pour $\Omega=]-1,1[$, et $\varphi$ la fonction constante égale à 1, $supp(\varphi)=[-1,1]$.
+
+\begin{definition}\
+	
+On note $\mathcal{D}(\Omega)$ l'espace des fonctions de $\Omega$ vers $\mathbb{R}$, de classe $\mathcal{C}^{\infty}$, et à support
+compact inclus dans $\Omega.$  $ \mathcal{D}(\Omega)$ est parfois appelé espace des fonctions-tests.
+
+\end{definition}
+
+Exemple: L'exemple le plus classique dans le cas de $\mathbb{R}$ est la fonction.
+$$
+\varphi(x)= \begin{cases}e^{-\frac{1}{1-x^{2}}} & \text { si }|x|<1 \\ 0 & \text { si }|x| \geq 1\end{cases}
+$$
+$\varphi$ est une fonction de $\mathcal{D}( ]-1, 1[ )$  et $supp(\varphi)=[-1,1]$.
+
+\begin{theorem}\
+	
+$\overline{\mathcal{D}(\Omega)}=L^{p}(\Omega)$, $1\leq p\leq \infty$,  i.e. $\mathcal{D}(\Omega)$ est dense dans $L^{p}(\Omega)$ : pour tout $f\in L^{p}(\Omega)$, il existe une suite $(f_n)\subset \mathcal{D}(\Omega)$ convergente vers $f$.
+\end{theorem}
+
+
+\subsection{Dérivée généralisée}
+On définit une notion de dérivée pour des fonctions qui ne sont pas  nécessairement de classe $\mathcal{C}^{1}$. 
+
+\begin{definition}\ 
+	
+Soit $I$ un intervalle de $\mathbb{R}$, pas forcément borné. On dit que $u \in L^{2}(I)$ admet une dérivée généralisée dans $L^{2}(I)$ si 
+ 
+ $$\exists u_{1} \in L^{2}(I) :  \forall \varphi \in \mathcal{D}(I), \quad \int_{I} u \varphi^{\prime}=-\int_{I} u_{1} \varphi .
+ $$ 
+ 
+La fonction $u_1$ est unique dans  $ L^{2}(I)$, et elle est dite la dérivée généralisée, dérivée au sens des distributions, ou dérivée au sens faible, de $u$. On la note aussi $u_1=u'$.
+ 
+ En itérant, on dit que $u$ admet une dérivée généralisée d'ordre $k$ dans
+ $L^{2}(I)$, notée $u_{k}$, si $$\forall \varphi \in \mathcal{D}(I), \quad \int_{I} u_{k} \varphi=(-1)^{k} \int_{I} u \varphi^{(k)}.
+ $$
+ 
+ On note aussi $u_k=u^{(k)}$, la $k$-ème dérivée de $u$. 
+ 
+ Ces définitions s'étendent naturellement pour la définition de dérivés partielles généralisées du premier ordre, notées $\partial_{i}, \partial_{x_i}, $ ou $\frac{\partial}{\partial x_i}$, $ i=1, \dots, n$,  dans le cas multidimension (dans $\mathbb{R}^n, n>1$) et aussi pour les dérivés partielles généralisées d'ordre supérieur ($m\geq 2$), notées $\partial^\alpha$, ou $\frac{\partial^{\alpha_{1}}}{\partial x_{1}^{\alpha_{1}}} \frac{\partial^{\alpha_{2}}}{\partial x_{2}^{\alpha_{2}}} \cdots \frac{\partial^{\alpha_{N}}}{\partial x_{n}^{\alpha_{n}}}$, pour $\alpha =(\alpha_1, \cdots, \alpha_n)$ tel que $|\alpha|=\alpha_{1}+\cdots+\alpha_{n} =m$. 
+ 
+\end{definition}
+
+Exemple : 
+
+Soit $I=] a, b[$ un intervalle borné, et $c$ un point de $I$. On considère une fonction $u$ formée de deux branches de classe $\mathcal{C}^{1}$,  l'une sur $] a, c[$,  l'autre sur 
+$] c, b[$ et se raccordant de  façon continue mais non dérivable en $c$. Alors $u$ admet une dérivée généralisée définie par $u_{1}(x)=u^{\prime}(x),   \quad \forall x \neq c$. 
+ En effet :
+\begin{align*}
+	\forall \varphi \in \mathcal{D}(]a, b[),  \quad \int_{a}^{b} u \varphi^{\prime}&=\int_{a}^{c}u \varphi^{\prime}+\int_{c}^{b}u \varphi^{\prime}\\
+	&=-\int_{a}^{c} u^{\prime} \varphi-\int_{c}^{b} u^{\prime} \varphi+\underbrace{\left(u\left(c^{-}\right)-u\left(c^{+}\right)\right)}_{=0} \varphi(c)\\
+	&=-\int_{a}^{b} u^{\prime} \varphi.
+\end{align*}
+
+Donc, $u_1=u'$ est la dérivée généralisée de $u$. 
+ La valeur $u_{1}(c)$ n'a pas d'importance: on a de toute façon au final la même fonction de $L^{2}(I)$, puisqu'elle est définie comme classe d'equivalence de la relation d'équivalence "égalité presque partout".
+
+Un autre espace de fonctions régulières qui joue un rôle important par la suite est  
+$$
+\mathcal{C}^{1}(\bar{\Omega})=\left\{\varphi: \Omega \rightarrow \mathbb{R} : \exists \; O \; \text { ouvert contenant } \bar{\Omega}, \exists \psi \in \mathcal{C}^{1}(O), \psi_{\mid \Omega}=\varphi\right\}
+$$
+
+Autrement dit, $\mathcal{C}^{1}(\bar{\Omega})$ est l'espace des fonctions $\mathcal{C}^{1}$ sur $\Omega$, prolongeables par continuité sur $\partial \Omega$ et dont le gradient est lui-aussi prolongeable par continuité. 
+
+
+\begin{theorem}\
+	
+1. 	 Quand elle existe, la dérivée généralisée est unique.
+
+ 2. Quand $u$ appartient  à $\mathcal{C}^{1}(\bar{\Omega})$, les dérivées généralisées sont  égales  aux  dérivées classiques.
+\end{theorem}
+
+\subsection{Espaces de Sobolev}
+
+Dans cette sous-section,  on introduit  de nouveaux espaces fonctionnels, sous espaces des espaces  $L^p$, analogue aux espaces $C^p(\Omega)$, $p\geq 1$.   On commence par  $p=2$, le  cas le plus  utilisé. 
+\subsubsection{Les espaces $H^{m}$}
+
+\begin{definition}\
+	
+1. 	L'espace de Sobolev d'ordre $1 $  dans  $L^{2}(\Omega)$  est l'ensemble défini par
+$$
+H^{1}(\Omega)=\left\{u \in L^{2}(\Omega) : \partial_{i} u \in L^{2}(\Omega), \quad 1 \leq i \leq n\right\},
+$$ 
+
+où $\partial_{i} u$ est définie au sens de la dérivée généralisée. 
+
+ 2. Pour tout entier $m \geq 1$, le sous ensemble de $L^{2}(\Omega)$
+$$
+H^{m}(\Omega)=\left\{u \in L^{2}(\Omega): \partial^{\alpha} u \in L^{2}(\Omega),  \forall \alpha=\left(\alpha_{1}, \ldots, \alpha_{n}\right) \in \mathbb{N}^{n}: |\alpha|=\alpha_{1}+\cdots+\alpha_{n} \leq m\right\}
+$$
+
+est appelé espace de Sobolev d'ordre $m$.
+
+3. Par extension, on voit aussi que $H^{0}(\Omega)=L^{2}(\Omega)$.
+
+4. Dans le cas de la dimension 1, on écrit plus simplement pour $I$ ouvert de $\mathbb{R}$ :
+$$
+H^{m}(I)=\left\{u \in L^{2}(I) :  u^{\prime}, \ldots, u^{(m)} \in L^{2}(I)\right\}.
+$$
+
+\end{definition}
+
+Exemple :  (exercice)  
+
+Soient $\mathrm{I}=]-1,+1[ $ et  la fonction $u(x)=\frac{1}{2}(|x|+x)$. 
+
+1. Montrer  que $u$  appartient à $H^1(\mathrm{I})$  et que $u^{\prime}=\mathrm{H}$ où
+$$
+\mathrm{H}(x)=\left\{\begin{array}{clrl}
+	+1 & \text { si } & 0<x<1 \\
+	0 & \text { si } & -1<x<0.
+\end{array}\right.
+$$
+
+2. Montrer que $H$ n'appartient pas à $H^1(\mathrm{I})$. 
+\begin{theorem}\
+	
+1. 	$H^{1}(\Omega)$ est un espace de Hilbert pour le produit scalaire
+\begin{equation}\label{H1}
+	\langle u, v\rangle_{1}=\int_{\Omega} u v+\sum_{i=1}^{n} \int_{\Omega} \partial_{i} u \partial_{i} v=\langle u, v\rangle+\sum_{i=1}^{n}\langle\partial_{i} u, \partial_{i} v\rangle, 
+\end{equation}
+
+en notant $\langle\cdot, \cdot \rangle$ le produit scalaire $L^{2}$. On notera $\|\cdot\|_{1}$ la norme associée à $\langle \cdot, \cdot\rangle_{1}$.
+
+
+2. 
+Si $\Omega$ est un ouvert de $\mathbb{R}^{n}$ de frontière $\partial \Omega$ "suffisamment régulière" (par exemple
+$\left.\mathcal{C}^{1}\right)$,  l'espace $\mathcal{C}^{1}(\bar{\Omega})$ est dense dans $H^{1}(\Omega)$. 
+
+
+
+3. On définit de même un produit scalaire et une norme sur $H^{m}(\Omega)$ par
+$$
+\langle u, v\rangle_{m}=\sum_{|\alpha| \leq m}\langle \partial^{\alpha} u, \partial^{\alpha}v\rangle  \qquad \text { et } \quad\|u\|_{m}=(u, u)_{m}^{1 / 2}
+$$
+
+$H^{m}(\Omega)$ muni du produit scalaire $\langle u, v\rangle_{m}$ est un espace de Hilbert.
+
+4.  Si $\Omega$ est un ouvert de $\mathbb{R}^{n}$ de frontière $\partial \Omega$ "suffisamment régulière" (par exemple
+$\left.\mathcal{C}^{1}\right)$, on a l'inclusion: $H^{\mathrm{m}}(\Omega) \subset \mathcal{C}^{k}(\Omega)$ (injection continue) pour $k<m-\frac{n}{2}$.
+
+
+\end{theorem}
+Exemples: En particulier, on voit que pour un intervalle $I$ de $\mathbb{R}$, on a $H^{1}(I) \subset \mathcal{C}^{0}(I)$, c'est à dire que, en 1-D, toute fonction $H^{1}$ est continue.
+
+L'exemple de $u(x)=x \sin \frac{1}{x}$ pour $\left.\left.x \in\right] 0,1\right]$ et $u(0)=0$ montre que la réciproque est fausse.  (Exercice).
+
+
+L'exemple de $u(x, y)=\left|\ln \left(x^{2}+y^{2}\right)\right|^{k}$ pour $0<k<1 / 2$ montre qu'en dimension supérieure à $1$,  il existe des fonctions $H^{1}$ discontinues. (Exercice).
+
+
+Les fonctions de $H^{1}$ sont « en gros » des primitives de fonctions de $L^{2}$. Plus précisément on a le résultat suivant :
+
+\begin{theorem}
+	
+ Soit $u \in H^{1}(I) ;$ alors il existe une fonction $\tilde{u} \in \mathrm{C}(\bar{I})$ telle que et
+$$
+\begin{aligned}
+	\boldsymbol{u} &=\tilde{\boldsymbol{u}}\;\;  \text { p.p. sur } \mathbf{I} \\
+	\tilde{\boldsymbol{u}}(\boldsymbol{x})-\tilde{\boldsymbol{u}}(y) &=\int_{y}^{x} \boldsymbol{u}^{\prime}(\boldsymbol{t}) \mathrm{d} t,     \quad \forall x, y \in \overline{\mathrm{I}}.
+\end{aligned}
+$$
+
+\end{theorem}
+
+
+Pour $1 \leqslant p \leqslant \infty$,  on peut définir aussi les espaces de Sobolev suivants:
+
+
+L'espace de Sobolev $\mathbf{W}^{1, p}(\Omega)$ est défini par $\left({ }^{1}\right.$ )
+$$
+\mathbf{W}^{1, p}(\Omega)=
+\left\{u \in \mathrm{L}^{p}(\Omega) : 
+	\exists  g_{1}, g_{2}, \dots, g_n\in \mathrm{L}^{p}(\Omega) :
+	\int_{\Omega}u \frac{\partial \varphi}{\partial x_i}=-\int_{\Omega} g_{i} \varphi \quad \forall \varphi \in D(\Omega),  \quad \forall i=1,2, \dots,n. 
+\right\}
+$$
+
+Pour $p=2$, 
+$\mathrm{W}^{1,2}(\Omega)= \mathrm{H}^{1}(\Omega)$. 
+
+Pour $u\in \mathrm{W}^{1,p}(\Omega)$, $ g_{i}=\frac{\partial u}{\partial x_{i}}$ est la dérivée généralisée de $u$.  On note 
+
+$$
+ \nabla u=\left(\frac{\partial u}{\partial x_{1}}, \frac{\partial u}{\partial x_{2}}, \cdots, \frac{\partial u}{\partial x_{\mathrm{N}}}\right)=\operatorname{grad} u
+$$
+le gradient généralisé. 
+
+L'espace $\mathbf{W}^{1, p}(\Omega)$,  muni de la norme
+$$
+\|u\|_{\mathrm{W}^{1, p}}=\|u\|_{\mathrm{L}^p}+\sum_{i=1}^{\mathrm{N}}\left\|\frac{\partial u}{\partial x_{i}}\right\|_{\mathrm{L}^p}
+$$
+
+ou parfois de la norme équivalente $\left(\|u\|_{L^{p}}^{p}+\displaystyle \sum_{i=1}^{N}\left\|\frac{\partial u}{\partial x_{i}}\right\|_{L^{P}}^{p}\right)^{1 / p}$ (si $\left.1 \leqslant p<\infty\right)$,
+
+est un Banach. 
+
+Si  $\Omega$ est borné, alors  $C^{1}(\bar{\Omega}) \subset \mathbf{W}^{1, p}(\Omega)$  pour tout  $1 \leqslant p \leqslant \alpha$.
+
+
+\subsection{Trace d'une fonction}
+
+Pour pouvoir faire les intégrations par parties qui seront utiles par exemple pour la formulation variationnelle, il faut pouvoir définir le prolongement (la trace) d'une fonction sur le bord $\partial \Omega$ de l'ouvert $\Omega$.
+
+Si $n=1$ : on considère un intervalle ouvert $I=] a, b[$ borné. On a vu que $H^{1}(I) \subset$ $\mathcal{C}^{0}(\bar{I})$ . Donc, pour  $u \in H^{1}(I), u$ est continue sur $[a, b]$. La  trace (la valeur )  de $u$,  sur les bords $a$ et $b$ de l'intervalle  $I=] a, b[$, $u(a), u(b)$,  est  bien définie.
+
+
+$\underline{\text { Si }} n>1$ : on n'a plus $H^{1}(\Omega) \subset \mathcal{C}^{0}(\bar{\Omega})$. Comment alors définir la trace d'une fonction $u\in H^{1}(\Omega)$ sur le bord $\partial \Omega$ ?  La démarche est la suivante :
+
+- Pour une fonction $u\in 
+\mathcal{C}^{1}(\bar{\Omega})$,  la trace de $u$ sur $\partial \Omega$, notée $u|_{\partial \Omega}$,  est  bien définie. 
+
+- On peut voir que l'application linéaire  $\gamma_0: \mathcal{C}^{1}(\bar{\Omega})\ni u \longmapsto u|_{\partial \Omega}$ est  continue. 
+
+- Comme, si $\Omega$ est un ouvert borné de frontière $\partial \Omega$ "assez régulière", alors $\mathcal{C}^{1}(\bar{\Omega})$ est dense dans $H^{1}(\Omega)$, alors, on a : le théorème trace: 
+
+$\gamma_0$  se prolonge en une application linéaire continue de $H^{1}(\Omega)$ dans $L^{2}(\partial \Omega)$, notée encore 
+
+$\gamma_{0}$, qu'on appelle opérateur  trace ($\gamma_{0}(u)$ est la trace de $u$ sur $\partial \Omega$). 
+
+Pour une fonction $u$ de $H^{1}(\Omega)$ qui soit en même temps continue sur $\bar{\Omega}$, on a évidemment 
+
+$\gamma_{0}(u)=u_{\mid \partial \Omega} .$ C'est pourquoi on note souvent par abus simplement $u_{\mid \partial \Omega}$ plutôt que $\gamma_{0}(u)$.
+
+%
+%On peut de façon analogue définir $\gamma_{1}$, application trace qui permet de prolonger la définition usuelle de la dérivée normale sur $\partial \Omega$. Pour $u \in H^{2}(\Omega)$, on a $\partial_{i} u \in H^{1}(\Omega), \forall i=1, \ldots, n$, et on peut donc définir $\gamma_{0}\left(\partial_{i} u\right)$. La frontière $\partial \Omega$ étant "assez régulière" (par exemple, idéalement, de classe $\left.\mathcal{C}^{1}\right)$, on peut définir la normale $n=\left(\begin{array}{l}n_{1} \\ \vdots \\ n_{n}\end{array}\right)$ en tout point de $\partial \Omega$. On pose alors $\gamma_{1}(u)=\sum_{i=1}^{n} \gamma_{0}\left(\partial_{i} u\right) n_{i}$. Cette application continue $\gamma_{1}$ de $H^{2}(\Omega)$ dans $L^{2}(\partial \Omega)$ permet donc bien de prolonger la définition usuelle de la dérivée normale. Dans le cas où $u$ est une fonction de $H^{2}(\Omega)$ qui soit en même temps dans $\mathcal{C}^{1}(\bar{\Omega})$, la dérivée normale au sens usuel de $u$ existe,
+
+La formule de Green suivante généralise la notion d'intégration par parties. 
+\begin{proposition}Formule de Green.\
+	
+	 On suppose que $\Omega$ est borné et de classe $C^{1}$. Soit $u, v \in H^{1}(\Omega) .$ Alors, 
+	 
+	  pour tout $i=1, \ldots, d$,  on a
+$$
+\int_{\Omega} \frac{\partial u}{\partial x_{i}} v d x=-\int_{\Omega} u \frac{\partial v}{\partial x_{i}} d x+\int_{\partial \Omega} u v n_{i} d \sigma
+$$
+où $n_{i}$ désigne la i-ème composante de la normale extérieure unitaire $\vec{n}$ à $\partial \Omega$.
+
+Cette formule généralise la formule d'intégrations par parties sur $\mathbb{R}$ :
+
+$$
+\int_{a}^b u^\prime v d x=-\int_{a}^b u v^\prime d x+u(b)v(b)-u(a)v(a).
+$$
+\end{proposition}
+\subsection{ Espace $\mathrm{H}_{0}^{1}(\Omega)$}
+
+\begin{definition}\
+	
+ Soit $\Omega$ un ouvert de $\mathbb{R}^{n}$. L'espace $H_{0}^{1}(\Omega)$ est défini comme l'adhérence de $\mathcal{D}(\Omega)$ pour la norme $\|\cdot\|_{1}$ de $H^{1}(\Omega) .$ 
+
+\end{definition}
+\begin{theorem}\
+	
+Par construction $H_{0}^{1}(\Omega)$ est un espace complet. C'est un espace de Hilbert pour le produit scalaire de $H^1(\Omega)$. 
+	
+Si $n=1$ (cas 1-D) : on considère un intervalle ouvert $I=] a, b[$ borné. Alors
+$$
+H_{0}^{1}(] a, b[)=\left\{u \in H^{1}(] a, b[), u(a)=u(b)=0\right\}.
+$$
+
+Si $n>1:$ Si $\Omega$ est un ouvert borné de frontière "assez régulière" 
+
+(par exemple $\mathcal{C}^{1}$ par morceaux, alors $H_{0}^{1}(\Omega)=\operatorname{ker} \gamma_{0}$.  
+
+D'où, comme dans le cas $n=1$,  pour $u\in H^{1}(\Omega)$, $u\in H_{0}^{1}(\Omega)$ ssi   $\gamma_0u=0$.
+
+\end{theorem}
+
+ Pour toute fonction $u$ de $H^{1}(\Omega)$,  on peut définir l'application:
+$$
+|u|_{1}=\left(\sum_{i=1}^{n}\left\|\partial_{i} u\right\|_{L^2}^{2}\right)^{1 / 2}=\left(\int_{\Omega} \sum_{i=1}^{n}\left(\partial_{i} u\right)^{2} d x\right)^{1 }=\|\nabla u\|_{L^2} .
+$$
+
+
+\begin{theorem}(Inégalité de Poincaré) \
+	
+	Si $\Omega$ est borné, alors il existe une constante $C(\Omega)$ telle que 
+	$$
+	\forall u \in H_{0}^{1}(\Omega),\|u\|_{L^2} \leq C(\Omega)\|\nabla u\|_{L^2} .
+	$$
+	
+On en déduit que $|\cdot|_{1}$ est une norme sur $H_{0}^{1}(\Omega)$, équivalente à la norme $\|\cdot\|_{1}$.
+
+
+\end{theorem}
+
+Dans la suite, on pourra avoir besoin du dual topologique  de $H_{0}^{1}(\Omega)$ qu'on note $H^{-1}(\Omega)$. On a ce résultat plus concret 
+
+
+\begin{proposition}
+	
+	L'espace $H^{-1}(\Omega)$  est caractérisé par 
+$$
+H^{-1}(\Omega)=\left\{f=v_{0}+\sum_{i=1}^{n} \frac{\partial v_{i}}{\partial x_{i}} \quad \text { with } v_{0}, v_{1}, \ldots, v_{n} \in L^{2}(\Omega)\right\}
+$$
+Autrement, toute forme linéaire sur  $H_{0}^{1}(\Omega)$,  notée  $L \in H^{-1}(\Omega)$, est écrite  pour tout  $\phi \in H_{0}^{1}(\Omega)$
+$$
+L(\phi)=\int_{\Omega}\left(v_{0} \phi-\sum_{i=1}^{n} v_{i} \frac{\partial \phi}{\partial x_{i}}\right) d x
+$$
+
+avec  $v_{0}, v_{1}, \ldots, v_{n} \in L^{2}(\Omega)$.
+
+Pour  $v \in L^{2}(\Omega) .$ For $1 \leq i \leq N$,  on définit forme linéaire  continue, dit dérivée faible au sens de $L^2$,  $\frac{\partial v}{\partial x_{i}}$ dans  $H^{-1}(\Omega)$ par 
+$$
+\left\langle\frac{\partial v}{\partial x_{i}}, \phi\right\rangle_{H^{-1}, H_{0}^{1}(\Omega)}=-\int_{\Omega} v \frac{\partial \phi}{\partial x_{i}} d x \quad \forall \phi \in H_{0}^{1}(\Omega).
+$$
+
+$\langle\cdot, \cdot \rangle_{H^{-1}, H_{0}^{1}}$ est   le crochet de dualité entre $H^{-1}$ et $H_{0}^{1}$.  On a le résultat : $$H_{0}^{1}(\Omega) \subset L^{2}(\Omega) \equiv\left(L^{2}(\Omega)\right)^{\prime} \subset H^{-1}(\Omega).
+$$
+
+\end{proposition}
+
+Pour $1\leq p\leq \infty$, par la même technique, on peut aussi  définir les espaces  $W^{1,p}_0$, les fonctions de $W^{1,p}$ de traces nulles. 
+
+\subsection{Dérivée Normale}
+
+\begin{definition}
+	
+Pour $u \in H^{2}(\Omega)$, sa dérivée normale sur $\Gamma$ est définie par
+$$
+\gamma_{0} \frac{\partial u}{\partial \nu}=\sum_{i=1}^{n} \nu_{i} \gamma_{0} \frac{\partial u}{\partial x_{i}}
+$$
+
+où $\nu_{i}(x)$ désigne la ieme composante de la fonction $\nu(x)$,  le vecteur normal (perpendiculaire à la tengente au point $x\in \partial \Omega$. On note parfois cette dérivée normale par  $\gamma_1$, ou juste $\partial_n u$, ou $\frac{\partial u}{\partial n}$. 
+
+\end{definition}
+
+
+Remarquons que $\gamma_{0} \frac{\partial u}{\partial \nu} \in L^{2}(\partial \Omega)$, puisque tous les $\gamma_{0} \frac{\partial u}{\partial x_{i}}$ sont dans $L^{2}(\partial \Omega)$ et que $\left|\nu_{i}\right| \leqslant 1 .$ Ceci prouve aussi que l'application
+$$
+\gamma_{1} : H^{2}(\Omega) \rightarrow L^{2}(\partial \Omega): u \rightarrow \gamma_{0} \frac{\partial u}{\partial \nu}
+$$
+est linéaire continue.
+
+Comme corollaire à la Formule de Green, on a cette formule appelée par le même nom.
+
+
+\begin{corollary}
+	
+	
+	
+	
+Pour un ouvert $\Omega$ de $\mathbb{R}^n$ "assez régulier"  et 	  $u\in H^2(\Omega)$, on a la formule de Green suivante 
+
+	
+$$\int_{\Omega} v\Delta u=\int_{\partial \Omega} v\frac{\partial u}{\partial n}  d \sigma-\int_{\Omega} \nabla u \cdot \nabla v, \quad \forall v \in H^{1}(\Omega),
+$$
+\end{corollary}
+
+où  $d \sigma$ est la mesure surface sur  $\Gamma$. 
+
+Si de plus, $u, v \in H^{2}(\Omega)$, on a
+$$
+\int_{\Omega}\{v\Delta u -u \Delta v\} d x=\int_{\partial \Omega}\left\{ v\frac{\partial u}{\partial n}  - u \frac{\partial v}{\partial n}\right\} d \sigma
+$$
+
+où on rappelle que $\Delta$ est l'opérateur laplacien défini par
+$$
+\Delta u=\sum_{i=1}^{n} \frac{\partial^{2} u}{\partial x_{i}^{2}}.
+$$
+
+\subsubsection{Autres espaces}
+
+On définit l'espace,  dit l'espace $H$-$div$ et noté $H(div)$.
+
+$$H\left(\operatorname{div} , \Omega\right)=\left\{v \in\left[L^{2}\left(\Omega\right)\right]^{d} ; \nabla \cdot v \in L^{2}\left(\Omega\right)\right\}.
+$$
+
+L'espace $H(div)$ est un Hilbert pour le produit scalaire suivant :
+
+
+$$
+\langle\sigma, \tau\rangle=\int_{\Omega}(\sigma(x) \cdot \tau(x)+\operatorname{div} \sigma(x) \operatorname{div} \tau(x)) d x.
+$$
+
+
+On définit aussi l'espace suivant, dit l'espace $H-curl$, et noté $H(curl)$, par 
+
+$H\left(\operatorname{curl} , \Omega\right)=\left\{v \in\left[L^{2}\left(\Omega\right)\right]^{3} ; \nabla \times v \in\left[L^{2}\left(\Omega\right)\right]^{3}\right\}$, où 
+
+$\nabla \times v$ est le rotationnel de la fonction $v:\Omega\subset \mathbb{R}^3\longrightarrow  \mathbb{R}^3,   (x,y,z)\longmapsto (v_x,v_y,v_z)$
+
+
+défini par la formule
+
+$$
+\boldsymbol{\nabla} \times  v=\left(\begin{array}{c}
+	\partial v_{z} / \partial y-\partial v_{y} / \partial z \\
+	\partial v	_{x} / \partial z-\partial v_{z} / \partial x \\
+	\partial v_{y} / \partial x-\partial v_{x} / \partial y
+\end{array}\right) =\left(\frac{\partial v_{z}}{\partial y}-\frac{\partial v_{y}}{\partial z}\right) \overrightarrow{e_{x}}+\left(\frac{\partial v_{x}}{\partial z}-\frac{\partial v_{z}}{\partial x}\right) \overrightarrow{e_{y}}+\left(\frac{\partial v_{y}}{\partial x}-\frac{\partial v_{x}}{\partial y}\right) \overrightarrow{e_{z}}.
+$$
+
+Ces deux espaces sont très utiles dans la formulation variationnelle de certaines équations.
+
+\section{Problems}
+
+\begin{exercise}
+  TODO
+\end{exercise}
+
+

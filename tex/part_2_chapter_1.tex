@@ -1,0 +1,974 @@
+\chapter{Introduction}
+\section{ Théorie de Lax-Milgram}
+
+Dans cette section, on considère le  problème général $(LMPV)$  dans le cas $W=V$ et 
+
+$V$ est un espce de Hilbert
+$$
+(LMPV) \text{ trouver } u \in V\;  \text{tel que } a(u, v)=L(v) \;\, \text{pour tout}\;\;  v \in V.
+$$
+
+
+
+(i) $a$ est une forme bilinéaire  sur  $V\times V$. 
+
+(ii) $L :V\longrightarrow \mathbb{R}$ une application linéaire.
+
+
+
+
+	
+Le théorème de Lax-Milgram suivant apporte une réponse à l'existence, l'unicité et la stabilité de la solution du problème ($LMPV$) .
+
+\begin{theorem}\
+	
+On suppose que  les formes $a$ et $L$ verifient les hypothèses suivantes :
+
+1. Continuité de $L$ : $L\in V'$.
+
+2. Continuité de $a$ : $|a(u, v)| \leq C_{a}\|u\|_V \|v\|_{V}$ pour tout $u, v \in V$.
+
+3. Coercivité de $a$ :  $ a(u, u) \geq \alpha\|u\|_{V}^{2}$,  pour tout $u \in V$,  avec $\alpha>0$.
+
+Alors,  il existe une solution unique $u$ du problème ($LMPV$) qui vérifie l'estimation 
+
+$$
+\|u\|_{V} \leq \frac{\|L\|_{V^{\prime}}}{\alpha}.
+$$
+
+Ce qui signifie que l'application $L\longmapsto u$ est continue par rapport à $L$.  
+
+On dit alors que le problème ($LMPV$)  est bien-posé au sens de Hadamard.
+\end{theorem}
+
+\begin{proof}
+L'estimation  s'établit en prenant $v=u$ dans ($LMPV$) puis en appliquant 
+
+la continuité de $L$ et la coercivité de $a$ ce qui donne
+$$
+\alpha\|u\|_{V}^{2} \leq \|L\|_{V^\prime}\|u\|_{V}.
+$$
+
+D'où l'estimation.   Cette estimation nous donne aussi l'unicité de la solution.
+\end{proof}
+
+
+Pour l'existence, considérons d'abord le cas simple où $a$ est une forme symétrique. 
+
+Dans ce cas, la continuité et la coercivité de $a$ montrent que $(u,v)\longmapsto a(u,v)$ est un  produit 
+
+scalaire sur $V \times V$ et que la norme $\|v\|_{a}=\sqrt{a(v, v)}$ est équivalente à la norme $\|\cdot\|_{V}$. 
+
+Puisque $L$ est continue de $V$ dans $\mathbb{R}$, elle l'est aussi par rapport a $\|\cdot\|_{a}$. 
+
+D'où,  par le {\bf théorème de représentation de Riesz}, il existe un unique $u \in V$ tel que 
+
+$L(v)=a(u, v)$ pour tout $v \in V$.
+
+
+
+Dans le cas non-symétrique, on remarque que puisque $v \mapsto a(u, v)$ et $v \mapsto L(v)$ sont continues, on peut écrire, par théorème de représentation de Riesz, 
+$$
+a(u, v)=\langle A u, v\rangle, \qquad L(v)=\langle f, v\rangle, 
+$$ 
+
+où $A$ est un opérateur continu sur $X, f \in X$ et $\langle\cdot, \cdot\rangle$ un produit scalaire dans $V$. 
+
+L'équation ($LMPV$) s'écrit donc $A u=f$ dans $V$. L'hypothèse de coercivité fournit  l'estimation
+$$
+\alpha\|v\|_{V} \leq\|A v\|_{V}
+$$
+pour tout $v \in V$.  Par une preuve séquentielle,  on montre que $\operatorname{Im}(A)$ est un sous-espace fermé de $V$.  Donc,    $V=\operatorname{Im}(A) \oplus(\operatorname{Im}(A))^{\perp} .$ 
+
+Pour un  $w \in(\operatorname{Im}(A))^{\perp}$,  la coercivité montre que
+$$
+\alpha\|w\|_{V}^{2} \leq a(w, w)=\langle A w, w\rangle=0.
+$$
+Par conséquent $(\operatorname{Im}(A))^{\perp}=\{0\} $ et donc $\operatorname{Im}(A)=V$. D'où, l'existence de la solution $u$.
+
+\begin{proposition}\label{lax}\
+	
+Soit $V$ un espace de Hilbert, soit $a$ une forme bilinéaire continue coercive symétrique sur $V$ et $L \in V^{\prime}$. Alors, $u$ est l'unique  solution du probleme ($LMPV$) ssi $u$ est solution du problème de minimisation suivant:
+$$
+(MP)\;  \left\{\begin{array}{l}
+	u \in V \\
+	J(u) \leq J(v), \quad \forall v\in V,
+\end{array}\right.
+$$
+
+où $J$ est définie de $V$ dans $\mathbb{R}$ par :
+$$
+J(v)=\frac{1}{2} a(v, v)-L(v),    \quad v\in V.
+$$
+
+
+\end{proposition}
+
+\begin{proof}
+Soit $u \in V$ solution unique de ($LMPV$); montrons que $u$ est solution de ($MP$). 
+
+Soit $w \in V$, on va montrer que $J(u+w) \geq J(u)$ :
+$$
+\begin{aligned}
+	J(u+w) &=\frac{1}{2} a(u+w, u+w)-L(u+w) \\
+	&=\frac{1}{2} a(u, u)+\frac{1}{2}[a(u, w)+a(w, u)]+\frac{1}{2} a(w, w)-L(u)-L(w) \\
+	&=\frac{1}{2} a(u, u)+\frac{1}{2} a(w, w)+a(u, w)-L(u)-L(w) \\
+	&=J(u)+\frac{1}{2} a(w, w)\geq J(u)+\frac{\alpha}{2}\|w\|^{2}.
+\end{aligned}
+$$
+Donc $J(u+w)>J(u)$ sauf si $w=0$.
+Réciproquement, supposons maintenant que $u$ est solution du problème de minimisation ($MP$)  et montrons que $u$ est solution du problème ($LMPV$).  
+\end{proof}
+
+Soit $w \in V$ et $t>0 .$ On a $$ J(u+t w)-J(u) \geq 0\qquad \text{et } \; J(u-t w)-J(u) \geq 0$$ 
+
+car $u$ minimise $J$. On en déduit que :
+$$
+t a(u, w)+\frac{1}{2} t^{2} a(w, w) -tL(w)\geq 0 \text { et }-t a(u, w)+\frac{1}{2} t^{2} a(w, w) +tL(w)\geq 0
+$$
+Comme $t$ est strictement positif, on peut diviser ces deux inégalités par $t$ :
+$$
+a(u, w)-L(w)+\frac{1}{2} t a(w, w) \geq 0 \text { et }-a(u, w)+L(w)+\frac{1}{2} ta(w, w) \geq 0
+$$
+On fait alors tendre $t$ vers 0 et on obtient $a(u, w)-L(w)=0$ pour tout $w \in V$, ce qui montre que $u$ est bien solution $\mathrm{du}$ problème$LMPV$).  
+
+\section{The Banach-Necas-Babuska (BNB) Theorem : inf-sup conditions}
+Dans cette section, on donne un résultat plus général que le théorème de  Lax-Milgram.  Ce résultat connu sous le nom de  Banach-Necas-Babuska Theorem, ou BNB Theorem donne une  condition nécessaire et suffisante pour la résolution du problème variationel $(LMPV)$ dans le cas plus général de $V$ et $W$ des espaces de Banach. 
+
+
+\begin{theorem}(Banach-Necas-Babuska)\
+	
+Soient  $W$ un espace de Banach  et $V$ un   Banach réflexif.  Soit  $a \in \mathcal{L}(W \times V ; \mathbb{R})$  et  $f \in V^{\prime}$. Alors, Then, problem (2.1) is well-posed if and only if:
+$$
+\begin{aligned}
+	&(\mathrm{BNB} 1) \quad \exists \alpha>0, \quad \inf _{w \in W} \sup _{v \in V} \frac{a(w, v)}{\|w\|_{W}\|v\|_{V}} \geq \alpha \\
+	&(\mathrm{BNB} 2) \quad \forall v \in V, \quad(\forall w \in W, a(w, v)=0) \Longrightarrow(v=0)
+\end{aligned}
+$$
+Moreover, the following a priori estimate holds:
+$$
+\forall f \in V^{\prime}, \quad\|u\|_{W} \leq \frac{1}{\alpha}\|f\|_{V^{\prime}}.
+$$
+
+\end{theorem}
+
+
+\begin{remark}\
+	
+	
+On définit l'opérateur  $A \in \mathcal{L}\left(W ; V^{\prime}\right)$ par 
+	$$
+	\forall w \in W, \forall v \in V, \quad\langle A w, v\rangle_{V^{\prime}, V}=a(w, v),
+	$$
+	
+
+	 
+	Alors,  le problème variationnel $(LMPV)$ est équivalent   à chercher  $u \in W$ telle que  
+	$$
+	A u=L\quad \text{dans }\;\; V^{\prime}.
+	$$ 
+	
+Donc, on peut voir, par des résultats de théorie d'opérateurs, que les conditions du 
+
+Théorème BNB peut être traduite pour l'opéarteur $A$ comme suit :
+
+
+	$$
+	(\mathrm{BNB} 1) \Longleftrightarrow(\operatorname{Ker}(A)=\{0\}   \text{ et } \operatorname{Im}(A)  \; \text{est fermé} ) \Longleftrightarrow A^{*} \text{ est   surjectif }
+	$$ 
+	
+	$$
+	(\mathrm{BNB} 2) \Longleftrightarrow \quad\left(\operatorname{Ker}\left(A^{*}\right)=\{0\}\right) \quad \Longleftrightarrow A^{*}  \text{  est  injectif}.
+	$$
+	
+2.  Dans le cas  de  $W=V$, on verra que la condtion de coercivité  du théorème de  Lax-Milgram implique les conditions $(BNB1)$ et $(BNB2)$. En effet, 
+	
+ Supposons la coercivité de $a$ et soit  $w \in V$.  La condition $(BNB1)$ découle de 
+ 
+$$
+\alpha\|w\|_{V} \leq \frac{a(w, w)}{\|w\|_{V}} \leq \sup _{v \in V} \frac{a(w, v)}{\|v\|_{V}}
+$$
+
+Soit maintenant $v \in V$.  Pour $w=v$, on a  
+
+$$
+\sup _{w \in W} a(w, v) \geq a(v, v) \geq \alpha\|v\|_{V}^{2}. 
+$$
+
+Donc, $\displaystyle \sup _{w \in W} a(w, v)=0$ implique  que $v=0$.  D'où  $(BNB2)$ est démontré.
+\end{remark}
+
+\subsection{Exemples : }
+
+{\bf The Laplace equation :} 
+
+Considérons l'équation aux dérivées partielles elleptique
+
+\begin{equation}
+	\begin{cases}
+		-\Delta u=f \;\; \text{ in }\; \Omega\\
+		u_{\mid \partial \Omega}=0.
+	\end{cases}
+\end{equation}
+
+  Ce problème peut être reformulé sous la forme du problème $(LMPV)$ en  posant
+$$
+\left\{\begin{array}{l}
+	W=V=H_{0}^{1}(\Omega) \\
+	a(u, v)=\int_{\Omega} \nabla u \cdot \nabla v, 
+\end{array}\right.
+$$
+
+et  $L(v)=\int_{\Omega} f v$ pour  $f \in L^{2}(\Omega)$.
+
+
+
+{\bf The Stokes equation :}  
+
+Considérons l'équation  elleptic Stokes PDEs   
+\begin{equation}
+\begin{cases}
+-\Delta u+\nabla p=h, \quad \nabla \cdot u=g  \;\; \text{ in }\; \Omega\\
+u_{\mid \partial \Omega}=0\\
+\int_\Omega pdx=0.
+\end{cases}
+\end{equation}
+
+Ce problème se met sous forme variationnelle en posant
+$$
+\left\{\begin{array}{l}
+	W=V=\left[H_{0}^{1}(\Omega)\right]^{d} \times L_{0}^{2}(\Omega) \\
+	a((u, p),(v, q))=\int_{\Omega} \nabla u:\nabla v-\int_{\Omega} p \nabla \cdot v+\int_{\Omega} q \nabla \cdot u, 
+\end{array}\right.
+$$
+
+$\Omega$ est un ouvert de $\mathbb{R}^d$,   $L(v, q)=\int_{\Omega}(h \cdot v+g q)$ pour  $h\in\left[L^{2}(\Omega)\right]^{d}$ et  $g \in L^{2}(\Omega)$. 
+
+ Ici, $L_{0}^{2}(\Omega)$ est un sous espace de $L^2(\Omega)$ de fonctions de de moyenne zéro sur  $\Omega$. 
+ 
+ 
+
+{\bf The advection equation. }
+
+Soit  $\beta \in\left[\mathcal{C}^{1}(\bar{\Omega})\right]^{d}$ un vecteur donné et  notons  $\partial \Omega^{-}=\{x \in \partial \Omega ;(\beta \cdot n)(x)<0\}$, 
+$n$ est le vecteur normal sortant à  $\partial \Omega$. 
+
+Considérons  l'équation d'advection  suivante : 
+
+\begin{equation}
+	\begin{cases}
+	\beta \cdot \nabla u=f  \;\; \text{ in }\; \Omega\\
+		u_{\mid \partial \Omega^{-}}=0. 
+	\end{cases}
+\end{equation}
+
+ Ce problème se met sous forme variationnelle en posant
+$$
+\left\{\begin{array}{l}
+	W=\left\{u \in L^{2}(\Omega) ; \beta \cdot \nabla u \in L^{2}(\Omega) ; u=0 \text { on } \partial \Omega^{-}\right\}, \quad V=L^{2}(\Omega) \\
+	a(u, v)=\int_{\Omega} v(\beta \cdot \nabla u)
+\end{array}\right.
+$$
+
+et  $L(v)=\int_{\Omega} f v$ pour  $f \in L^{2}(\Omega) $ et $v\in V$. Ici l'espace des solutions et l'espace test 
+
+sont différents.
+
+\subsection{Conditions aux bords non homogènes}
+
+Considérons l'équation aux dérivées partielles elleptique, munie de conditions aux bords non homogènes suivante
+
+\begin{equation}
+	\begin{cases}
+		-\Delta u=f \in  L^{2}(\Omega)\\
+		u_{\mid \partial \Omega}=g\in H^{\frac12}(\partial \Omega), 
+	\end{cases}
+\end{equation}
+
+où $H^{\frac12}(\partial \Omega)$ est l'espace de Sobolev "fractionnaire"  image de l'application trace 
+
+$\gamma_0$ de $H^{1}(\Omega)$.
+Cette équation  peut être formulée sous la forme du  problème variationnel 
+
+"non homogène" suivant : trouver $u\in W=H^{1}(\Omega)$ telle  que 
+$$
+\left\{\begin{array}{l}
+	a(u, v)=\int_{\Omega} \nabla u \cdot \nabla v=L(v), \quad \forall v\in V= H_{0}^{1}(\Omega)\\
+	\gamma_0(u)=g\in B=H^{\frac12}(\partial \Omega),
+\end{array}\right.
+$$
+
+Nous avons le résultat d'existence, d'uncité et stabilité d'un problème vartiationnelle non homogène abstrait, suivant :
+
+\begin{proposition}\label{nonH}
+Soit  $W, V$, and $B$ trois espaces de Banach , tel que $V$  est reflexif.  
+
+Soient $\gamma_{0} \in \mathcal{L}(W ,B)$ et  $a \in \mathcal{L}(W \times V ; \mathbb{R}) .$ Supposons que  $\gamma_{0}$ est  surjective et que la  restriction de  $a$ à  $W_{0}\times V$, $W_{0} : =\operatorname{Ker}\left(\gamma_{0}\right)$,   satisfait les  conditions  BNB.  
+
+Alors, le problème 
+
+$$
+(NHPV)\quad \left\{\begin{array}{l}
+	\text { trouver  } u \in W \text { tel que} \\
+	a(u, v)=L(v), \quad \forall v\in V\\
+	\gamma_0(u)=g\in B,
+\end{array}\right.
+$$
+est bien-posé et il existe  $c>0$ telle que, pour $L \in V^{\prime}$ et  $g \in B$, on a 
+	$$
+	\|u\|_{W} \leq c\left(\|L\|_{V^{\prime}}+\|g\|_{B}\right).
+	$$
+	
+\end{proposition}
+
+\begin{proof}
+Puisque $\gamma_{0}$ est continue et  surjective,  alors, par Théorème de l'application ouverte, 
+
+il  existe $c>0$ telle que,  pour tout  $g \in B$,  
+il existe  $u_{g} \in W$  tel  que  
+
+$\gamma_{0} u_{g}=g$  et $\left\|u_{g}\right\|_{W} \leq c\|g\|_{B}$. 
+\end{proof}
+
+
+Le problème $(NHPV)$ est équivalent à poser  $\phi=u-u_{g}$ et considérer le  problème 
+$$
+\left\{\begin{array}{l}
+	\text { trouver  } \phi \in W_{0} \text { tel que} \\
+	a(\phi, v)=L(v)-a\left(u_{g}, v\right), \quad \forall v \in V.
+\end{array}\right.
+$$
+On a 
+$$
+\begin{aligned}
+	\left|f(v)-a\left(u_{g}, v\right)\right| & \leq\left(\|f\|_{V^{\prime}}+\|a\|\left\|u_{g}\right\|_{W}\right)\|v\|_{V} \\
+	& \leq\left(\|f\|_{V^{\prime}}+c\|a\|\|g\|_{B}\right)\|v\|_{V}.
+\end{aligned}
+$$
+
+Alors, 
+la forme  linéaire $L-a\left(u_{g}, \cdot\right)$ est continue sur $V$.  Le reste se déduit du Théorème BNB.
+\section{Approximations de Galerkin}
+Dans cette section, nous approchons le problème variationnel abstrait 
+$$
+(LMPV) \text{ trouver } u \in V\;  \text{tel que } a(u, v)=L(v) \;\, \text{pour tout}\;\;  v \in V
+$$
+
+par la méthode de Galerkin.
+
+\subsection{Position du Problème}
+
+
+L'dée principale des méthodes de Galerkin est de remplacer les espaces $W$ et $V$ par des espaces de dimension finie $W_{h}$ et $V_{h}$. L'espace $W_{h}$ est appelé espace de solutions ou espace d'essais, et l'espace $V_{h}$ est appelé espace de tests. On verra plus tard, comment construire de tels espaces par "les éléments finis". L'indice $h$ se référant à la taille du maillage. 
+
+
+La méthode de Galerkin  suppose que  la solution  $u$ peut être  representée par une  solution  approchée :
+$$
+u=u_{0}+\sum_{j=1}^{N} a_{j} \phi_{j}
+$$
+où  les $\phi_{j}$  sont des  fonctions inconnues, $u_{0}$ est introduite  pour satsfaire les  conditions aux bourds, et les  $a_{i}$  sont des coefficients à determiner.
+
+
+
+Ceci revient à  poser  l'espace
+$$
+W(h)=W+W_{h}.
+$$
+en supposant  qu'il est muni d'une  $\|\cdot\|_{W(h)}$ vérifiant :
+
+
+(i) $\left\|w_{h}\right\|_{W(h)}=\left\|w_{h}\right\|_{W_{h}}$ pour tout  $w_{h} \in W_{h}$.
+
+(ii) $\exists c>0: \|w\|_{W(h)} \leq c\|w\|_{W}$ pour tout  $w \in W$ ($W$ s'injecte  continuement dans  $W(h)$).
+
+Dans sa forme générale, la méthode de Galerkin construit   une approximation 
+
+de  la solution $u$ (des problèmes variationnels homogènes et non homogènes) 
+en réslovant 
+
+le problème approchée suivant :
+$$
+(PVA)\quad \left\{\begin{array}{l}
+	\text { trouver  } u_{h} \in W_{h} \text { telle que  } \\
+	a_{h}\left(u_{h}, v_{h}\right)=L_{h}\left(v_{h}\right), \quad \forall v_{h} \in V_{h}, 
+\end{array}\right.
+$$
+
+où $a_{h}$ une approximation  de la forme bilinéaire $a$  et  $L_{h}$ une approximation de la forme  linéaire $L$ (ou $L_h-a_h(u_g, \cdot$)).
+
+Un problème particulier de  $(PVA)$)  est,  lorsque  $W_h=V_{h}$,  est le suivant :
+
+$$
+\left\{\begin{array}{l}
+	\text { Trouver  } u_{h} \in V_{h} \text { telle que  } \\
+	a_{h}\left(u_{h}, v_{h}\right)=L_{h}\left(v_{h}\right), \quad \forall v_{h} \in V_{h}. 
+\end{array}\right.
+$$
+Dans ce cas, on dit qu'on a une méthode  standard de Galerkin. Dans le cas $W_h\neq V_{h}$, la méthode est dite  méthode de Petrov-Galerkin, ou méthode  de Galerkin  
+ non-standard.
+
+Nous donnons des définitions de différentes approximations,  erreurs et convergence de la méthode.
+
+
+\begin{definition}\
+	
+	1. (Conformité). L'approximation est dite  conforme   si  $W_{h} \subset W$  et  $V_{h} \subset V$. 
+	
+	Dans ce cas $W(h)=W$.   Sinon, elle est dite non-conforme.
+
+
+2. (Approximabilité). L'approximation admet  la propriété d'approximabilité si 
+$$
+\forall w \in W, \quad \lim _{h \rightarrow 0}\left(\inf _{w_{h} \in W_{h}}\left\|w-w_{h}\right\|_{W(h)}\right)=0. 
+$$
+
+\end{definition}
+
+
+\begin{definition}[Consistance  et  consistance  asymptotique]  Soit $u$ la solution du problème  $(LMPV)$.
+	
+(i) L'approximation est dite consistante  si  $a_{h}$ peut être étendue à $W(h) \times V_{h}$ et si la solution exacte $u$ satisfait  le problème approchée $(PVA)$, i.e., si
+$$
+\forall v_{h} \in V_{h}, \quad a_{h}\left(u, v_{h}\right)=L_{h}\left(v_{h}\right). 
+$$
+
+Dans le cas contraire,  l'approximation est dite non-consistante.
+
+(ii) Si  $a_{h}$ est  uniformément  continue ( par rapport à $h$)  sur  $W_{h} \times V_{h}$, 
+
+la méthode d'approximation est dite 
+asymptotiquement  consistante s'il existe 
+
+un  opérateur 
+$\Pi_{h}: W \rightarrow W_{h}$ tel que : 
+
+
+$$
+\exists c>0: \quad \left\|\Pi_{h} w-w\right\|_{W(h)} \leq c \inf _{w_{h} \in W_{h}}\left\|w-w_{h}\right\|_{W(h)}, \quad \forall w \in W, 
+$$ 
+
+et 
+
+$$
+\lim _{h \rightarrow 0}\left(\sup _{v_{h} \in V_{h}} \frac{\left|L_{h}\left(v_{h}\right)-a_{h}\left(\Pi_{h} u, v_{h}\right)\right|}{\left\|v_{h}\right\|_{V_{h}}}\right)=0.
+$$
+
+
+L'erreur de consistance  $R_{h}(u)$ est définie par 
+$$
+R_{h}(u)=\sup _{v_{h} \in V_{h}} \frac{\left|L_{h}\left(v_{h}\right)-a_{h}\left(\Pi_{h} u, v_{h}\right)\right|}{\left\|v_{h}\right\|_{V_{h}}}.
+$$
+
+\end{definition}
+
+
+
+L'une des propriétés notables des méthodes de Galerkin se trouvent dans le fait que l'erreur commise sur la solution $u$  est orthogonale aux sous-espaces d'approximation. C'est une conséquence immédiate de la consistance.
+
+
+\begin{proposition}[Orthogonalité]
+	
+Si l'approximation est 	consistante,  on a la propriété d'orthogonalité 
+$$
+\forall v_{h} \in V_{h}, \quad a_{h}\left(u-u_{h}, v_{h}\right)=0. 
+$$
+
+\end{proposition}
+\subsection{Etude du problème approché}
+
+Dans cette section, on va montrer que le problème approché est bien-posé.  On distinguera le cas conforme, consistant et corecive et le cas général.
+
+
+\subsubsection{Système Linéaire}
+Le problème approché $(PVA)$  peut être écris sous la forme d'un système linéaire $Ax=b$. 
+
+En effet, soit 
+
+$$
+M=\operatorname{dim} W_{h} \quad \text { et  } \quad N=\operatorname{dim} V_{h}
+$$
+
+Soient $\left\{\psi_{1}, \ldots, \psi_{M}\right\}$ une base de $W_{h}$  et  $\left\{\varphi_{1}, \ldots, \varphi_{N}\right\}$ une base  $V_{h}$.  
+
+Ecrivons  $u_{h}$ dans  la base de  $W_{h}$,
+$$
+u_{h}=\sum_{i=1}^{M} U_{i} \psi_{i}.
+$$
+
+En introduisant cette formule dans le problème approché $(PVA)$ et prenant $\varphi_j$ comme fonctions tests, on obtient le système linéaire équivalent  
+
+$$
+\mathcal{A} U=b
+$$
+avec 
+$$
+\mathcal{A}_{i j}=a_{h}\left(\psi_{j}, \varphi_{i}\right), \quad 1 \leq i \leq N, 1 \leq j \leq M
+$$
+
+et  $b \in \mathbb{R}^{N}$ est le vecteur de  compoantes :
+$$
+b_{i}=L_{h}\left(\varphi_{i}\right), \quad 1 \leq i \leq N.
+$$
+
+D'où
+$$
+u_{h} \text { résout \,  }(PVA)\quad \Longleftrightarrow \quad \mathcal{A} U=b.
+$$
+
+
+\subsubsection{Cas conforme, consistant, corercif}
+ Considérons le  of problème approché suivant 
+$$
+\left\{\begin{array}{l}
+	\text {Trouver  } u_{h} \in V_{h} \text { telle que  } \\
+	a\left(u_{h}, v_{h}\right)=L\left(v_{h}\right), \quad \forall v_{h} \in V_{h}
+\end{array}\right.
+$$
+
+avec  $V_{h} \subset V$.  Notez qu'ici on a gardé les formes "continues" de l'application  bilinéaire $a$ et de forme linéaire  $L$, i.e. $a_h=a$ et $L_h=L$; donc, on est dans le cas consistant.  On a le résultat d'existence suivant :
+
+\begin{proposition}\
+	
+Soient  $V$ un espace de Hilbert,  $a \in \mathcal{L}(V \times V ; \mathbb{R})$, et $L \in V^{\prime}$. 
+
+Soit  $V_{h}$ un espace de dimension finie.
+
+Supposons que : $a$ est  coercive sur   $V$ et  $V_{h} \subset V$.
+
+Alors,   le  problème approché ci-dessus est bien posé. En particulier,  pour tout $L \in$ $V^{\prime}$, on a 
+$$
+\left\|u_{h}\right\|_{V} \leq \frac{1}{\alpha}\|L\|_{V^{\prime}}.
+$$ 
+
+\end{proposition}
+
+\begin{proof}
+Puisque  $V_{h} \subset V$, la forme bilinéaire $a$ is coercive sur  $V_{h}$ avec la même constante 
+
+$\alpha$.  On conclut alors par le Théorème de  Lax-Milgram.
+\end{proof}
+
+
+\begin{remark}
+Dans le cas  d'une approximation conforme et  consistante d'un  problème coercif 
+($W=V$), 
+la matrice $\mathcal{A}$ du système linéaire est une matrice {\bf carrée définie  positive} (Exercice).  
+\end{remark}
+
+\begin{remark}
+Si  $a$ est  symétrique,  la matrice $\mathcal{A} $  est  symétrique.
+\end{remark}
+
+
+
+
+\subsection{Cas général : Cas  BNB}
+
+On considère le cas général ou $W\neq V$, et  une approximation qui peut être non-conforme ou non constante.
+
+
+En s'insipirant du  Théorème BNB,  pour  résoudre le problème approché $(PVA)$, on suppose 
+
+les  conditions  discrètes:
+$$
+\begin{aligned}
+	&\left(\mathrm{BNB} 1_{\mathrm{h}}\right) \quad  \exists \alpha_{h}>0, \quad \inf _{w_{h} \in W_{h}} \sup _{v_{h} \in V_{h}} \frac{a_{h}\left(w_{h}, v_{h}\right)}{\left\|w_{h}\right\|_{W_{h}}\left\|v_{h}\right\|_{V_{h}}} \geq \alpha_{h} \\
+	&\left(\mathrm{BNB} 2_{\mathrm{h}}\right) \quad \forall v_{h} \in V_{h}, \quad\left( a_{h}\left(w_{h}, v_{h}\right), \forall w_{h} \in W_{h}=0\right) \Longrightarrow\left(v_{h}=0\right)
+\end{aligned}
+$$
+
+Donnons une interprétation des conditions $\left(\mathrm{BNB} 1_{\mathrm{h}}\right)$  et  $\left(\mathrm{BNB} 2_{\mathrm{h}}\right)$ en terme de la matrice $\mathcal{A}$ 
+
+du système linéaire.
+
+\begin{proposition}\
+	
+	(i) $\left(\mathrm{BNB} 1_{\mathrm{h}}\right) \Longleftrightarrow(\operatorname{Ker}(\mathcal{A})=\{0\})$.
+	
+(ii) $(\mathrm{BNB} 2 \mathrm{~h}) \Longleftrightarrow\left(\operatorname{rank} \mathcal{A}=\operatorname{dim} V_{h}\right)$.
+
+(iii) Si $\operatorname{dim} W_{h}=\operatorname{dim} V_{h},\quad \left(\mathrm{BNB} 1_{\mathrm{h}}\right) \Longleftrightarrow\left(\mathrm{BNB} 2_{\mathrm{h}}\right)$.
+
+\end{proposition}
+
+Par cette proposition, on peut montrer facilement le résultat,  d'existence de solution 
+
+approchées pour le problème $(PVA)$, suivant :
+
+\begin{theorem}\
+	
+Soient $V_{h}$ et  $W_{h}$  deux espaces de dimension finite munis des normes $\|\cdot\|_{W_{h}}$  et  $\|\cdot\|_{V_{h}}$.  
+
+Supposons 
+
+(i) $a_{h}$ est  bilinéaire continue  sur  $W_{h} \times V_{h}$ et  $L_{h}$ est  continue su  $V_{h}$.
+
+(ii) La condition $\left(\mathrm{BNB} 1_{\mathrm{h}}\right)$ is satisfaite.
+
+(iii) $\dim V_{h}=\dim W_{h}$.
+
+Alors,  le problème approché $(PVA)$ est bien posé, et on a  $\left\|u_{h}\right\|_{W_{h}} \leq \frac{1}{\alpha_{h}}\left\|L_{h}\right\|_{V_{h}^{\prime}}$.
+\end{theorem}
+
+\begin{proof}
+Par les hypothèses du Théorème et la Proposition précédente, la matrice $\mathcal{A}$ est carrée et inversible donc, le système linéaire admet une solution unique.
+\end{proof}
+\section{Analyse d'Erreur}
+
+Dans cette section, nous dérivons des estimations de l'erreur d'approximation $u-u_{h}$, où  $u$ résout le problème  $(LMPV)$ et  $u_{h}$ solution du  problème $(PVA)$
+
+
+\subsubsection{Cas général }
+
+Supposons que :
+
+
+(i) La condition $\left(\mathrm{BNB} 1_{\mathrm{h}}\right)$ est satisfaite uniformément en  $h$ et 
+
+ $\operatorname{dim}\left(W_{h}\right)=\operatorname{dim}\left(V_{h}\right)$.
+ 
+ 
+(ii) $a_{h}$ is uniformément continue en  $h$  sur $W_{h} \times V_{h}$.
+
+
+(iii) L'approximation est   asymptotiquement  consistante.
+
+(iv) L'approximation admet la propriété  d'approximabilité.
+
+Alors, l'erreur de consistance  $R_{h}(u)$ vérifie :
+$$
+\left\|u-u_{h}\right\|_{W(h)} \leq \frac{1}{\alpha} R_{h}(u)+c \inf _{w_{h} \in W_{h}}\left\|u-w_{h}\right\|_{W(h)}
+$$
+
+et  $$
+\lim _{h \rightarrow 0}\left\|u-u_{h}\right\|_{W(h)}=0.
+$$
+
+
+\subsubsection{Cas Particuliers }
+
+{\bf Cas non-consistant, non-conforme :}
+
+
+ On suppose que $a_{h}$ peut être étendue à $W(h) \times V_{h}$ tel que   $a_{h}\left(w, v_{h}\right)$ est définie pour  $w \in W$  et  $v_{h} \in V_{h}$. 
+ 
+ Nous avons le résultat d'estimations de l'erreur suivant :
+\begin{proposition} (Strang 2)\
+	
+	 On suppose : 
+	 
+(i)  La condition $\left(\mathrm{BNB} 1_{\mathrm{h}}\right)$ et   $\operatorname{dim}\left(W_{h}\right)=\operatorname{dim}\left(V_{h}\right)$.
+
+(ii) $a_{h}$ est coninue  sur $W(h) \times V_{h}$.
+Alors, 
+$$
+\begin{aligned}
+	\left\|u-u_{h}\right\|_{W(h)} \leq &\left(1+\frac{\left\|a_{h}\right\|_{W(h), V_{h}}}{\alpha_{h}}\right) \inf _{w_{h} \in W_{h}}\left\|u-w_{h}\right\|_{W(h)} \\
+	&+\frac{1}{\alpha_{h}} \sup _{v_{h} \in V_{h}} \frac{\left|f_{h}\left(v_{h}\right)-a_{h}\left(u, v_{h}\right)\right|}{\left\|v_{h}\right\|_{V_{h}}}.
+\end{aligned}
+$$
+\end{proposition}
+
+
+\begin{proof}
+On utilise la formule 
+$$
+\begin{aligned}
+	a_{h}\left(u_{h}-w_{h}, v_{h}\right) &=a_{h}\left(u_{h}-u, v_{h}\right)+a_{h}\left(u-w_{h}, v_{h}\right) \\
+	&=L_{h}\left(v_{h}\right)-a_{h}\left(u, v_{h}\right)+a_{h}\left(u-w_{h}, v_{h}\right), \qquad \forall w_{h} \in W_{h},  \forall v_h\in V_h.
+\end{aligned}
+$$
+
+l'hypothèse (i) et l'inégalité triangulaire des normes.
+\end{proof}
+
+{\bf Cas consistant et conforme :}
+
+Pour une approximation  consistante et  conforme avec  $a_{h}=a$ and $L_{h}=L$, nous avons l'estimation suivante:
+
+\begin{proposition}(Lemme de Céa). \
+	
+	On suppose 
+	
+	(i)  La condition $\left(\mathrm{BNB} 1_{\mathrm{h}}\right)$.
+	
+	
+	(ii)  $\operatorname{dim}\left(W_{h}\right)=\operatorname{dim}\left(V_{h}\right)$.
+	
+	 (iii) $V_{h} \subset V$, $W_{h} \subset W, a_{h}=a$,  et  $L_{h}=L.$ 
+	 
+	 La solution  $u_{h}$ du problème  $(PVA)$ satisfait :
+$$
+\left\|u-u_{h}\right\|_{W} \leq\left(1+\frac{\|a\|_{W, V}}{\alpha}\right) \inf _{w_{h} \in W_{h}}\left\|u-w_{h}\right\|_{W}
+$$
+
+\end{proposition}
+\begin{proof}
+Pour  $w_{h} \in W_{h},$  l'othogonalité implique 
+$$
+\forall v_{h} \in V_{h}, \quad a\left(u_{h}-w_{h}, v_{h}\right)=a\left(u-w_{h}, v_{h}\right).
+$$
+
+La condition $\left(\mathrm{BNB} 1_{\mathrm{h}}\right)$, la continuité de  $a$ et l'inégalité triangulaire permet de conclure.
+\end{proof}
+
+Si en plus de la consistance, la conformité, on suppose la coercivité, alors 
+
+ l'orthogonalité donne
+$$
+\forall v_{h} \in V_{h}, \quad a\left(u-u_{h}, u-u_{h}\right)=a\left(u-u_{h}, u-v_{h}\right).
+$$
+
+Par un raisonnement similaire, on obtient l'estimation plus petite suivante:
+
+$$
+\left\|u-u_{h}\right\|_{W} \leq\frac{\|a\|_{W, V}}{\alpha} \inf _{w_{h} \in W_{h}}\left\|u-w_{h}\right\|_{W}.
+$$
+
+
+
+
+\section{Problème de Points selles}
+Dans cette section, on traitera un cas particulier du problème $(LMPV)$,  venant  de la formulation variationnelle du problème de  Stokes.  On lui  réfère  par "problème de point celle".  On  caractérisera son caratère bien-posé et analysera son  approximation par la méthode de  Galerkin.
+
+
+
+\subsection{Position et Résolution du Problème}
+On considère deux espaces de Banach réflexifs  $X$ et  $M$, $f \in X^{\prime}, g \in M^{\prime}$, et deux formes  bilinéaires $a \in \mathcal{L}(X \times X ; \mathbb{R})$ et  $b \in \mathcal{L}(X \times M ; \mathbb{R})$.  Le problème abstrait de point selle est :
+
+$$
+(PSP)\quad \left\{\begin{array}{l}
+	\text {Trouver  } u \in X \text { et  } p \in M \text { tels que  } \\
+	a(u, v)+b(v, p)=f(v), \quad \forall v \in X \\
+	b(u, q)=g(q), \quad \forall q \in M. 
+\end{array}\right.
+$$
+
+
+L'exemple prototype de $(PSP)$ est celui de  Stokes.  Dans ce cas,  $$X=\left[H_{0}^{1}(\Omega)\right]^{d}, \; M=L_{0}^{2}(\Omega),$$
+$$
+a(u, v)=\int_{\Omega} \nabla u: \nabla v,\quad  b(v, p)=-\int_{\Omega} p \nabla \cdot v, \quad f(v)=\int_{\Omega} f \cdot v, \,   g(q)=-\int_{\Omega} g q dx.
+$$
+
+pour un $f\in \left[L^{2}(\Omega)\right]^{d}$ et $g\in L^{2}(\Omega)$. 
+
+On peut écrire le problème de point selle $(PSP)$ comme un problème 
+
+particulier de $(LMPV)$
+
+$$
+\left\{\begin{array}{l}
+	\text { Trouver  }(u, p) \in V \text { telle que } \\
+	c((u, p),(v, q))=k(v, q), \quad \forall(v, q) \in V,
+\end{array}\right.
+$$
+
+pour 
+
+$$W=V=X \times M, \quad c((u, p),(v, q))=a(u, v)+b(v, p)+b(u, q),
+$$
+$$L(v, q)=f(v)+g(q).
+$$
+
+Il est facile de voir que les deux problèmes $(PSP)$ and $(LMPV)$ sont équivalents. Par conséquent,  une condition  necéssaire et suffisante pour que $(PSP)$ soit bien-posé est les deux conditions $(BNB1)$ et  $(BNB2)$  pour la forme bilinéaire $c$.  Cependant,  vu  sa particularité, il est possible de formuler les conditions  $(BNB1)$  et  $(BNB2)$ en terme des formes bilinéaires $a$ et $b$. Pour cela, on introduit le problème "opérateur associé" équivalent
+
+$$
+\left\{\begin{array}{l}
+	\text { Trouver } u \in X \text {  et  } p \in M \text { tels que  } \\
+	A u+B^{*} p=f \\
+	B u=g,
+\end{array}\right.
+$$
+
+
+
+ $A$ and $B$ sont les opérateurs définis par  $A: X \rightarrow X^{\prime},    \quad \langle A u, v\rangle_{X^{\prime}, X}=a(u, v)$,   
+ 
+ $B: X \rightarrow M^{\prime}$, avec $(B v, q\rangle_{M^{\prime}, M}=b(v, q)$  et 
+ $B^{*}: M=M^{\prime \prime} \rightarrow X^{\prime}$ son opérateur adjoint. 
+
+Introduisons  le noyau de $B$ par  
+$$
+\operatorname{Ker}(B)=\{v \in X ; \forall q \in M, b(v, q)=0\}
+$$ 
+
+%l'opérateur $$\pi A: \operatorname{Ker}(B) \rightarrow \operatorname{Ker}(B)^{\prime}$$ 
+%
+% $$\langle\pi A u, v\rangle_{X^{\prime}, X}=\langle A u, v\rangle_{X^{\prime}, X}, \quad \forall u, v \in \operatorname{Ker}(B).
+%$$
+
+
+On a alors le résultat d'existence, unicité et stabilité du point selle suivant :
+
+
+\begin{theorem}\label{pointselle}
+	
+	
+	 Le Problème $(PSP)$ est bien posé ssi 
+\begin{equation}\label{psp}
+\left\{\begin{array}{l}
+	\exists \alpha>0, \displaystyle \inf _{u \in \operatorname{Ker}(B)} \sup _{v \in \operatorname{Ker}(B)} \frac{a(u, v)}{\|u\|_{X}\|v\|_{X}} \geq \alpha \\
+	\forall v \in \operatorname{Ker}(B), \quad( a(u, v)=0, \; \forall u \in \operatorname{Ker}(B)) \Rightarrow \; v=0
+\end{array}\right.
+\end{equation}
+
+et 
+
+\begin{equation}\label{psp1}
+\exists \beta>0, \quad \inf _{q \in M} \sup _{v \in X} \frac{b(v, q)}{\|v\|_{X}\|q\|_{M}} \geq \beta.
+\end{equation}
+
+En plus, les estimations suivantes sont satisfaites
+
+$$
+\left\{\begin{array}{l}
+	\|u\|_{X} \leq c_{1}\|f\|_{X^{\prime}}+c_{2}\|g\|_{M^{\prime}} \\
+	\|p\|_{M} \leq c_{3}\|f\|_{X^{\prime}}+c_{4}\|g\|_{M^{\prime}}
+\end{array}\right.
+$$
+
+avec  $c_{1}=\frac{1}{\alpha}, c_{2}=\frac{1}{\beta}\left(1+\frac{\|a\|}{\alpha}\right), c_{3}=\frac{1}{\beta}\left(1+\frac{\|a\|}{\alpha}\right)$, et  $c_{4}=\frac{\|a\|}{\beta^{2}}\left(1+\frac{\|a\|}{\alpha}\right)$.
+
+\end{theorem}
+
+
+\begin{remark}\
+	
+	
+	
+(i)  Si  $a$ est  coercive sur  $\operatorname{Ker}(B)$,  alors les  conditions  \eqref{psp} sont vérifées, en particulier si  $a$ est  coercive sur l'espace  $X$.
+
+
+
+
+(ii)  On peut voir que les conditions \eqref{psp} et \eqref{psp1} sont satisfaites par $a$ et $b$ ssi  les  conditions  $(\mathrm{BNB} 1)$ et $(\mathrm{BNB} 2)$ sont satisfaites par la forme bilinéaire $c$. 
+
+
+\end{remark}
+
+
+
+On va  définir  maintenant le vrai sense d'un point selle de la  solution du  problème $(PSP)$. 
+
+\begin{definition}\
+	
+Soient  $X$  et  $M$ deux espaces, et une application  $\mathcal{L}: X \times M \rightarrow$ $\mathbb{R}$. 
+
+Le couple  $(u, p)$ est dit un point selle de  $\mathcal{L}$ si 
+$$
+\forall(v, q) \in X \times M, \quad \mathcal{L}(u, q) \leq \mathcal{L}(u, p) \leq \mathcal{L}(v, p). 
+$$
+\end{definition}
+
+Le point selle est caractérisé par :
+
+\begin{lemma}\
+	
+	
+	Le couple  $(u, p)$ est un point selle de  $\mathcal{L}$ ssi
+$$
+\inf _{v \in X} \sup _{q \in M} \mathcal{L}(v, q)=\sup _{q \in M} \mathcal{L}(u, q)=\mathcal{L}(u, p)=\inf _{v \in X} \mathcal{L}(v, p)=\sup _{q \in M} \inf _{v \in X} \mathcal{L}(v, q).
+$$
+
+\end{lemma}
+
+La proposition suivante donne la solution du problème $(PSP)$ comme point selle d'une application. La démonstration se base sur la proposition \ref{lax}. 
+
+\begin{proposition}\
+	
+	
+Supposons que $a$ est  symmetrique et positive.  Alors, le couple  $(u, p)$ est solution du problème  $(PSP)$  ssi $(u, p)$ est un point selle de la fonction
+ Lagrangienne 
+$$
+\mathcal{L}(v, q)=\frac{1}{2} a(v, v)+b(v, q)-f(v)-g(q).
+$$
+\end{proposition}
+
+
+
+\subsection{Approximations du problème de point selle}
+
+Cette subsection étudie les approximations conformes au problème $(PSP)$. Soit $X_h$
+un sous-espace de $X$ et soit $M_h$  un sous-espace de $M$ de dimensions finies
+
+Considérons le problème approché :
+
+$$
+(PSPA)\quad \left\{\begin{array}{l}
+	\text { Trouvet  } u_{h} \in X_{h} \text { et  } p_{h} \in M_{h} \text { tels que  } \\
+	a\left(u_{h}, v_{h}\right)+b\left(v_{h}, p_{h}\right)=f\left(v_{h}\right), \quad \forall v_{h} \in X_{h} \\
+	b\left(u_{h}, q_{h}\right)=g\left(q_{h}\right), \quad \forall q_{h} \in M_{h}
+\end{array}\right.
+$$
+
+
+Soit  $B_{h}: X_{h} \rightarrow M_{h}^{\prime}$ est l'operator induit  par  $b$ tel que  $\left\langle B_{h} v_{h}, q_{h}\right\rangle_{M_{h}^{\prime}, M_{h}}=$ $b\left(v_{h}, q_{h}\right) .$
+
+ Soit  $\operatorname{Ker}\left(B_{h}\right)$ le noyau de  $B_{h}$, i.e.,
+$$
+\operatorname{Ker}\left(B_{h}\right)=\left\{v_{h} \in X_{h} ; \forall q_{h} \in M_{h}, b\left(v_{h}, q_{h}\right)=0\right\}. 
+$$
+
+Etudions tout d'abord le caractère bien-posé de du prblème  approché $(PSPA)$.
+
+
+\begin{proposition}
+	Le Problème $(PSPA)$ est bien posé ssi 
+	\begin{equation}\label{psp}
+		\left\{\begin{array}{l}
+			\exists \alpha_h>0, \displaystyle \inf _{u \in \operatorname{Ker}(B_h)} \sup _{v \in \operatorname{Ker}(B_h)} \frac{a(u, v)}{\|u\|_{X_h}\|v\|_{X_h}} \geq \alpha_h \\
+			\forall v \in \operatorname{Ker}(B_h), \quad( a(u, v)=0, \; \forall u \in \operatorname{Ker}(B_h)) \Rightarrow \; v=0
+		\end{array}\right.
+	\end{equation}
+	
+	et 
+	
+	\begin{equation}\label{psp1}
+		\exists \beta_h>0, \quad \inf _{q \in M_h} \sup _{v \in X_h} \frac{b(v, q)}{\|v\|_{X_h}\|q\|_{M_h}} \geq \beta_h.
+	\end{equation}
+	
+\end{proposition}
+
+
+Nous terminons ce chapitre par une estimation d'erreur de la solution du problème du point selle, similaire à celle du lemme de Céa.
+  
+
+
+
+ 
+\begin{proposition}\
+	
+
+
+Sous les conditions \eqref{psp}-\eqref{psp1}, la solution $\left(u_{h}, p_{h}\right)$ du problème $(PSP)$   
+
+satisfait les estimations
+ $$
+ \begin{array}{l}
+ 	\left\|u-u_{h}\right\|_{X} \leq c_{1 h} \inf _{v_{h} \in X_{h}}\left\|u-v_{h}\right\|_{x}+c_{2 h} \inf _{q_{h} \in M_{h}}\left\|p-q_{h}\right\|_{M} \\
+ 	\left\|p-p_{h}\right\|_{M} \leq c_{3 h} \inf _{v_{h} \in X_{h}}\left\|u-v_{h}\right\|_{X}+c_{4 h} \inf _{q_{h} \in M_{h}}\left\|p-q_{h}\right\|_{M}
+ \end{array}
+ $$
+ 
+ avec  $c_{1 h}=\left(1+\frac{\|a\|}{\alpha_{h}}\right)\left(1+\frac{\|b\|}{\beta_{h}}\right)$, \
+ 
+ $c_{2 h}=\frac{\|b\|}{\alpha_{h}}$  si  
+ $\operatorname{Ker}\left(B_{h}\right) \not \subset \operatorname{Ker}(B)$ et  $c_{2 h}=0$ sinon, \
+ 
+ $c_{3 h}=c_{1 h} \frac{\|a\|}{\beta_{h}}$, et  $c_{4 h}=1+\frac{\|b\|}{\beta_{h}}+c_{2 h} \frac{\|a\|}{\beta_{h}}$.
+
+
+\end{proposition}
+
+
+
+
+
+
+\section{Problems}
+
+\begin{exercise}
+  TODO
+\end{exercise}
+
+

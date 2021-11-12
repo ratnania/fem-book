@@ -1,0 +1,376 @@
+% ...................................................................
+\chapter{Functional Analysis}
+\label{ch:fem-functional-analysis}
+\section{Notations and Preliminaries}
+
+In the course of the lecture we shall work with the Sobolev spaces $ H^m(\Omega)$, $H(\textrm{div}, \Omega)$ and $H(\textrm{div}, \Omega)$ and recall here there basic properties without proof. For a more detailed presentation with proofs we refer to Section 2.1. of \cite{BoffiBook2013}.
+%
+\begin{itemize}
+	\item we use blodface notation for spaces of vector functions. For instance in $3D$, $\Hgradv$ denotes the space $\left( H^1(\Omega) \right)^3$. 
+        \item for an operator $d \in \{\Grad, \Curl, \Div \}$, we denote the kernel space $\mathcal{N}(d)$ while the range will be $\mathcal{R}(d)$.
+%        \item we restrict our study to the unit logical domain. We therefor consider $\Omega = [0,1]^d$, with $d \in \{1,2,3\}$
+\end{itemize}
+%
+% --- Sobolev Spaces
+We shall need the following Sobolev spaces, given first without boundary conditions,
+%
+\begin{align}
+    \Hgrad  &= \left\{ \varphi \in L^2(\Omega), ~ \nabla \varphi \in \Ltwov \right\} 
+    \\
+    \Hgradv &= \left\{ \PsiPsi \in L^2(\Omega), ~ \nabla \PsiPsi \in \Ltwov  \right\} 
+    \\
+    \Hcurl  &= \left\{ \PsiPsi \in L^2(\Omega), ~ \Curl \PsiPsi \in \Ltwov  \right\} 
+    \\
+    \Hdiv   &= \left\{ \PsiPsi \in L^2(\Omega), ~ \Div \PsiPsi \in \Ltwo  \right\} 
+%  \label{}
+\end{align}
+%
+and using the correspondant boundary conditions,
+%
+\begin{align}
+    \Hgradzero &= \left\{ \varphi \in \Hgrad, ~ \varphi = 0 ~ \mbox{on} ~ \partial \Omega \right\}
+    \\
+    \Hgradvzero &= \left\{ \PsiPsi \in \Hgradv, ~ \PsiPsi = 0 ~ \mbox{on} ~ \partial \Omega \right\}
+    \\
+    \Hcurlzero &= \left\{ \PsiPsi \in \Hcurl, ~ \PsiPsi \times \nn = 0 ~ \mbox{on} ~ \partial \Omega \right\} 
+    \\
+    \Hdivzero &= \left\{ \PsiPsi \in \Hdiv, ~ \PsiPsi \cdot \nn = 0 ~ \mbox{on} ~ \partial \Omega \right\} 
+    \\
+    \Ltwozero  &= \left\{ \varphi \in L^2(\Omega); ~ \int_{\Omega} \varphi = 0  \right\}
+%  \label{}
+\end{align}
+%
+Scalar-valued test functions will be denoted by $\varphi$, while $\varphi_i$ will denote a scalar basis function, after reordering all the basis functions of a given discrete space.
+\\
+Vector-valued functions will be written in bold, like $\uu, \vv$. $\boldsymbol{\Psi}$ will denote a vector-valued test function, while$\boldsymbol{\Psi}_i$ will denote a vector-valued basis function (after reordering the basis functions). 
+\\
+Even if most of what follows holds for both the $2D$ and $3D$ cases, we will restrict our studies to the $2D$ one. We recall that in $2D$, there are two \textit{curl} operators, one acting on scalars $\Rotv \phi = \left( \partial_y \phi, - \partial_x \phi \right)$ and one acting on vectors $\Rots \PsiPsi = \partial_x \PsiPsi^y - \partial_y \PsiPsi^x$. Differential operators that return a vector (grad, curl) will be written in bold ($\Grad, \Rots$). 
+%
+%
+We also recall the Green formula for the \textit{divergence} and \textit{curl/rotational} operators
+%
+\begin{align}
+  \boxed{
+    \int_{\Omega} \left( \Div \FF \right) G = - \int_{\Omega} \FF \cdot \Grad G 
+    + \int_{\partial \Omega} \left( \FF \cdot \nn \right) G, \quad \forall \FF \in \Hdiv, \forall G \in H^1(\Omega)
+  }
+  \label{eq:green_div}
+\end{align}
+%
+\begin{align}
+  \boxed{
+    \int_{\Omega} \left( \Rotv G \right) \cdot \FF = \int_{\Omega} G \Rots \FF  
+    - \int_{\partial \Omega} \left( G \times \nn \right) \cdot \FF
+    , \quad \forall \FF \in \Hcurl, \forall G \in H^1(\Omega)
+  }
+  \label{eq:green_rot}
+\end{align}
+%
+If $\Omega \subset \mathbb{R}^d$, $\uu = \left( u_1, u_2, \ldots, u_d \right)$ and $\PsiPsi = \left( \Psi_1, \Psi_2, \ldots, \Psi_d \right)$ , we recall the notation 
+%
+\begin{align}
+  \int_{\Omega} \Grad \uu : \Grad \PsiPsi = \sum_{i=1}^d \int_{\Omega} \Grad u_i \cdot \Grad \Psi_i  
+%  \label{}
+\end{align}
+
+\section{Sobolev spaces}
+We shall denote by $\mathcal{D}(\Omega)$ the space of distribution.
+\subsection{The Sobolev space $W^{s,m}$}
+We start by recalling the definition of Sobolev spaces:
+\begin{definition}
+  Let $s$ and $m$ be two integers with $s \geq 0$ and $1 \leq m \leq \infty$. The Sobolev space $W^{s,m}(\Omega)$ is defined as
+  \begin{align}
+    W^{s,m}(\Omega) = \{ u \in \mathcal{D}^\prime(\Omega), ~ D^{\alpha} u \in L^m(\Omega), | \alpha | \leq s \}
+    \label{eq:sobolev-space}
+  \end{align}
+\end{definition}
+The space $W^{s,m}(\Omega)$ can be equipped with norm
+\begin{align}
+  \| u \|_{W^{s,m}(\Omega)} := \sum\limits_{|\alpha| \leq s} \| D^{\alpha} u \|_{L^p(\Omega)}
+  \label{eq:sobolev-space-norm}
+\end{align}
+%
+\subsection{The Sobolev space $H^m$}
+
+For any integer $m\geq 1$, one can define
+\begin{equation}\label{eq:hm}
+H^m(\Omega) = W^{m,2}(\Omega) := \{  v \in L^2( \Omega) \;|\; D^\alpha v \in L^2( \Omega), ~|\alpha|\leq m  \} 
+\end{equation}
+$H^m(\Omega)$ is a Hilbert space equipped with the scalar product 
+\begin{align}
+  \left( u,v \right)_{m, \Omega} := \sum\limits_{|\alpha| \leq m} \int_{\Omega} D^\alpha u D^\alpha v 
+  \label{eq:sobolev-space-scalar-product}
+\end{align}
+the associated norm will be denoted $\| \cdot \|_{s,\Omega}$.
+
+The most classical  second order operator is the Laplace operator, which reads in an arbitrary dimension $d$ (generally $d=1,2$ or $3$), $$\Delta u = \sum_{i=1}^d \frac{\partial^2 u}{\partial x_d^2}.$$
+The classical Green formula for the Laplace operator reads: 
+for $u\in H^1(\Omega)$ and $v\in H^1(\Omega)$ 
+\begin{equation}\label{eq:greenlap}
+  -\int_\Omega\Delta u\, v\dd x=\int_\Omega\nabla u\cdot\nabla v\, dx -\int_{\partial\Omega} \fracp{u}{n}
+v\dd \sigma.
+\end{equation}
+
+
+For essential boundary conditions related with this Green formula we shall define the space
+$$H^1_0(\Omega) = \{ v \in H^1(\Omega) \;|\; v_{|\partial\Omega} =0 \}.$$
+
+Another classical operator which comes from elasticity is the bilaplacian operator $\Delta^2 = \Delta \Delta$, which is a fourth order operator. The Green formula needed for variational formulations of PDEs based on the bilaplacian reads
+\begin{equation}\label{eq:greenbilap}
+\int_\Omega \Delta^2 u\, v \dd \mathbf{x} = \int_\Omega u\,  \Delta^2 v \dd \mathbf{x}
++ \int_{\partial\Omega} \left(   u \fracp{\Delta v}{n} - v \fracp{\Delta u}{n} + \Delta u \fracp{v}{n} -\Delta v \fracp{u}{n}  \right)\dd\sigma 
+\end{equation}
+
+$$H^2_0(\Omega) = \{ v \in H^1(\Omega) \;|\; v_{|\partial\Omega} =0, \; \fracp{v}{n}\bigl|_{\partial\Omega}=0 \}.$$
+
+\subsection{Inequalities}
+\begin{lemma}[Poincar\'e]
+  Let $1 \leq p \leq \infty$ and $\Omega$ be a bounded open set. Then, there exists a constant $C=C(p, \Omega)$, such that
+  \begin{align}
+    \forall v \in W_0^{1,p}(\Omega), \quad C \| v \|_{L^p(\Omega)} \leq  \| \nabla v \|_{L^p(\Omega)} 
+    \label{eq:poincare-inequality}
+  \end{align}
+%  \label{}
+\end{lemma}
+
+
+
+\section{The Sobolev space $ H(\textrm{curl}, \Omega)$}
+
+%The Green's formula that will be useful for variational problems involving the $\textrm{curl}$ operator reads
+%\begin{equation}\label{eq:greencurl}
+%\int_\Omega \mathbf{u}\cdot \nabla\times \mathbf{v} = \int_\Omega \nabla\times\mathbf{u}\cdot  \mathbf{v} 
+%+ \int_{\partial\Omega} (\mathbf{u}\times \mathbf{n})\cdot \mathbf{v}\dd s.
+%\end{equation}
+
+\section{The Sobolev space $ H(\textrm{div}, \Omega)$}
+
+%\begin{equation}\label{eq:greendiv}
+%\int_\Omega\nabla\cdot \mathbf{u}\, v\dd x = -\int_\Omega \mathbf{u}\cdot\nabla v\dd x + \int_{\partial\Omega} \mathbf{u}\cdot \un \, v \dd \sigma
+%\end{equation}
+
+\section{DeRham sequences}
+For any function $u \in \Hgrad$ we have $\Curl \Grad u = 0$. On the other hand, we have for any function $\uu \in \Hcurl$, $\Div \Curl \uu = 0$. We just have shown that $\Grad(\Hgrad) \subset \mathcal{N}(\Curl)$ and $\Curl(\Hcurl) \subset \mathcal{N}(\Div)$. This is summarized in the following diagram, known as DeRham sequence, without boundary conditions in this case,
+%
+\begin{align}
+  \mathbb{R} \hookrightarrow \Hgrad  \xrightarrow{\quad \Grad \quad}  \Hcurl  \xrightarrow{\quad \Curl \quad}   \Hdiv  \xrightarrow{\quad \Div \quad}  \Ltwo  \xrightarrow{\quad} 0  
+  \label{eq:derham-nobc}
+\end{align}
+and using the correspondant boundary conditions,
+\begin{align}
+  \Hgradzero  \xrightarrow{\quad \Grad \quad}  \Hcurlzero  \xrightarrow{\quad \Curl \quad}   \Hdivzero  \xrightarrow{\quad \Div \quad}  \Ltwozero  \xrightarrow{\quad} 0  
+  \label{eq:derham-bc}
+\end{align}
+%
+In fact, DeRham complexes are sequences of spaces $V_i$ and operators $\diff_i$ such that $\diff_{i+1} \circ \diff_i = 0$. It leads to a sepcific algebraic structure that has been subject to active research in Analysis and Algebraic Geometry.
+or in a differential forms setting
+%
+\begin{align}
+\mathbb{R} \hookrightarrow \Lambda^0  \xrightarrow{\quad d \quad}  \Lambda^1  \xrightarrow{\quad d \quad} \Lambda^2  \xrightarrow{\quad d \quad}  \Lambda^3 \xrightarrow{\quad} 0 
+\end{align}
+%
+where $d$ stands for the exterior derivative, while $\Lambda^k$ is the space of $k$-forms.
+
+\begin{equation*}
+\begin{array}{ccccccc}
+            & \Grad &                 & \Curl &                    & \Div   &             \\
+\Hgrad & \longrightarrow & \Hcurl & \longrightarrow  & \Hdiv & \longrightarrow & \Ltwo    \\
+            &       &                 &       &                    &        &             \\
+\Pigrad \Big\downarrow   &     & \Picurl \Big\downarrow  &   & \Pidiv \Big\downarrow &  & \Piltwo \Big\downarrow       \\
+            & \Grad &                 & \Curl &                    & \Div   &             \\
+\Vgrad &\longrightarrow  & \Vcurl &\longrightarrow   & \Vdiv & \longrightarrow & \Vltwo   \\
+%
+\\
+\end{array}
+\end{equation*}
+
+\subsection{Exact discrete DeRham sequence}
+
+
+%***********************************************************************
+
+
+\subsection{Space decompositions}
+%
+More details can be found in \cite{monk_book, girault1986a}.
+%
+\begin{align}
+	\mathcal{N}(\Curl) = \nabla \Hgradzero \oplus \left( \nabla \Hgradzero \right)^{\perp} 
+%	\label{}
+\end{align}
+where $ \left( \nabla \Hgradzero \right)^{\perp}$ is the orthogonal of $\Hgradzero$ in $\Hcurlzero$ with respect to its inner product. We denote this space $K_N(\Omega)$, which is refered as \textit{the normal cohomology space}.  
+\begin{align}
+	K_N(\Omega) := \left( \nabla \Hgradzero \right)^{\perp} 
+%	\label{}
+\end{align}
+$K_N(\Omega)$ is the space of harmonic functions which vanish on the exterior and are constant in the interior connected components of $\partial\Omega$. Note that $K_N(\Omega) \subset \Hgradvzero$.
+%
+\begin{theorem}
+	If $\uu \in \Hcurlzero$, such that $\Curl \uu = 0$, then there exists a unique scalar potential $p \in \Hgradzero$ and a function $\ff_N \in K_N(\Omega)$ such that
+	\begin{align}
+		\uu = \nabla p + \ff_N
+%		\label{}
+	\end{align}
+%	\label{}
+\end{theorem}
+%
+\begin{theorem}[Helmoltz Decomposition]
+	For every $\uu \in \Ltwov$ there exist a unique
+	\begin{itemize}
+		\item $p \in \Hgradzero$ 
+		\item $\ff_N \in K_N(\Omega)$ 
+		\item $\mathbf{A} \in \{ \ww \in \Hcurl, ~ \Div \ww = 0, ~ \nn \cdot \ww = 0 ~ \partial\Omega, ~ < \ww \cdot \nn, 1 >_{\Gamma_l} = 0  \}$ 
+	\end{itemize}
+	ensuring the following decomposition
+	\begin{align}
+		\uu = \nabla p + \Curl \mathbf{A} + \ff_N 
+%		\label{}
+	\end{align}
+%	\label{}
+\end{theorem}
+%
+\begin{remark}
+	If $\Omega$ is homotopy equivalent to a ball, then
+	\begin{align}
+		\mathcal{N}(\Curl) = \nabla \Hgradzero
+%		\label{}
+	\end{align}
+	Therefor, the Helmoltz decomposition writes
+	\begin{align}
+		\uu = \nabla p + \Curl \mathbf{A}
+%		\label{}
+	\end{align}
+%	or using the function spaces
+%	\begin{align}
+%		\Ltwov = \nabla \Hgradzero \oplus \Curl \AA
+%%		\label{}
+%	\end{align}
+\end{remark}
+%
+\begin{theorem}[Regular Decomposition of $\Hcurl$]
+%
+    For any $\uu \in \Hcurl$ there exists a $\vv \in \Hgradv$ such that
+    \begin{enumerate}
+            \item $\Curl \vv = \Curl \uu$ 
+            \item $\| \vv \|_{\Ltwov} \lesssim \| \uu \|_{\Ltwov}$
+            \item $\| \vv \|_{\Hgradv} \lesssim \| \Curl \uu \|_{\Ltwov}$
+    \end{enumerate}
+%	\label{}
+\end{theorem}
+%
+The following result can be found in \cite{Pasciak2002a} and \cite{Zhao2002a}.
+%
+\begin{theorem}[Regular Decomposition of $\Hcurlzero$]
+    For any $\uu \in \Hcurlzero$ there exists a $\vv \in \Hgradvzero$ such that
+    \begin{enumerate}
+            \item $\Curl \vv = \Curl \uu$ 
+            \item $\| \vv \|_{\Ltwov} \lesssim \| \uu \|_{\Ltwov}$
+            \item $\| \vv \|_{\Hgradvzero} \lesssim \| \Curl \uu \|_{\Ltwov}$
+    \end{enumerate}
+    \label{th:regular-decomposition-bc}
+\end{theorem}
+%
+%%\subsection{Edge Space decompositions}
+%%%
+%%%
+%%%\subsubsection*{The HX decomposition}
+%%%
+%%%
+%%%\subsubsection*{The scalar HX decomposition}
+%%%
+%%%
+%%\subsection{Hitpmair-Xu decomposition}
+%%%
+%%%
+%%\begin{theorem}
+%%%\hspace{-3cm}$\clubsuit$\hspace{3cm} 
+%%  Every $\uu_h \in \Vcurl$, has a, non unique, decomposition
+%%  \begin{align}
+%%      \uu_h = \ww_h + \Picurl \vv_h + \nabla p_h 
+%%%    \label{}
+%%  \end{align}
+%%  where
+%%  \begin{itemize}
+%%    \item $\ww_h \in \Vcurl$ 
+%%    \item $\vv_h \in \Vgradv$ 
+%%    \item $p_h \in \Vgrad \oplus K_{N,h}(\Omega)$ 
+%%    \item $\left( h^{-2} + \mu \right) \|\ww_h\|_{\Ltwo}^2 + \| \vv_h \|_{\mu}^2 + \mu \| \nabla p_h\|_{\Ltwo}^2 \lesssim \left( \| \Curl \uu_h\|_{\Ltwo}^2 + \mu \| \uu_h\|_{\Ltwo}^2 \right) $
+%%  \end{itemize}
+%%  with
+%%  \begin{align}
+%%    \|\vv_h \|_{\mu}^2 := \| \vv_h\|_{\Hgradvzero}^2 + \mu \|\vv_h \|_{\Ltwo}^2  \quad \mbox{(HX-1)} 
+%%%    \label{}
+%%  \end{align}
+%%  or
+%%  \begin{align}
+%%    \|\vv_h \|_{\mu}^2 := \| \Curl \Picurl \vv_h\|_{\Ltwo}^2 + \mu \|\Picurl \vv_h \|_{\Ltwo}^2  \quad \mbox{(HX-2)} 
+%%%    \label{}
+%%  \end{align}
+%%%  \label{}
+%%\end{theorem}
+%%%
+%%\begin{proof}
+%%Using (Corollary \ref{cor:discrete-decomposition}), we can write $\uu_h = \Picurl \vv + \nabla p_h$. Thanks to (Lemma \ref{lemma:stable-component}), there exists a stable component $\vv_h \in \Vgrad$ of $\vv$. Now let's define $\ww_h := \Picurl \left( \vv - \vv_h \right)$, we have
+%%%
+%%\begin{align}
+%%  \uu_h &= \Picurl \vv + \nabla p_h = \Picurl \left( \vv - \vv_h \right) + \Picurl \vv_h + \nabla p_h  
+%%  \\
+%%        &= \ww_h + \Picurl \vv_h + \nabla p_h  
+%%  \label{}
+%%\end{align}
+%%\end{proof}
+%%%
+%%\subsection{Scalar Hitpmair-Xu decomposition}
+%%%
+%%Let us first introduce the component-wise operators
+%%%
+%%\begin{align}
+%%\Picurlx v := \Picurl (v, 0, 0)  
+%%\\
+%%\Picurly v := \Picurl (0, v, 0)  
+%%\\
+%%\Picurlz v := \Picurl (0, 0, v)  
+%%%  \label{}
+%%\end{align}
+%%%
+%%The aim of this section, is to provide another version of the HX decomposition, based only on scalar projectors. We the above notations we can write
+%%%
+%%\begin{align}
+%%  \Picurl \vv = \sum_{k=1}^{3} \Picurlk v^k, \quad \forall \vv = \left( v^1, v^2, v^3 \right)
+%%%  \label{}
+%%\end{align}
+%%%
+%%\begin{theorem}
+%%\hspace{-3cm}$\clubsuit$\hspace{3cm} 
+%%  Every $\uu_h \in \Vcurl$, has a, non unique, decomposition
+%%  \begin{align}
+%%      \uu_h = \ww_h + \sum_{k=1}^{3} \Picurlk v_h^k + \nabla p_h 
+%%%    \label{}
+%%  \end{align}
+%%  where
+%%  \begin{itemize}
+%%    \item $\ww_h \in \Vcurl$ 
+%%    \item $\vv_h \in \Vgradv$ 
+%%    \item $p_h \in \Vgrad \oplus K_{N,h}(\Omega)$ 
+%%    \item $\left( h^{-2} + \mu \right) \|\ww_h\|_{\Ltwo}^2 + \sum_{k=1}^{3} \| v_h^k \|_{k,\mu}^2 + \mu \| \nabla p_h\|_{\Ltwo}^2 \lesssim \left( \| \Curl \uu_h\|_{\Ltwo}^2 + \mu \| \uu_h\|_{\Ltwo}^2 \right) $
+%%  \end{itemize}
+%%  with
+%%  \begin{align}
+%%    \|v_h^k \|_{k,\mu}^2 := \| \Curl \Picurlk v_h^k\|_{\Ltwo}^2 + \mu \|\Picurlk v_h^k \|_{\Ltwo}^2  
+%%%    \label{}
+%%  \end{align}
+%%%  \label{}
+%%\end{theorem}
+%%%
+%%\begin{proof}
+%%  TODO
+%%\end{proof}
+
+% ...................................................................
+% ...................................................................
+\section{Problems}
+\label{sec:fem-functional-analysis-problems}
+TODO
+
+
+

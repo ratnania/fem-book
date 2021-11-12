@@ -1,0 +1,854 @@
+\chapter{Galerkin methods}
+\label{ch:fem-abstract}
+\section{Abstract framework}
+% TODO M is the continuity coef => to be added
+We consider $a$ and $L$ to be continuous bilinear and linear forms, respectively, on a Hilbert space $V$.
+We want to find a computable approximation for the solution $u \in V$ of the variational problem
+
+\begin{align}
+  a(u,v) = \langle L, v \rangle, \quad \forall v \in V
+  \label{eq:variational-problem}
+\end{align}
+where $\langle ~\cdot, ~\cdot \rangle$ denotes the duality product between $V^\prime$ and $V$.
+\\
+The idea of Galerkin approximation, is to find the solution in a family of subspaces of finite dimension, then prove that the constructed solutions converge to the solution of the variational problem Eq. \eqref{eq:variational-problem}. There are two major strategies, the first one is based on the coercivity and the other one on the \textit{inf-sup} conditions. While the coercivity is easy to use, unfortunately, most of problems in CFD do not fullfill it.
+%
+\begin{definition}[V-ellipcity or Coercivity]
+ $a$ is said to be coercive, if there exists a constant $\alpha > 0$ such that
+ \begin{align}
+   a(v,v) \geq \alpha \| v \|^2_V, \quad \forall v \in V
+   \label{eq:coercivity}
+ \end{align}
+\end{definition}
+%
+\begin{definition}[\textit{inf-sup} conditions]
+  $a$ is said to statisfy the \textit{inf-sup} conditions, if there exists a constant $\alpha > 0$ such that
+  \begin{enumerate}
+    \item 
+     \begin{align}
+       \sup\limits_{v \in V} \frac{a(u,v)}{\| v \|_V} \geq \alpha \| u \|_V, \quad \forall u \in V
+       \label{eq:infsup-1}
+     \end{align}
+    \item 
+     \begin{align}
+       \sup\limits_{u \in V} \frac{a(u,v)}{\| u \|_V} \geq \alpha \| v \|_V, \quad \forall v \in V
+       \label{eq:infsup-2}
+     \end{align}
+  \end{enumerate}
+\end{definition}
+\begin{remark}
+  Notice that when $a$ satisfies the \textit{inf-sup} conditions and it is symmetric, then both conditions are the same. In general, the two conditions can be written as
+  \begin{align*}
+         \inf\limits_{u \in V} \sup\limits_{v \in V} \frac{a(u,v)}{\| u \|_V \| v \|_V} > 0 
+  \end{align*}
+  and
+  \begin{align*}
+         \inf\limits_{v \in V} \sup\limits_{u \in V} \frac{a(u,v)}{\| u \|_V \| v \|_V} > 0 
+  \end{align*}
+\end{remark}
+Finally, let us notice that the coercivity implies the \textit{inf-sup} conditions.
+\begin{lemma}
+  If $a$ is coercive then it satisfies the \textit{inf-sup} conditions. 
+  \label{lemma:coer-to-infsup}
+\end{lemma}
+\begin{proof}
+  We have 
+  \begin{align*}
+       \sup\limits_{v \in V} \frac{a(u,v)}{\| v \|_V} \geq \frac{a(u,u)}{\| u \|_V}
+  \end{align*}
+  then we conclude using the coercivity of $a$.
+\end{proof}
+
+% TODO add the part on the operators and their adjoints
+
+\section{Galerkin Approximation}
+We consider a family of finite dimensional subspaces of $V$, denoted by $\left( V_h \right)_{h > 0}$.
+The Galerkin approximation $u_h \in V_h$ is defined as the solution of the varional problem Eq. \eqref{eq:variational-problem} by restricting the test functions on $V_h$, \textit{i.e.}
+\begin{align}
+  a(u_h,v) = \langle L, v \rangle, \quad \forall v \in V_h
+  \label{eq:galerkin-approx}
+\end{align}
+It is important to notice that while coercivity is inherited on subspaces, the \textit{inf-sup} conditions are not. It is therefor important to have an additional \textit{inf-sup} condition on the subspace, known as \textbf{stability condition}.
+
+\subsection{Convergence under coercivity}
+We recall Cea's lemma, which states that the Galerkin approximation is bounded by the best approximation of $u$ from the subspace.
+\begin{lemma}[Cea]
+  If $a$ is a continuous and coercive bilinear form, then
+  \begin{align}
+    \| u-u_h \|_V \leq \frac{M}{\alpha} \inf\limits_{v \in V_h} \| u-v \|_V
+    \label{eq:cea-ineq}
+  \end{align}
+  \label{lemma:cea}
+\end{lemma}
+\begin{proof}
+  Since both $u$ and $u_h$ are solutions to the variational problem \eqref{eq:variational-problem} respectively on $V$ and $V_h$, we have 
+  \begin{align*}
+    a(u-u_h, v) = 0, \quad \forall v \in V_h
+  \end{align*}
+  therefor, for $v \in V_h$, we have
+  \begin{align*}
+    a(u-u_h, u-v) = a(u-u_h, u-u_h) + a(u-u_h, u_h-v) = a(u-u_h, u-u_h) 
+  \end{align*}
+  Using the coercivity, we have
+  \begin{align*}
+    \alpha \| u-u_h \|_V \leq a(u-u_h, u-u_h) = a(u-u_h, u-v) 
+  \end{align*}
+  finaly, the continuity of $a$ gives
+  \begin{align*}
+   a(u-u_h, u-v) \leq M \|u-u_h \|_V \|u-v \|_V 
+  \end{align*}
+  by combining the two previous inequalities we get the desired result.
+\end{proof}
+\begin{theorem}
+  If $a$ is a continuous and coercive bilinear form and the subspaces $V_h$ are such that 
+  \begin{align}
+    \lim\limits_{h \rightarrow 0} d(u,V_h) = 0
+    \label{eq:cvg-space-cond}
+  \end{align}
+  with $d(u,V_h) := \inf\limits_{v \in V_h} \| u-v \|_V$.
+  Then 
+  \begin{align*}
+    \lim\limits_{h \rightarrow 0} u_h = u 
+  \end{align*}
+\end{theorem}
+\begin{proof}
+  Follows immedialty from Cea's lemma.
+\end{proof}
+
+\subsection{Convergence under \textit{inf-sup} conditions}
+As mentioned before, the \textit{inf-sup} conditions are not inherited on the subspaces $V_h$. In general, we must prove that there exists $\beta > 0$, such that the \textit{inf-sup} holds on $V_h$, \textit{i.e.}
+\begin{align}
+   \sup\limits_{v \in V_h} \frac{a(u,v)}{\| v \|_V} \geq \beta \| u \|_V, \quad \forall u \in V_h
+   \label{eq:infsup-stability}
+\end{align}
+Idealy, $\beta$ should be independent of $N$, in order to get the convergence.
+\begin{exercise}
+  Prove that the second part of the \textit{inf-sup} conditions is a consequence of the inequality \eqref{eq:infsup-stability}.
+\end{exercise}
+As in the coercive case, we first state a result that compares the Galerkin approximation with the distance to the space of approximation. This result is a generalization of Cea's lemma, and is due to Babuska.
+% TODO add references
+\begin{lemma}[Babuska]
+  If $a$ is a continuous bilinear form and satisfies the \textit{inf-sup}+\textit{stability} conditions, then
+  \begin{align}
+    \| u-u_h \|_V \leq \left( 1 + \frac{M}{\beta} \right) \inf\limits_{v \in V_h} \| u-v \|_V
+    \label{eq:babuska-ineq}
+  \end{align}
+  \label{lemma:babuska}
+\end{lemma}
+\begin{proof}
+  Let $v \in V_h$. 
+  since $v-u_h \in V_h$, the stability condition gives
+  \begin{align*}
+     \sup\limits_{\phi \in V_h} \frac{a(v-u_h,\phi)}{\| \phi \|_V} \geq \beta \| v-u_h \|_V
+  \end{align*}
+  but $a(u-u_h, v) = 0$, meaning $a(v-u_h, \phi) = a(v-u, \phi)$ for all $\phi \in V_h$. Now using the continuity of $a$ we get
+  \begin{align*}
+     M \| v-u \|_V \geq \sup\limits_{\phi \in V_h} \frac{a(v-u,\phi)}{\| \phi \|_V} \geq \beta \| v-u_h \|_V
+  \end{align*}
+  we conclude the proof by using the triangle inequality
+  \begin{align*}
+    \| u-u_h \|_V \leq \| u-v \|_V + \| v-u_h \|_V  \leq  \| u-v \|_V + \frac{M}{\beta}\| v-u \|_V 
+  \end{align*}
+
+\end{proof}
+\begin{theorem}
+  If $a$ is a continuous bilinear form and satisfies the \textit{inf-sup}+\textit{stability} conditions. If the subspaces $V_h$ are such that condition \eqref{eq:cvg-space-cond} holds, then 
+  \begin{align*}
+    \lim\limits_{h \rightarrow 0} u_h = u 
+  \end{align*}
+\end{theorem}
+\begin{proof}
+  Follows immedialty from Babuska's lemma.
+\end{proof}
+\begin{remark}
+  Under the additional stability condition, we have $\| u_h \|_V \leq \frac{1}{\beta} \| L \|_{V^\prime}$, which is valid uniformuly in $N$ if $\beta$ is independent of $N$.
+\end{remark}
+
+\subsection{The three basic aspects of the Finite Elements method}
+% TODO add some definitions
+Let $\Omega \subset \mathbb{R}^d$, with $d \geq 1$, be a bounded domain.
+\\
+In order to apply the Galerkin method, we face, by definition the problem of constructing the family of finite dimensional subspaces $V_h \subset V$, such that $V$ is $H^1(\Omega)$, $H^1_0(\Omega)$, $H^2(\Omega)$, $H(\mbox{curl}, \Omega)$, \ldots
+As stating by P. Ciarlet, the Finite Elements Method is in its simplest form, a specific process of constructing the family $\left( V_h \right)_{h \geq 0}$. This construction is characterized by three basic aspects and are described below.
+\subsubsection*{First basic aspect: Triangulation}
+A triangulation $\mathcal{T}_h$ is estabilshed over $\bar{\Omega}$, \textit{i.e.} $\bar{\Omega}$ is subdivided into a finite number of subsets $K$, called \textbf{finite elements},  such that
+\begin{enumerate}
+  \item  $\bar{\Omega} = \bigcup\limits_{K \in \mathcal{T}_h} K$ 
+  \item  for all $K \in \mathcal{T}_h$, $K$ is closed and its interior is not empty 
+  \item  for all $K_1 \neq K_2 \in \mathcal{T}_h$ we have $\mathring{K_1} \bigcap \mathring{K_2} = \emptyset$
+  \item  for all $K \in \mathcal{T}_h$, $\partial K$ is Lipschitz-continuous  
+\end{enumerate}
+\subsubsection*{Second basic aspect: power approximation}
+On every $K \in \mathcal{T}_h$, a space of functions $P_K$ is constructed. $P_K$ should contain polynomials or functions which are close to polynomials.
+\begin{itemize}
+  \item this is the key to all convergence results 
+  \item it is also important for having simple and fast computations of the coefficients of the resulting linear system 
+\end{itemize}
+\subsubsection*{Third basic aspect: basis functions}
+There exists at least one \textbf{canonical basis} in the space $V_h$ whose corresponding basis functions have a \textit{local support} property, are as small as possible and can be easily described.
+This aspect leads to sparsity in the resulting matrix.
+
+\newpage
+\subsection{Examples}
+\subsubsection*{Scalar linear elliptic equations of second order}
+For $\Omega \subset \mathbb{R}^d$, we consider the following problem
+\begin{align}
+  \left\{ 
+  \begin{array}{rl}
+    - \sum\limits_{1 \leq i,j \leq d} \partial_{x_i} \left( a_{ij} \partial_{x_j} u \right) &= f, \quad \Omega 
+    \\
+    u &= 0, \quad \partial\Omega
+  \end{array} \right.
+  \label{eq:elliptic_pde}
+\end{align}
+where the coefficients functions $a_{ij} : \Omega \rightarrow \mathbb{R}$ are bounded and there exists $\gamma > 0$ (ellipticity condition) such that
+\begin{align}
+  \gamma | y |^2 \leq  \sum\limits_{1 \leq i,j \leq d} a_{ij}(x) y_i y_j, \quad \forall x \in \Omega, ~\forall y \in \mathbb{R}^d   
+%  \label{}
+\end{align}
+Before writing the variational formulation associated to \eqref{eq:elliptic_pde}, we need to define the space of function $V$ which is in this case given by $V := H^1_0(\Omega)$ where
+\begin{align}
+  H^1_0(\Omega) = \{ u\in H^1(\Omega) , \;   u=0 \mbox{ on } \partial \Omega \}
+  \label{eq:h1_0_space}
+\end{align}
+and
+\begin{align}
+  H^1(\Omega) = \{ u\in L^2(\Omega), \;  \nabla u\in (L^2(\Omega))^d \}
+  \label{eq:h1_space}
+\end{align}
+$H^1_0(\Omega)$ is a Hilbert space under the norm $\| \cdot \|_{H^1_0(\Omega)}$ with
+\begin{align}
+  \| u \|_{H^1_0(\Omega)}^2 := \| u \|_{L^2(\Omega)}^2 + \| \nabla u \|_{L^2(\Omega)}^2 
+  \label{eq:h1_0_norm}
+\end{align}
+the bilinear and linear forms are given by
+\begin{align*}
+  a(u,v) := \sum\limits_{1 \leq i,j \leq d} \int_{\Omega} a_{ij} \partial_{x_j} u \partial_{x_i} v ~ dx 
+\end{align*}
+and
+\begin{align*}
+  \langle L, v \rangle = \int_{\Omega} f v ~ dx
+\end{align*}
+Using the ellipticity condition, the boundness of the coefficients and the Poincar\'e inequality, we show that $a$ is coercive and continuous. Moreover, if $f \in L^2(\Omega)$ then $L$ is countinuous.
+
+\subsubsection*{Biharmonic problem}
+We consider the following problem
+\begin{align}
+  \left\{ 
+  \begin{array}{rl}
+    \triangle^2 u &= f, \quad \Omega 
+    \\
+    u &= 0, \quad \partial\Omega
+    \\
+    \nabla u \cdot \nn &= 0, \quad \partial\Omega
+  \end{array} \right.
+  \label{eq:biharmonic_pde}
+\end{align}
+which is known as the \textit{homogeneous Dirichlet problem for the biharmonic operator $\triangle$}.
+The space of functions considered in this example $V$ is given by $V := H^2_0(\Omega)$ where
+\begin{align}
+  H^2_0(\Omega) = \{ u\in H^2(\Omega) , \;   u=\nabla u \cdot \nn=0 \mbox{ on } \partial \Omega \}
+  \label{eq:h2_0_space}
+\end{align}
+and
+\begin{align} % TODO
+  H^2(\Omega) = \{ u\in L^2(\Omega), \;  \nabla u\in (L^2(\Omega))^d \}
+  \label{eq:h2_space}
+\end{align}
+$H^2_0(\Omega)$ is a Hilbert space under the norm $v \mapsto | \triangle v |_{L^2(\Omega)}$ with
+%\begin{align}
+%  \| u \|_{H^1_0(\Omega)}^2 := \| u \|_{L^2(\Omega)}^2 + \| \nabla u \|_{L^2(\Omega)}^2 
+%  \label{eq:h1_0_norm}
+%\end{align}
+the bilinear and linear forms are given by
+\begin{align*}
+  a(u,v) := \int_{\Omega} \triangle u \triangle v ~ dx 
+\end{align*}
+and
+\begin{align*}
+  \langle L, v \rangle = \int_{\Omega} f v ~ dx
+\end{align*}
+
+\subsubsection*{$\Hcurl$-elliptic problem}
+Let $\Omega \subset \mathbb{R}^d$ be an open Liptschitz bounded set, and we look for the solution of the following problem
+\begin{align}
+  \left\{ 
+  \begin{array}{rl}
+    \Curl \Curl \uu + \mu \uu &= \ff, \quad \Omega 
+    \\
+    \uu \times \nn &= 0, \quad \partial\Omega
+  \end{array} \right.
+  \label{eq:elliptic_hcurl}
+\end{align}
+where $\ff \in \mathbf{L}^2(\Omega)$,  $\mu \in L^\infty(\Omega)$ and there exists $\mu_0 > 0$ such that $\mu \geq \mu_0$ almost everywhere.
+We take the Hilbert space $V := \Hcurlzero$, in which case the variational formulation corresponding to \eqref{eq:elliptic_hcurl} writes 
+\begin{tcolorbox}
+  {\em Find $\uu \in V$ such that}
+  \begin{align}
+      a(\uu,\vv) = l(\vv) \quad \forall \vv \in V 
+    \label{eq:abs_var_elliptic_hcurl}
+  \end{align}
+  where 
+  \begin{align}
+    \left\{ 
+    \begin{array}{rll}
+    a(\uu, \vv) &:= \int_{\Omega} \Curl \uu \cdot \Curl \vv + \int_{\Omega} \mu \uu \cdot \vv, & \forall \uu, \vv \in V  \\
+    l(\vv) &:= \int_{\Omega} \vv \cdot \ff, & \forall \vv \in V  
+    \end{array} \right.
+  \end{align}
+  \label{tcb:elliptic_hcurl}
+\end{tcolorbox}
+
+We recall that in $\Hcurlzero$, the bilinear form $a$ is equivalent to the inner product and is therefor continuous and coercive. Hence, our abstract theory applies and there exists a unique solution to the problem \eqref{eq:abs_var_elliptic_hcurl}.
+
+\subsubsection*{$\Hdiv$-elliptic problem}
+Let $\Omega \subset \mathbb{R}^d$ be an open Liptschitz bounded set, and we look for the solution of the following problem
+\begin{align}
+  \left\{ 
+  \begin{array}{rl}
+    - \Grad \Div \uu + \mu \uu &= \ff, \quad \Omega 
+    \\
+    \uu \times \nn &= 0, \quad \partial\Omega
+  \end{array} \right.
+  \label{eq:elliptic_hdiv}
+\end{align}
+where $\ff \in \mathbf{L}^2(\Omega)$,  $\mu \in L^\infty(\Omega)$ and there exists $\mu_0 > 0$ such that $\mu \geq \mu_0$ almost everywhere.
+We take the Hilbert space $V := \Hdivzero$, in which case the variational formulation corresponding to \eqref{eq:elliptic_hdiv} writes 
+\begin{tcolorbox}
+  {\em Find $\uu \in V$ such that}
+  \begin{align}
+      a(\uu,\vv) = l(\vv) \quad \forall \vv \in V 
+    \label{eq:abs_var_elliptic_hdiv}
+  \end{align}
+  where 
+  \begin{align}
+    \left\{ 
+    \begin{array}{rll}
+    a(\uu, \vv) &:= \int_{\Omega} \Div \uu ~ \Div \vv + \int_{\Omega} \mu \uu \cdot \vv, & \forall \uu, \vv \in V  \\
+    l(\vv) &:= \int_{\Omega} \vv \cdot \ff, & \forall \vv \in V  
+    \end{array} \right.
+  \end{align}
+\end{tcolorbox}
+We recall that in $\Hdivzero$, the bilinear form $a$ is equivalent to the inner product and is therefor continuous and coercive. Hence, our abstract theory applies and there exists a unique solution to the problem \eqref{eq:abs_var_elliptic_hdiv}.
+
+\newpage
+\section{Saddle-point problems}
+
+In the sequel, we consider a special case of the problem \eqref{eq:variational-problem}. 
+\\
+\noindent
+Consider two Hilbert spaces $V$ and $W$, two continuous bilinear forms
+$a\in \mathcal{L}(V\times V, \mathbb{R})$ and $b\in \mathcal{L}(V\times W, \mathbb{R})$
+and two continuous linear forms $l_V\in \mathcal{L}(V, \mathbb{R})$ and
+$l_W\in \mathcal{L}(W, \mathbb{R})$. We denote $M_a$ and $M_b$ the continuity constants for the bilinear forms $a$ and $b$ respectively.
+Then we define the abstract mixed variational problem as {\em Find $(u,p)\in V\times W$ such that}
+\begin{align}
+  \left\{ 
+  \begin{array}{cccccc}
+    a(u,v) & + & b(v,p) &=& l_V(v) \quad \forall v\in V \\
+           &   & b(u,q) &=& l_W(q) \quad \forall q\in W
+  \end{array} \right.
+  \label{eq:abs_var_mixed}
+\end{align}
+
+%\begin{align}
+%a(u,v) + b(v,p) &= l_V(v) \quad \forall v\in V, \label{eq:abs_var_mixed1}\\
+%b(u,q) &= l_W(q) \quad \forall q\in W.  \label{eq:abs_var_mixed2}
+%\end{align}
+Many problems arising in CFD fit into this abstract framework, such as the Stokes equation. For saddle point problems the Lax-Milgram framework cannot be applied. The alternative solution is then to use the \textbf{inf-sup} conditions, known in this case as  Banach-Ne\v{c}as-Babu\v{s}ka (BNB) theorem. 
+\\
+\noindent
+The link with the previous section is achieved by using the bilinear form
+$c \in \mathcal{L}(X\times X, \mathbb{R})$
+\begin{align}
+  c((u, p), (v, q)) := a(u,v) + b(v,p) + b(u,q) 
+  \label{eq:abs_var_mixed_c}
+\end{align}
+and the linear form
+$l_X \in \mathcal{L}(X, \mathbb{R})$
+\begin{align}
+  l_X(v, q) := l_V(v) + l_W(q)
+  \label{eq:abs_var_mixed_l}
+\end{align}
+with $X := V \times W$ endowed with the norm $\| (u,p) \|_X := \| u \|_V + \| p \|_W$.
+\\
+\noindent
+Let us introduce the operators $A: V \rightarrow V^\prime$ and $B: V \rightarrow W^\prime$ such that
+\begin{align}
+  \langle Au, v \rangle_{V^\prime, V} := a(u,v) \quad \forall (u,v) \in V \times V
+%  \label{}
+\end{align}
+and
+\begin{align}
+  \langle Bu, p \rangle_{W^\prime, V} := b(u,p) \quad \forall (u,p) \in V \times W
+%  \label{}
+\end{align}
+Since all Hilbert spaces are reflexive Banach spaces, we have $W^{\prime\prime} = W$. Hence we can define the following operator $B^T: W \rightarrow V^\prime$ such that 
+\begin{align}
+  \langle B^T p, u \rangle_{V^\prime, W} := b(u,p) \quad \forall (u,p) \in V \times W
+%  \label{}
+\end{align}
+Therefor, the problem \eqref{eq:abs_var_mixed} is equivalent to 
+{\em Find $(u,p)\in V\times W$ such that}
+\begin{align}
+  \left\{ 
+  \begin{array}{cccccc}
+    A u & + & B^T p &=& l_V \\
+        &   & B u   &=& l_W
+  \end{array} \right.
+  \label{eq:abs_var_mixed_op}
+\end{align}
+Now, let us introduce the nullspace of $B$
+\begin{align}
+  \Ker{B} := \{ v \in V, ~\forall q \in W \quad b(v,q) = 0 \}  
+%  \label{}
+\end{align}
+The following theorem gives shows under which conditions the saddle problem \eqref{eq:abs_var_mixed} has a solution.
+\begin{theorem}
+  The variational problem \eqref{eq:abs_var_mixed} admits a unique solution if and only if
+\begin{itemize}
+\item[1)] there exists $\alpha > 0$, such that 
+  \begin{align}
+    \begin{cases}
+      \underset{u \in \Ker{B}}{\inf} ~ \underset{v \in \Ker{B}}{\sup}
+      \frac{a(u,v)}{\| u \|_V \| v \|_V} \geq \alpha
+      \\
+      \forall v \in \Ker{B}, \quad \left( \forall u \in \Ker{B}, ~ a(u,v) = 0 \right) \Rightarrow (v = 0)
+    \end{cases}
+%    \label{}
+  \end{align}
+
+\item[2)] The Babuska-Brezzi, or inf-sup condition, is verified:  there exists $\beta>0$ such that
+  \begin{align}
+      \underset{q \in W}{\inf} ~ \underset{v \in V}{\sup}
+      \frac{b(u,q)}{\| v \|_V \| q \|_W} \geq \beta
+%    \label{}
+  \end{align}
+\end{itemize}
+In addition, the following a priori estimates hold
+\begin{align}
+  \left\{ 
+  \begin{array}{cl}
+    \|u\|_V  \leq & \frac{1}{\alpha} \|l_V\|_{V'} + \frac{1}{\beta}(1+ \frac{M_a}{\alpha})  \|l_W\|_{W'}
+    \\
+    \|p\|_W  \leq & \frac{1}{\beta}(1+ \frac{M_a}{\alpha})  \|l_V\|_{V'} + \frac{M_a}{\beta^2}(1+ \frac{M_a}{\alpha})  \|l_W\|_{W'}
+  \end{array} \right.
+%  \label{}
+\end{align}
+
+%  \label{}
+\end{theorem}
+A special case is when the bilinear form $a$ is coercive. In this case, the first conditions can be replaced by a coercivity on $\Ker{B}$.
+
+% In this case the appropriate theoretical tool, called in Ern and Guermond, which is more general than Lax-Milgram. We will specialise it to our type of mixed problems assuming that the bilinear form $a$ is symmetric and coercive on $K=\{v\in V\; | \; b(q,v)=0,~\forall q\in W\}$. This corresponds to Theorem 2.34 p.~100 of \cite{ern2013theory}, modified according to Remark 2.35.
+
+\begin{theorem} Let $V$ and $W$ be Hilbert space. Assume $a$ is a continuous bilinear form on
+$V\times V$ and that b is a continuous linear form on $V\times W$, that  $l_V$ and $L_W$ are continuous linear forms on $V$  and $W$ respectively and that the following two hypotheses are verified
+\begin{itemize}
+\item[1)]  $a$ is coercive on $K=\{v\in V\; |\; b(q,v)=0,~\forall q\in W\}$, \textit{i.e.} there exists $\alpha>0$ such that
+$$a(v,v) \geq \alpha \|v\|^2_V \quad\forall v\in K.$$
+\item[2)] The Babuska-Brezzi, or inf-sup condition, is verified:  there exists $\beta>0$ such that
+$$ \inf_{q\in W} \sup_{v\in V} \frac{b(v,q)}{\|q\|_W\|v\|_V} \geq \beta.$$
+\end{itemize}
+Then the variational problem admits a unique solution and the solution satisfies the a priori estimate
+\begin{align}
+  \left\{ 
+  \begin{array}{cl}
+    \|u\|_V  \leq & \frac{1}{\alpha} \|l_V\|_{V'} + \frac{1}{\beta}(1+ \frac{M_a}{\alpha})  \|l_W\|_{W'}
+    \\
+    \|p\|_W  \leq & \frac{1}{\beta}(1+ \frac{M_a}{\alpha})  \|l_V\|_{V'} + \frac{M_a}{\beta^2}(1+ \frac{M_a}{\alpha})  \|l_W\|_{W'}
+  \end{array} \right.
+%  \label{}
+\end{align}
+\end{theorem}
+
+
+The inf-sup conditions  plays an essential role, as it is only satisfied if the spaces $V$ and $W$ are compatible in some sense. This condition being satisfied at the discrete level  with a constant $\beta$ that does not depend on the mesh size being essential for a well behaved Finite Element method.  It can be written equivalently
+\begin{equation}\label{inf-sup}
+\beta \|q\|_W \leq \sup_{v\in V} \frac{b(v,q)}{\|v\|_V} \quad \forall q\in W.
+\end{equation}
+And often, a simple way to verify it is, given any  $q\in W$, to find a specific $v=v(q)$ depending on $q$ such that
+$$\beta \|q\|_W \leq \frac{b(v(q),q)}{\|v(q)\|_V} \leq \sup_{v\in V} \frac{b(v,q)}{\|v\|_V}$$ with a constant $\beta$ independent of $w$.
+
+\subsection{Examples}
+
+\subsubsection*{First mixed formulation of the Poisson problem}
+Let $\Omega \subset \mathbb{R}^3$ and consider the Poisson problem
+\begin{align}
+  \left\{ 
+  \begin{array}{clr}
+    -\Delta p & =f & ,~\Omega    \\
+    p         & =0 & ,~\partial \Omega
+  \end{array} \right.
+  \label{eq:abs_poisson_mixed}
+\end{align}
+Using that $\Delta p = \nabla\cdot\nabla p$, we set $ \mathbf{u}=\nabla p$, then the Poisson equation \eqref{eq:abs_poisson_mixed} can be written equivalently
+$$ \mathbf{u}=-\nabla p, ~~~ \nabla\cdot \mathbf{u}= f.$$
+Instead of having one unknown, we now have two, along with the above two equations.
+In order to get a mixed variational formulation, we first take the dot product of the first one by $ \mathbf{v}$ and integrate by parts
+$$\int_{\Omega} \mathbf{u}\cdot \mathbf{v}\dd \mathbf{x} -\int_{\Omega} p\,\nabla\cdot \mathbf{v}\dd \mathbf{x} +
+\int_{\partial\Omega} p \,  \mathbf{v}\cdot \mathbf{n}\dd \sigma=
+\int_{\Omega} \mathbf{u}\cdot \mathbf{v}\dd \mathbf{x} -\int_{\Omega} p\,\nabla\cdot \mathbf{v}\dd \mathbf{x}=0,$$
+using $p=0$ as a natural boundary condition. Then multiplying the second equation by $q$ and integrating yields
+$$\int_{\Omega} \nabla\cdot\mathbf{u} \, q \dd \mathbf{x} = \int_{\Omega} f q \dd \mathbf{x}.
+$$
+No integration by parts is necessary here. And we thus get the following mixed variational formulation:
+\begin{tcolorbox}
+  {\em Find $(\mathbf{u},p) \in H(\operatorname{div},\Omega)\times L^2(\Omega)$ such that}
+  \begin{equation}
+    \left\{ 
+    \begin{array}{llll}
+      \int_{\Omega} \mathbf{u}\cdot \mathbf{v}\dd \mathbf{x} &- \int_{\Omega} p\,\nabla\cdot \mathbf{v}\dd \mathbf{x} &=0, & \forall \mathbf{v}\in H(\operatorname{div},\Omega) \\
+      - \int_{\Omega} \nabla\cdot\mathbf{u} \, q \dd \mathbf{x} &  &= - \int_{\Omega} f q \dd \mathbf{x}, & \forall q\in L^2(\Omega)
+    \end{array} \right.
+    \label{eq:abs_var_mixed_poisson_1}
+  \end{equation}
+\end{tcolorbox}
+%
+\subsubsection*{Second mixed formulation of the Poisson problem}
+Here, we get an alternative formulation by not integrating by parts, the mixed term in the first formulation but in the second. The first formulation simply becomes
+$$\int_{\Omega} \mathbf{u}\cdot \mathbf{v}\dd \mathbf{x} +\int_{\Omega} \nabla p \cdot \mathbf{v}\dd \mathbf{x}=0,$$
+and the second, removing immediately the boundary term due to the essential boundary condition $q=0$
+$$\int_{\Omega}\nabla \cdot\mathbf{u}  \, q \dd \mathbf{x} =
+ -\int_{\Omega}  \mathbf{u} \cdot \nabla q  \dd \mathbf{x} =
+\int_{\Omega} f q \dd \mathbf{x},$$
+which leads to the variational formulation
+\begin{tcolorbox}
+  {\em Find $(\mathbf{u},p) \in L^2(\Omega)^3 \times H^1_0(\Omega)$ such that}
+  \begin{align}
+    \left\{ 
+    \begin{array}{llll}
+      \int_{\Omega} \mathbf{u}\cdot \mathbf{v}\dd \mathbf{x} &+ \int_{\Omega} \nabla p \cdot \mathbf{v}\dd \mathbf{x} &=0, & \forall \mathbf{v}\in L^2(\Omega)^3 \\
+      \int_{\Omega}  \mathbf{u} \cdot \nabla q  \dd \mathbf{x} & & = -\int_{\Omega} f q \dd \mathbf{x}, & \forall q\in H^1_0(\Omega)
+    \end{array} \right.
+    \label{eq:abs_var_mixed_poisson_2}
+  \end{align}
+\end{tcolorbox}
+Note that this formulation actually contains the classical variational formulation for the Poisson equation. Indeed for $q\in H^1_0(\Omega)$, $\nabla q \in L^2(\Omega)^3$ can be used as a test function in the first equation. And plugging this into the second we get
+$$\int_{\Omega}  \nabla p \cdot \nabla q  \dd \mathbf{x}  = \int_{\Omega} f q \dd \mathbf{x}, \quad \forall q\in H^1_0(\Omega).$$
+
+%coercivity of $a$ trivial
+%Inf-sup: take $p\in H_0^1$, $v=\nabla p\in L^2$, inf sup condition follows from Poincar\'e inequality.
+
+
+\subsubsection*{First mixed formulation of the Stokes problem}
+We consider now the Stokes problem for the steady-state modelling of an incompressible fluid
+\begin{align}
+  \left\{
+    \begin{array}{rl}
+      - \nabla^2 \uu + \nabla p = \ff & \mbox{in} ~ \Omega,  \\
+      \Div \uu          = 0   & \mbox{in} ~ \Omega,  \\
+      \uu               = 0   & \mbox{on} ~ \partial \Omega,
+    \end{array}
+    \right.
+    \label{eq:stokes}
+\end{align}
+For the variational formulation, we take the dot product of the first equation with $v$ and integrate over the whole domain
+$$\int_{\Omega} (-\Delta \mathbf{u} + \nabla p)\cdot \mathbf{v} \dd \mathbf{x} 
+=\int_{\Omega}\nabla \mathbf{u}:\nabla \mathbf{v} \dd \mathbf{x} + \int_{\Omega} \nabla p \cdot \mathbf{v} \dd \mathbf{x}
+= \int_{\Omega} \mathbf{f}\cdot \mathbf{v} \dd \mathbf{x}$$
+The integration by parts is performed component by component. We impose the essential boundary condition $ \mathbf{v}=0$ on $\partial\Omega$, and we denote by
+$$\int_{\Omega}\nabla \mathbf{u}:\nabla \mathbf{v} \dd \mathbf{x} =\sum_{i=1}^3 \int_{\Omega}\nabla u_i\cdot\nabla v_i \dd \mathbf{x} =\sum_{i,j=1}^3 \int_{\Omega}\partial_j u_i\partial_j v_i \dd \mathbf{x} .$$
+We now need to deal with the constraint $\nabla\cdot \mathbf{u}=0$. The theoretical framework for saddle point problems requires that the corresponding bilinear form is the same as the second one appearing in the first part of the variational formulation. To this aim we multiply  $\nabla\cdot \mathbf{u}=0$ by a scalar test function (which will be associated to $p$) and integrate on the full domain, with an integration by parts in order to get the same bilinear form as in the first equation
+$$\int_{\Omega} \nabla\cdot \mathbf{u} \,q \dd \mathbf{x}= - \int_{\Omega} \mathbf{u}\cdot \nabla q\dd \mathbf{x}=0,$$
+using that $q=0$ on the boundary as an essential boundary condition.
+We finally obtain the mixed variational formulation: 
+\begin{tcolorbox}
+  {\em Find $( \mathbf{u},p)\in H^1_0(\Omega)^3\times H^1_0(\Omega)$ such that }
+  \begin{align}
+    \left\{
+      \begin{array}{llll}
+        \int_{\Omega}\nabla \mathbf{u}:\nabla \mathbf{v} \dd \mathbf{x} &+ \int_{\Omega} \nabla p \cdot \mathbf{v} \dd \mathbf{x}
+        &= \int_{\Omega} \mathbf{f}\cdot \mathbf{v} \dd \mathbf{x}, & \forall \mathbf{v}\in H_0^1(\Omega)^3 \\
+        \int_{\Omega} \mathbf{u}\cdot \nabla q\dd \mathbf{x} & &=0, & \forall p\in H^1_0(\Omega)
+      \end{array}
+      \right.
+  \label{eq:abs_var_mixed_stokes_1}
+  \end{align}
+\end{tcolorbox}
+%
+\subsubsection*{Second mixed formulation of the Stokes problem}
+Another possibility to obtained a well posed variational formulation, is to integrate by parts the
+$ \int_{\Omega} \nabla p \cdot \mathbf{v} \dd \mathbf{x}$ term in the first formulation:
+$$ \int_{\Omega} \nabla p \cdot \mathbf{v} \dd \mathbf{x} = - \int_{\Omega} p \nabla \cdot \mathbf{v} \dd \mathbf{x} 
++ \int_{\partial\Omega} p \mathbf{v} \cdot \mathbf{n}\dd \sigma=
+ -\int_{\Omega} p \,\nabla \cdot \mathbf{v} \dd \mathbf{x} ,$$
+ using here $p=0$ as a natural boundary condition. Note that in the other variational formulation the same boundary condition was essential. In this case, for the second variational formulation, we just multiply $\nabla\cdot \mathbf{u}=0$ by $q$ and integrate. No integration by parts is needed in this case.
+$$\int_{\Omega} \nabla \cdot \mathbf{u}\, q \dd \mathbf{x} =0.$$
+This then leads to the following variational formulation:
+\begin{tcolorbox}
+  {\em Find $( \mathbf{u},p)\in H^1(\Omega)^3\times L^2(\Omega)$ such that }
+  \begin{align}
+    \left\{
+      \begin{array}{llll}
+        \int_{\Omega}\nabla \mathbf{u}:\nabla \mathbf{v} \dd \mathbf{x} &- \int_{\Omega}  p \, \nabla\cdot \mathbf{v} \dd \mathbf{x}
+        &= \int_{\Omega} \mathbf{f}\cdot \mathbf{v} \dd \mathbf{x}, &\forall \mathbf{v}\in H^1(\Omega)^3
+        \\
+        \int_{\Omega}  \nabla\cdot\mathbf{u}\, q\dd \mathbf{x} & &=0,  &\forall q\in L^2(\Omega)
+      \end{array}
+      \right.
+  \label{eq:abs_var_mixed_stokes_2}
+  \end{align}
+\end{tcolorbox}
+
+
+\subsection{Galerkin approximation}
+Let us now come to the Galerkin discretisation. The principle is simply to construct finite dimensional subspaces $W_h \subset W$ and $V_h\subset V$ and to write the variational formulation \eqref{eq:abs_var_mixed} replacing $W$ by $W_h$ and $V$ by $V_h$. 
+The variational formulations are the same as in the continuous case, like for conforming finite elements. This automatically yields the consistency of the discrete formulation.
+In order to get the stability property needed for convergence, we need that the coercivity constant $\alpha$ and the inf-sup constant $\beta$ are independent of $h$.
+
+Because $V_h\subset V$ the coercivity property is automatically verified in the discrete case, with a coercivity constant that is the same as in the continuous case and hence does not depend on the discretisation parameter $h$.
+
+Here, however, there is an additional difficulty, linked to the inf-sup conditions, which is completely dependent on the two spaces $V_h$ and $W_h$. By far not any conforming approximation of the two spaces will verify the discrete inf-sup condition with a constant $\beta$ that is independent on $h$. Finding compatible discrete spaces for a given mixed variational formulation, has been an active area of research. 
+
+The variational problem for the Galerkin approximation is {\em Find $(u_h,p_h)\in V_h\times W_h$ such that}
+\begin{align}
+  \left\{ 
+  \begin{array}{cccccc}
+    a(u_h,v_h) & + & b(v_h,p_h) &=& l_V(v_h) \quad \forall v_h \in V_h \\
+               &   & b(u_h,q_h) &=& l_W(q_h) \quad \forall q_h \in W_h 
+  \end{array} \right.
+  \label{eq:abs_var_mixed_galerkin}
+\end{align}
+
+
+%A nice framework to have this compatibility condition verified is the exact sequence of discrete spaces, thanks to which it is always possible to find for any $q$ a $v$ in the previous space such that $Av=q$.
+
+Let us introduce the operator $B_h: V_h \rightarrow W_h^\prime$ such that
+\begin{align}
+  \langle B_h u_h, p_h \rangle_{W_h^\prime, V_h} := b(u_h,p_h) \quad \forall (u_h,p_h) \in V_h \times W_h 
+%  \label{}
+\end{align}
+and its nullspace
+\begin{align}
+  \Ker{B_h} := \{ v_h \in V_h, ~\forall q_h \in W_h \quad b(v_h,q_h) = 0 \}  
+%  \label{}
+\end{align}
+
+The following proposition states the conditions under which the Galerkin approximation of the problem \eqref{eq:abs_var_mixed_galerkin} admits a solution
+\begin{proposition}
+  The variational problem \eqref{eq:abs_var_mixed_galerkin} admits a unique solution if and only if
+\begin{itemize}
+\item[1)] there exists $\alpha_h > 0$, such that 
+  \begin{align}
+      \underset{u_h \in \Ker{B_h}}{\inf} ~ \underset{v_h \in \Ker{B_h}}{\sup}
+      \frac{a(u_h,v_h)}{\| u_h \|_V \| v_h \|_V} \geq \alpha_h 
+%    \label{}
+  \end{align}
+
+\item[2)] there exists $\beta_h>0$ such that
+  \begin{align}
+      \underset{q_h \in W_h}{\inf} ~ \underset{v_h \in V_h}{\sup}
+      \frac{b(u_h,q_h)}{\| v_h \|_V \| q_h \|_W} \geq \beta_h 
+%    \label{}
+  \end{align}
+\end{itemize}
+  \label{prop:abs_var_mixed_galerkin_existence}
+\end{proposition}
+\begin{remark}
+  The second condition is equivalent to assuming $B_h$ is surjective.
+\end{remark}
+Finally, we state the following lemma which is equivalent to Cea's lemma.
+\begin{lemma}
+  Under the assumptions of theorem \ref{prop:abs_var_mixed_galerkin_existence}, we have
+  \begin{itemize}
+    \item[a)] if $\Ker{B_h} \subset \Ker{B}$,
+      \begin{align}
+        \left\{ 
+        \begin{array}{cl}
+          \|u -u_h\|_V  \leq & \left( 1+\frac{ M_a}{\alpha_h} \right) \left( 1+\frac{ M_b}{\beta_h} \right) \inf\limits_{v_h \in V_h} \| u-v_h \|_{V}
+          \\
+          \|p -p_h\|_W  \leq & \frac{ M_a}{\beta_h} \left( 1+\frac{ M_a}{\alpha_h} \right) \left( 1+\frac{ M_b}{\beta_h} \right) \inf\limits_{v_h \in V_h} \| u-v_h \|_{V}
+          \\
+          & + \left( 1+\frac{ M_b}{\beta_h} \right) \inf\limits_{q_h \in W_h} \| p-q_h \|_{W}
+        \end{array} \right.
+      %  \label{}
+      \end{align}
+
+    \item[b)] otherwise,
+      \begin{align}
+        \left\{ 
+        \begin{array}{cl}
+          \|u -u_h\|_V  \leq & \left( 1+\frac{ M_a}{\alpha_h} \right) \left( 1+\frac{ M_b}{\beta_h} \right) \inf\limits_{v_h \in V_h} \| u-v_h \|_{V}
+          \\
+          & + \frac{ M_b}{\alpha_h} \inf\limits_{q_h \in W_h} \| p-q_h \|_{W}
+          \\
+          \|p -p_h\|_W  \leq & \frac{ M_a}{\beta_h} \left( 1+\frac{ M_a}{\alpha_h} \right) \left( 1+\frac{ M_b}{\beta_h} \right) \inf\limits_{v_h \in V_h} \| u-v_h \|_{V}
+          \\
+          & + \left( 1+\frac{ M_b}{\beta_h} + \frac{ M_a}{\alpha_h}\frac{ M_b}{\beta_h}  \right) \inf\limits_{q_h \in W_h} \| p-q_h \|_{W}
+        \end{array} \right.
+      %  \label{}
+      \end{align}
+
+  \end{itemize}
+  
+%  \label{}
+\end{lemma}
+
+
+\subsection{Examples}
+
+\subsubsection*{Matrix form of the first mixed formulation of the Poisson problem}
+%
+Let $V_h$ and $W_h$ be subspaces of finite dimensions of $\Hdiv$ and $\Ltwo$ respectively, leading to a stable discretization of the variational problem \eqref{eq:abs_var_mixed_poisson_1}.
+We shall assume that 
+$$V_h = \mathrm{span}\{ \PsiPsi_{i}, ~ 1 \leq i \leq N_{V_h} \}$$ 
+and
+$$W_h = \mathrm{span}\{ \phi_{i}, ~ 1 \leq i \leq N_{W_h} \}$$ 
+where $N_{V_h}$ and $N_{W_h}$ is the dimension of $V_h$ and $W_h$ respectively.
+For $\uu_h \in V_h$ and $p_h \in W_h$, we can write
+\begin{align*}
+  \uu_h = \sum\limits_{j=1}^{N_{V_h}} u_{j} \PsiPsi_{j}, \quad 
+  p_h = \sum\limits_{j=1}^{N_{W_h}} p_{j} \phi_{j} 
+\end{align*}
+By taking $\vv = \PsiPsi_{i}$ in the first equation of the variational formulation, we get
+\begin{align*}
+ \sum\limits_{j=1}^{N_{V_h}} u_{j} \int_{\Omega} \PsiPsi_{j}\cdot \PsiPsi_{i} \dd \mathbf{x} 
+ - \sum\limits_{j=1}^{N_{W_h}} p_{j} \int_{\Omega} \phi_{j} \, \nabla \cdot \PsiPsi_{i} \dd \mathbf{x} =0, \quad \forall ~ 1 \leq i \leq N_{V_h}
+\end{align*}
+By taking $q = \phi_{i}$ in the second equation of the variational formulation, we get
+\begin{align*}
+ \sum\limits_{j=1}^{N_{\mathrm{div}}} u_{j} \int_{\Omega} \nabla\cdot\PsiPsi_{j} \, \phi_{i} \dd \mathbf{x} = \int_{\Omega} f \phi_{i} \dd \mathbf{x}, \quad \forall ~ 1 \leq i \leq N_{W_h} 
+\end{align*}
+\begin{tcolorbox}
+  {\em Find $(U,P) \in \mathbb{R}^{N_{V_h}} \times \mathbb{R}^{N_{W_h}}$ such that}
+  \begin{align}
+    \begin{pmatrix}
+      A   & B \\
+      B^T & 0 
+    \end{pmatrix}
+    \begin{pmatrix} U \\ P \end{pmatrix}
+    = \begin{pmatrix} 0 \\ F \end{pmatrix}
+  %  \label{}
+  \end{align}
+  where the matrices $A$ and $B$ are given by
+  \begin{align*}
+    A_{i, j} &:=  \int_{\Omega} \PsiPsi_{j}\cdot \PsiPsi_{i} \dd \mathbf{x}  
+    ,  \quad 1 \leq i, j \leq N_{V_h}
+    \\
+    B_{i, j} &:=  - \int_{\Omega} \phi_{j} \, \nabla \cdot \PsiPsi_{i} \dd \mathbf{x}  
+    ,  \quad 1 \leq j \leq N_{V_h} 
+    , \quad 1 \leq i \leq N_{W_h} 
+    \\
+    F_{i} &:= - \int_{\Omega} f \phi_{i} \dd \mathbf{x} 
+    , \quad 1 \leq i \leq N_{W_h} 
+  %  \label{}
+  \end{align*}
+  \label{tcb:mixed_poisson_1}
+\end{tcolorbox}
+
+
+\subsubsection*{Matrix form for the second mixed formulation of the Poisson problem}
+%
+Let $V_h$ and $W_h$ be subspaces of finite dimensions of $L^2(\Omega)^3$ and $H^1_0(\Omega)$ respectively, leading to a stable discretization of the variational problem \eqref{eq:abs_var_mixed_poisson_2}.
+We shall assume that 
+$$V_h = \mathrm{span}\{ \PsiPsi_{i}, ~ 1 \leq i \leq N_{V_h} \}$$ 
+and
+$$W_h = \mathrm{span}\{ \phi_{i}, ~ 1 \leq i \leq N_{W_h} \}$$ 
+where $N_{V_h}$ and $N_{W_h}$ is the dimension of $V_h$ and $W_h$ respectively.
+Following the same approach as before, we get the matrix form of our variational formulation
+\begin{tcolorbox}
+  {\em Find $(U,P) \in \mathbb{R}^{N_{V_h}} \times \mathbb{R}^{N_{W_h}}$ such that}
+  \begin{align}
+    \begin{pmatrix}
+      A   & B \\
+      B^T & 0 
+    \end{pmatrix}
+    \begin{pmatrix} U \\ P \end{pmatrix}
+    = \begin{pmatrix} 0 \\ F \end{pmatrix}
+  %  \label{}
+  \end{align}
+  where the matrices $A$ and $B$ are given by
+  \begin{align*}
+    A_{i, j} &:= \int_{\Omega} \PsiPsi_{j}\cdot \PsiPsi_{i} \dd \mathbf{x}  
+    ,  \quad 1 \leq i, j \leq N_{V_h}
+    \\
+    B_{i, j} &:= \int_{\Omega} \nabla \phi_{j} \cdot \PsiPsi_{i} \dd \mathbf{x}  
+    ,  \quad 1 \leq j \leq N_{V_h} 
+    , \quad 1 \leq i \leq N_{W_h} 
+    \\
+    F_{i} &:= - \int_{\Omega} f \phi_{i} \dd \mathbf{x} 
+    , \quad 1 \leq i \leq N_{W_h} 
+  %  \label{}
+  \end{align*}
+  \label{tcb:mixed_poisson_2}
+\end{tcolorbox}
+
+\subsubsection*{First mixed formulation of the Stokes problem}
+%
+Let $V_h$ and $W_h$ be subspaces of finite dimensions of $H^1_0(\Omega)^3$ and $H^1_0(\Omega)$ respectively, leading to a stable discretization of the variational problem \eqref{eq:abs_var_mixed_stokes_1}.
+We shall assume that 
+$$V_h = \mathrm{span}\{ \PsiPsi_{i}, ~ 1 \leq i \leq N_{V_h} \}$$ 
+and
+$$W_h = \mathrm{span}\{ \phi_{i}, ~ 1 \leq i \leq N_{W_h} \}$$ 
+where $N_{V_h}$ and $N_{W_h}$ is the dimension of $V_h$ and $W_h$ respectively.
+Following the same approach as before, we get the matrix form of our variational formulation
+\begin{tcolorbox}
+  {\em Find $(U,P) \in \mathbb{R}^{N_{V_h}} \times \mathbb{R}^{N_{W_h}}$ such that}
+  \begin{align}
+    \begin{pmatrix}
+      A   & B \\
+      B^T & 0 
+    \end{pmatrix}
+    \begin{pmatrix} U \\ P \end{pmatrix}
+    = \begin{pmatrix} F \\ 0 \end{pmatrix}
+  %  \label{}
+  \end{align}
+  where the matrices $A$ and $B$ are given by
+  \begin{align*}
+    A_{i, j} &:= \int_{\Omega} \PsiPsi_{j} : \PsiPsi_{i} \dd \mathbf{x}  
+    ,  \quad 1 \leq i, j \leq N_{V_h}
+    \\
+    B_{i, j} &:= \int_{\Omega} \nabla \phi_{j} \cdot \PsiPsi_{i} \dd \mathbf{x}  
+    ,  \quad 1 \leq j \leq N_{V_h} 
+    , \quad 1 \leq i \leq N_{W_h} 
+    \\
+    F_{i} &:= \int_{\Omega} \ff \cdot \PsiPsi_{i} \dd \mathbf{x} 
+    , \quad 1 \leq i \leq N_{W_h} 
+  %  \label{}
+  \end{align*}
+  \label{tcb:mixed_stokes_1}
+\end{tcolorbox}
+
+\subsubsection*{Second mixed formulation of the Stokes problem}
+%
+Let $V_h$ and $W_h$ be subspaces of finite dimensions of $H^1(\Omega)^3$ and $L^2(\Omega)$ respectively, leading to a stable discretization of the variational problem \eqref{eq:abs_var_mixed_stokes_2}.
+We shall assume that 
+$$V_h = \mathrm{span}\{ \PsiPsi_{i}, ~ 1 \leq i \leq N_{V_h} \}$$ 
+and
+$$W_h = \mathrm{span}\{ \phi_{i}, ~ 1 \leq i \leq N_{W_h} \}$$ 
+where $N_{V_h}$ and $N_{W_h}$ is the dimension of $V_h$ and $W_h$ respectively.
+Following the same approach as before, we get the matrix form of our variational formulation
+\begin{tcolorbox}
+  {\em Find $(U,P) \in \mathbb{R}^{N_{V_h}} \times \mathbb{R}^{N_{W_h}}$ such that}
+  \begin{align}
+    \begin{pmatrix}
+      A   & B \\
+      B^T & 0 
+    \end{pmatrix}
+    \begin{pmatrix} U \\ P \end{pmatrix}
+    = \begin{pmatrix} F \\ 0 \end{pmatrix}
+  %  \label{}
+  \end{align}
+  where the matrices $A$ and $B$ are given by
+  \begin{align*}
+    A_{i, j} &:= \int_{\Omega} \PsiPsi_{j} : \PsiPsi_{i} \dd \mathbf{x}  
+    ,  \quad 1 \leq i, j \leq N_{V_h}
+    \\
+    B_{i, j} &:= - \int_{\Omega} \phi_{j} \nabla \cdot \PsiPsi_{i} \dd \mathbf{x}  
+    ,  \quad 1 \leq j \leq N_{V_h} 
+    , \quad 1 \leq i \leq N_{W_h} 
+    \\
+    F_{i} &:= \int_{\Omega} \ff \cdot \PsiPsi_{i} \dd \mathbf{x} 
+    , \quad 1 \leq i \leq N_{W_h} 
+  %  \label{}
+  \end{align*}
+  \label{tcb:mixed_stokes_2}
+\end{tcolorbox}
+
+% ...................................................................
+\section{Problems}
+\label{sec:fem-abstract-problems}
+TODO
+
+

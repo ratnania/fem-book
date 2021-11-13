@@ -1,15 +1,687 @@
 % ...................................................................
-\chapter{TODO}
-\section{TODO}
-\section{TODO}
-\section{TODO}
+\chapter{Finite Element approximation spaces}
+\section{Construction of the Finite Element approximation space}
 
+\subsection{The mapping}
+
+A conforming Finite Element space $V_h$, is constructed from a reference element, by mapping the reference Finite Element defined previously to a collection of physical elements that define an admissible mesh of the computational domain and ensuring   that $V_h\subset V$ by equating degrees of freedom on the interface.  
+
+The coefficients of Finite Element matrices are defined as integrals involving the basis functions. The standard practice as well for convergence theory as for practical implementation is to  make a change of variables from one unique reference element to each of the other elements.
+For Lagrange Finite Elements affine transformation can be used for simplices and multi-linear transformation for tensor product elements. For higher order elements, when one wants to get a corresponding high order approximation of the boundary, a polynomial transformation of the same order as the Finite Element approximation of the elements touching the boundary is used. This is called \emph{isoparametric Finite Elements}.
+
+Let us call $\hat{K}\subset \mathbb{R}^d$ the reference element and $K\subset \mathbb{R}^d$ any element of the physical mesh. We then define the mapping
+\begin{align*}
+\mathbf{F}: \hat{K} &\rightarrow K,\\
+\hat{ \mathbf{x}}=(\hat{x}_1, \dots, \hat{x}_d)^\top &\mapsto \mathbf{x}= \mathbf{F}(\hat{ \mathbf{x}})=(F_1( \hat{ \mathbf{x}})), \dots, F_d( \hat{ \mathbf{x}})))^\top .
+\end{align*}
+
+
+As differential operators are involved we will need the Jacobian matrix of the mapping, denoted by 
+$$DF(\hat{x})=\left(\left(\frac{\partial F_i}{\partial \hat{x}_j}\right)\right)_{1\leq i,j\leq d} .$$ Let us denote by
+$J( \hat{x})= \det  (DF(\hat{x}))$, for any scalar function 
+$v( \mathbf{x})$, $\hat{v}( \hat{ \mathbf{x} }) = v(\mathbf{F}(\hat{ \mathbf{x} }))$, by
+ $\nabla=(\frac{\partial }{\partial x_1},\dots, \frac{\partial }{\partial x_d} )^\top$ and finally by $\hat{\nabla}=(\frac{\partial }{\partial \hat{x}_1}, \dots , \frac{\partial}{\partial \hat{x}_d})^\top$. We then find, using the chain 
+ rule that
+ $$ \fracp{\hat{v}}{\hat{x}_j} = \sum_{i=1}^d  \fracp{F_i}{\hat{x}_j} \fracp{v}{x_i}.$$
+ So that
+\begin{equation}\label{eq:derchvar}
+\hat{\nabla} \hat{v} (\hat{ \mathbf{x}}) =(DF)^{\top}\nabla v ( \mathbf{x}) \Rightarrow \nabla v ( \mathbf{x})= (DF)^{-\top} \hat{\nabla} \hat{v} (\hat{ \mathbf{x}}).
+\end{equation}
+
+An important special case is when  $\mathbf{F}$ is an affine map. This is typically used for simplicial Finite Elements (except on the boundary for high order elements as it brings back the method to second order).
+The classical Finite Element theory is also based on affine mappings. In this case
+$\mathbf{F}( \hat{\mathbf{x}}) = A \hat{\mathbf{x}} + \mathbf{b} $, where $A$ is a $d\times d$ matrix and $ \mathbf{b}$ a $d-$component column vector. For a simplicial mesh, the affine transformation, that is the components of $A$ and $ \mathbf{b}$, is completely determined by the imposing that $\mathbf{F}( \hat{\mathbf{a}}_i) = \mathbf{a}_i$ $0\leq i\leq d$, \textit{i.e.} that all vertices of the reference element $\hat{K}$ are mapped to the vertices of the current element $K$. We then have, for $ \hat{\mathbf{a}}_0 =(0,\dots, 0)$
+and the components of $a_{i,j}$ $(1\leq j \leq d)$ of $\hat{\mathbf{a}}_i$ are all 0 except the $i^{th}$ component which is 1,
+$$ A =\begin{pmatrix} a_{1,1} - a_{0,1} & a_{2,1} - a_{0,1} & \dots & a_{d,1} - a_{0,1}\\
+a_{1,2} - a_{0,2} & a_{2,2} - a_{0,2} & \dots & a_{d,2} - a_{0,2}\\
+\vdots & \vdots & \dots &\vdots \\
+a_{1,d} - a_{0,d} & a_{2,d} - a_{0,d} & \dots & a_{d,d} - a_{0,d}
+\end{pmatrix}, ~~~~ \mathbf{b} = \mathbf{a}_0.$$
+The jacobian matrix of the affine transformation is then the matrix $A$.
+
+\subsection{Bases of tangent and cotangent spaces in curvilinear coordinates}
+
+A mapping from $ \mathbf{F}: \mathbb{R}^d \rightarrow \mathbb{R}^d$ defines a curvilinear coordinate system, which induces a natural vector space called tangent space a each point. The column vectors of the jacobian matrix 
+$D \mathbf{F} ( \hat{ \mathbf{x}})$, $ \mathbf{t}_i=\fracp { \mathbf{F}}{ x_i}$ $ 1\leq i \leq d$ define a basis of the tangent space, which is the image of the canonical basis under the tangent map defined by the Jacobian matrix $D \mathbf{F} ( \hat{ \mathbf{x}})$. 
+In the case of an affine map $ \mathbf{F} ( \hat{\mathbf{x}}) = A \hat{\mathbf{x}} + \mathbf{b}$, mapping the reference $d$- dimensional simplex into the simplex $( \mathbf{a}_0, \dots \mathbf{a}_d)$,
+we have
+$D \mathbf{F} ( \hat{ \mathbf{x}})=A$, independently of $ \hat{\mathbf{x}}$ and then
+$ \mathbf{t}_i= \mathbf{a}_i -  \mathbf{a}_0$, so that the tangent basis consists of the vectors going from $ \mathbf{a}_0$ to each of the other vertices of the simplex. See Figure \ref{tangent-cotangent} for a sketch in a triangle. 
+
+% TODO
+%\begin{figure}
+%\centerline{
+%\includegraphics[width=5cm]{triangle}~~~
+%\includegraphics[width=5cm]{tangent_and_normal}
+%}
+%\caption{\label{tangent-cotangent} Left: Tangent basis, Right: Tangent and cotangent basis vectors}
+%\end{figure}
+
+Note that the direction and length of the tangent basis vectors $ \mathbf{t}_i$ are completely determined by the mapping $ \mathbf{F}$. They form a basis of $ \mathbb{R}^d$ provided $D \mathbf{F} ( \hat{ \mathbf{x}})$ is invertible at all points, in other words, provided the mapping $ \mathbf{F}$ is a $C^1$ diffeomorphism. However this basis is in general neither orthogonal nor normed. In an orthonormal basis the coefficients of any vector in this basis $ \mathbf{v} = v_1 \mathbf{e}_1 + \dots + v_d \mathbf{e}_d$
+can be expressed in the euclidian space $ \mathbb{R}^d$, \textit{i.e.} endowed with a scalar product,  by
+$v_i= \mathbf{v} \cdot \mathbf{e}_i$. This does not work anymore in a non-orthogonal basis. This is why in this case it is useful to use the dual basis, which consists of elements of $\mathcal{L}( \mathbb{R}^d)$, that is  linear forms on $ \mathbb{R}^d$, which map any vector to a real number. The dual basis is by definition the unique basis of the dual space such that $ d_i ( \mathbf{t}_j)= \delta_{i,j}$. Thanks to the scalar product, in a euclidian space, each element $ d_i$ of the dual basis can be uniquely associated to a vector $ \mathbf{n}_i $ of $ \mathbb{R}^d$ by defining $ \mathbf{n}_i$ as the unique vector verifying
+$$  \mathbf{n}_i\cdot \mathbf{v} = d_i( \mathbf{v})  \quad \forall \mathbf{v}\in \mathbb{R}^d.$$
+Considering now the basis $ (\mathbf{t}_1, \dots, \mathbf{t}_d) $, the dual basis  $ \mathbf{n}_1, \dots, \mathbf{n}_d \in \mathbf{R}^d $ is defined by $ \mathbf{n}_i \cdot \mathbf{t}_j = \delta_{i,j}$, which means that $ \mathbf{n}_i$ is locally orthogonal to the hyperplane defined by $ ( \mathbf{t}_j)_{j\neq i}$ and normed by $ \mathbf{n}_i\cdot \mathbf{t}_i=1$. 
+
+For an affine mapping defined by a simplex, as introduced above, $ \mathbf{n}_i$ is normal to the face
+defined by all the vertices but $ \mathbf{a}_i$.  See  Figure \ref{tangent-cotangent} for a drawing in $\mathbb{R}^2$. An orthonormal basis is a special case: if the primal basis $ (\mathbf{t}_1, \dots, \mathbf{t}_d) $ is orthonormal, then we have, following the definition of the dual basis, that $ \mathbf{n}_i= \mathbf{t}_i$ for $i=1, \dots, d$.
+
+\begin{lemma}
+The matrix $N( \hat{\mathbf{x}})= [ \mathbf{n}_1, \dots, \mathbf{n}_d ]$,  whose columns are the elements  of the dual basis of $( \mathbf{t}_1, \dots,  \mathbf{t}_d)$ verifies
+\begin{equation}\label{eq:defNcotangent}
+N ( \hat{\mathbf{x}}) =  (D\mathbf{F}( \hat{\mathbf{x}}))^{-\top}.
+\end{equation}
+\end{lemma}
+\begin{proof}
+Let us denote $ D\mathbf{F}( \hat{\mathbf{x}}) = [ \mathbf{t}_1, \dots, \mathbf{t}_d ]$ to highlight that the tangent vectors are the columns of the Jacobian matrix. Then, due to the definition of the dual basis, we notice that 
+$$ N^\top D\mathbf{F}
+= ((\mathbf{n}_i \cdot \mathbf{t}_j))_{1\leq i,j\leq d} =  ((\delta_{i,j}))_{1\leq i,j\leq d}= \mathbb{I}_d. $$
+This shows that $N^\top = (D\mathbf{F})^{-1}$, which is equivalent to the result we are looking for.
+
+\end{proof}
+
+\begin{proposition}
+In a three dimensional space ($d=3$), the normal vectors are obtained from the tangent vector through the following relation:
+$$ \mathbf{n}_1= \frac 1J \mathbf{t}_2\times \mathbf{t}_3, ~~~  \mathbf{n}_2= \frac 1J \mathbf{t}_3\times \mathbf{t}_1, ~~~ \mathbf{n}_3= \frac 1J \mathbf{t}_1\times \mathbf{t}_2.$$
+\end{proposition}
+\begin{proof}
+As $ \mathbf{n}_1$ is by definition orthogonal to $ \mathbf{t}_2$ and  $ \mathbf{t}_3$ is is colinear to
+$\mathbf{t}_2\times \mathbf{t}_3$ and can be written $ \mathbf{n}_1 = \alpha \mathbf{t}_2\times \mathbf{t}_3$ for some scalar $\alpha$. Now as $ \mathbf{t}_1 \cdot \mathbf{n}_1=1$ and
+$ \mathbf{t}_1\cdot  \mathbf{t}_2\times \mathbf{t}_3 = J$, we find $\alpha= 1/J$.
+The same reasoning  applies to the two other components. 
+\end{proof}
+
+
+\begin{remark}
+In the physics literature, the tangent basis is generally called \emph{covariant} basis and the basis of the dual cotangent space is called \emph{contravariant} basis.
+\end{remark}
+
+
+
+\subsection{$H^1$ conforming Finite Elements}
+
+Let us build the conforming Finite Element space $V^0_h$ based on the reference element $(\hat{K},\hat{P},\hat{\Sigma})$ as a subspace of $ H^1(\Omega)$. For this we need a mesh denoted by 
+$\mathcal{T}=\bigcup_{1\leq e \leq N_{el}} K_i$ 
+consisting of $N_{el}$ disjoint conforming elements denoted each by $K_i$.
+On this mesh we can then define $V^0_h \subset H^1(\Omega)$ by
+$$V^0_h = \{ v_h\in C^0( \Omega) \,|\, v_{h|K_e}= \hat{v}_e \circ F_e^{-1} \in \hat{P}, ~~ 1\leq e\leq N_{el}  \}.$$
+This means that the space $V^0_h$ is defined element by element and that the finite dimensional space on each element is defined as composition of the reference element space $\hat{P}$ and the local element mapping $F_e$. In the case when $F_e$ is an affine mapping and $\hat{P}$ is a polynomial space, the mapped space is still a polynomial space of the same degree, but not in the general case. Let us denote by $N=\dim V^0_h$ the dimension of the full Finite Element approximation space, and $\hat{N}=\dim \hat{P}$ the dimension of the local approximation space on each Element. If there are degrees of freedom shared between several elements we have $N< N_{el} \hat{N}$, and in all cases $N\leq N_{el} \hat{N}$.
+
+The Finite Element space $V^0_h$ being defined, the next step is to restrict the variational formulation of  the problem being considered to functions in $V^0_h$. For the Poisson problem with Neumann boundary conditions \eqref{eq:peex3} this leads to the following discrete variational formulation:\\
+\textit{ Find $u_h\in V^0_h$ such that}
+\begin{equation}\label{eq:h1disc}
+\intom \nabla u_h\cdot\nabla v_h\dd \mathbf{x} +\intom u_hv_h\dd \mathbf{x} =\intom fv_h\dd \mathbf{x}
++\intgam gv_h \dd \sigma \quad\forall v_h\in V^0_h.
+\end{equation}
+This discrete variational formulation now this to be transformed to a linear system for practical implementation on a computer. To this aim, the integrals need to be decomposed on single elements and then mapped back to the reference elements so that the basis functions of the reference Finite Element space $\hat{P}$ can be plugged in.
+
+First splitting the integrals over the elements \eqref{eq:h1disc} becomes
+$$\sum_{e=1}^{N_{el}}\int_{K_e} \nabla u_h\cdot\nabla v_h\dd \mathbf{x} +\sum_{e=1}^{N_{el}}\int_{K_e} u_hv_h\dd \mathbf{x} =\sum_{e=1}^{N_{el}}\int_{K_e} fv_h\dd \mathbf{x}
++\sum_{e=1}^{N_{bel}}\int_{\Gamma_e} gv_h \dd \sigma \quad\forall v_h\in V^0_h.
+$$
+The last sum is on the element touching the boundary of $\Omega$. The next step is to make the change of variables $ \mathbf{x}= F_e( \hat{\mathbf{x}})$
+ in the integral over $K_i$. Then $ \dd \mathbf{x}= J(\hat{ \mathbf{x}}) \dd\hat{\mathbf{x}}$, where as introduced above, $J=\det DF$. In the integrals not involving derivatives we then simply get
+ $$ \int_{K_e} u_hv_h\dd \mathbf{x} = \int_{\hat{K}} \hat{u}_e \hat{v}_e J \dd \hat{\mathbf{x}}, ~~~
+ \int_{K_e} fv_h\dd \mathbf{x} = \int_{\hat{K}} f\hat{v}_e J\dd \hat{\mathbf{x}}.$$
+ The boundary integral is dealt with the same way, using the restriction of the element mappings to the boundary and the appropriate Jacobian in the change of variables. For the integral involving the gradients, we need to make use of the chain rule \eqref{eq:derchvar}
+$$\int_{K_e} \nabla u_h\cdot\nabla v_h\dd \mathbf{x} = \int_{\hat{K}} (DF)^{-\top}\hat{\nabla} \hat{u}_e\cdot (DF)^{-\top} \hat{\nabla} \hat{v}_e J\dd \hat{\mathbf{x} }.
+$$ 
+Finally, we can express $ \hat{u}_e,  \hat{v}_e \in \hat{P}$, on the basis of $\hat{P}$ corresponding to the degrees of freedom $\hat{\Sigma}$. Let us denote by $ (\hat{\varphi}_i)_{1\leq i \leq \hat{N}}$ this basis. Then
+$$  \hat{u}_e ( \hat{\mathbf{x}})= \sum_{j=1}^{\hat{N}} u_j \hat{\varphi}_j( \hat{\mathbf{x}}), ~~~~ \hat{v}_e( \hat{\mathbf{x}}) = \sum_{i=1}^{\hat{N}} v_i \hat{\varphi}_i( \hat{\mathbf{x}}).$$
+By plugging these expressions in the element integrals defining the variational formulation we obtain a linear system. First
+$$\int_{\hat{K}} \hat{u}_e \hat{v}_e J \dd \hat{\mathbf{x}} = 
+\sum_{1\leq i,j \leq \hat{N}} u_j v_i \int_{\hat{K}} \hat{\varphi}_i \hat{\varphi}_j J \dd \hat{\mathbf{x}} = V^\top \hat{M}_e U, ~~
+\mbox{with } \hat{M}_e=(( \int_{\hat{K}} \hat{\varphi}_i \hat{\varphi}_j J \dd \hat{\mathbf{x}}))_{1\leq i,j \leq \hat{N}} $$
+where $\hat{M}_e$ is called the element mass matrix, $V=(v_1, \dots, v_{\hat{N}})^\top$,  $U=(u_1, \dots, u_{\hat{N}})^\top$.
+In the same way
+$$\int_{\hat{K}} (DF)^{-\top}\hat{\nabla} \hat{u}_e\cdot (DF)^{-\top} \hat{\nabla} \hat{v}_e J\dd \hat{\mathbf{x} }
+=V^\top \hat{A}_e U, ~~\mbox{with } \hat{A}_e= \int_{\hat{K}} (DF)^{-\top}\hat{\nabla} \hat{\varphi}_i\cdot (DF)^{-\top} \hat{\nabla} \hat{\varphi}_j J\dd \hat{\mathbf{x} }.$$
+$\hat{A}_e$ is called the element \emph{stiffness matrix}.
+Assuming for simplicity that the boundary term $g$ vanishes, it remains to assemble the right-hand-side depending on $f$. The contribution on the element $K_e$ is obtained by
+$$\int_{\hat{K}} f\hat{v}_e J\dd \hat{\mathbf{x}} = \sum_{i=1}^{\hat{N}} v_i \int_{\hat{K}} f\hat{\varphi}_i J\dd \hat{\mathbf{x}} = \hat{V}^\top b, ~~~ \mbox{ with } b= (( \int_{\hat{K}} f\hat{\varphi}_i J\dd \hat{\mathbf{x}}))_{1 \leq i \leq \hat{N}}.$$
+
+\paragraph{From local to global.}
+To go from the element matrices to the global matrices, the sum over the elements need to be performed and contributions of degrees of freedom shared between different elements need to be added.
+For this a data structure associating a global number for each degree of freedom from the local number in each 
+element needs to be created. This can define by a function
+ $\Psi$ which to a couple, (element, local degree of freedom)
+$(e,i)$ associates the global number of the degree of freedom $I$ ($1\leq I\leq dim(V^0_h)$) of the  basis function 
+$\varphi_i$ of $V^0_h$ such that $(\varphi_I)_{|K_e}=\hat{\varphi}_i$.
+Then the global matrix $A$ is obtained by the algorithm:
+
+\begin{algorithm}[H]
+A=0\;
+\For{$e=1,N_{el}$}{
+\For{$i,j = 1,\hat{N}$}{
+$$A(\Psi(e,i),\Psi(e,j)) = A(\Psi(e,i),\Psi(e,j))
++ \hat{A}_e(i,j),$$}
+}
+\end{algorithm}
+where $\hat{A}_e$ is the element stiffness matrix on $K_e$. The same procedure applies to all matrices involved in the variational formulation and also to the right-hand-side.
+
+
+\subsection{$H(\textrm{curl}, \Omega)$ conforming Finite Elements}
+
+Let us consider here the 3D case in which the curl operator is naturally defined. The 2D case can be obtained as a special case. 
+The $H(\textrm{curl}, \Omega)$ function space and its conforming approximation consists of vectors. Hence on a change of basis, one needs to decide how the components of the vectors are transformed. In order to have a natural map of the  tangents to a face used in the definition of the degrees of freedom and that guarantee conformity, the vectors defining the edges of the reference element needed to be mapped to either the covariant or the contravariant basis associated to the mapping. In the  $H(\textrm{curl}, \Omega)$ case it turns out that the right basis is the contrariant basis $( \mathbf{n}_1, \mathbf{n}_2, \mathbf{n}_3)$.
+
+
+
+A vector $ \mathbf{v}$ on the image element is defined from a vector $ \hat{ \mathbf{v}}$ on the reference element by the transformation
+\begin{equation}\label{eq:piolahrot}
+\mathbf{v}( \mathbf{x}) =  (D \mathbf{F}(\hat{\mathbf{x}}))^{-\top} \hat{\mathbf{v}} (\hat{\mathbf{x}}), ~~~~\mbox{with } \mathbf{x} = \mathbf{F}(\hat{\mathbf{x}}).
+\end{equation}
+ This transformation is called the covariant Piola transform. In the context of differential forms it is the natural pullback transformation of a 1-form (in a 3D space). 
+ 
+As the columns of  $(DF(\hat{\mathbf{x}}))^{-\top} $ are $( \mathbf{n}_1, \mathbf{n}_2, \mathbf{n}_3)$ as observed in \eqref{eq:defNcotangent}, we see with this transformation formula that
+\begin{equation}\label{eq:expr_contravariant}
+ \mathbf{v}( \mathbf{x}) =  \hat{v}_1 (\hat{\mathbf{x}}) \mathbf{n}_1(\hat{\mathbf{x}}) + 
+ \hat{v}_2 (\hat{\mathbf{x}}) \mathbf{n}_2(\hat{\mathbf{x}}) + \hat{v}_3 (\hat{\mathbf{x}}) \mathbf{n}_3(\hat{\mathbf{x}}),
+\end{equation}
+ and in particular that the canonical basis $( \hat{\mathbf{e}}_1, \hat{\mathbf{e}}_2, \hat{\mathbf{e}}_3)$ on the reference element is mapped into $( \mathbf{n}_1, \mathbf{n}_2, \mathbf{n}_3)$.
+We will also need the images of the outward normals to the faces of the reference elements by this mapping.
+\begin{lemma}\label{lemma:unit_normal}
+The image of any outward normal $ \unh$ of the reference element by the mapping \eqref{eq:piolahrot} is $\lambda\un$, with $\lambda=\| \mathbf{n}_i\|$ in case the face of the referece  element is orthogonal to $ \hat{\mathbf{e}}_i$
+and for the face opposite to the origin in the case of a tetrahedron $\lambda = \| \mathbf{n}_1 + \mathbf{n}_2 +\mathbf{n}_3)\|/\sqrt{3}$.
+\end{lemma}
+
+\begin{proof}
+The unit outward normal is constant on each face of the reference element. 
+
+For a tetrahedral reference element the unit normal to the face opposite to $ \mathbf{a}_1$ is $ \unh_1= \hat{\mathbf{e}}_1=(1,0,0)^\top $,   to the face opposite to $ \mathbf{a}_2$ is $ \unh_2 = \hat{\mathbf{e}}_2=(0,1,0)^\top$ and to the face opposite to $ \mathbf{a}_3$ is $ \unh_3=\hat{\mathbf{e}}_3=(0,0,1)^\top$. Hence $ \unh_i$ is mapped into $ \mathbf{n}_i$ the corresponding vector of the contravariant basis. Because the outward unit vector on each face is orthogonal to the face, $ \mathbf{n}_i$ and $\un$ are aligned and in the same direction. So the scaling factor with respect to the unit normal $ \ut$, whose norm is one, is given by $ \|\mathbf{n}_i\|$.
+On the face opposite to  $ \hat{\mathbf{a}}_0$, the outward unit normal is $ \unh = \frac{1}{\sqrt{3}}( \hat{\mathbf{e}}_1 + \hat{\mathbf{e}}_2 + \hat{\mathbf{e}}_3)$, which is mapped by the transformation to $ \mathbf{n} = \frac{1}{\sqrt{3}}(
+\mathbf{n}_1 + \mathbf{n}_2 + \mathbf{n}_3)$. On the other hand, this $ \mathbf{n} $ is orthogonal to the face 
+$ (\mathbf{a}_1,\mathbf{a}_2,\mathbf{a}_3)$ of the element as $ \mathbf{n}\cdot ( \mathbf{t}_2- \mathbf{t}_1)
+= \mathbf{n}\cdot ( \mathbf{t}_3- \mathbf{t}_1)=0$. Here the scaling factor compared to the unit normal is $\| \mathbf{n}\|$.
+
+In the case of a cubic reference element, all the normals are parallel to one of the vector $ \hat{\mathbf{e}}_i$ and the first part of the tetrahedron case applies.
+
+%On the reference simplex, for all the faces containing the origin $ \hat{\mathbf{a}}_0$, the corresponding $ \hat{\mathbf{n}}_i= \hat{\mathbf{e}}_i$ is inward,
+%In the case of a cube reference elements, all the outward normals are related to the canonical basis
+%with a $-$ sign for the faces containing the origin and a  $+$ sign for the faces not containing the origin.
+%So let us introduce the notation $\sigma_i$,  indexed by the face number, such that $\sigma_i=-1$ for faces containing the origin and $\sigma_i=1$ for the faces containing the origin. Then on each face $\hat{f}_i$, the outward normal verifies $ \unh_i = \sigma_i \hat{\mathbf{e}}_i$. The sign is maintained by the mapping.
+%This means that the unit outward normal on the face $f_i$ image of $\hat{f}_i$ by the mapping is simply $ \sigma_i \mathbf{n}_i/ \| \mathbf{n}_i\|$.
+\end{proof}
+
+
+In order to get an expression of a variational formulation defined in  $H(\textrm{curl}, \Omega)$, we now need to compute the curl of a vector in this basis.
+\begin{proposition}
+We have the following properties:
+\begin{enumerate}
+\item For any vector field $ \mathbf{v} $, defining $D \mathbf{v}$ the Jacobian matrix of $\mathbf{v}$, we have
+$$ (\nabla \times \mathbf{v})\times \mathbf{w} =  \left((D \mathbf{v})^T - D \mathbf{v}\right) \mathbf{w} \quad\forall \mathbf{w}\in \mathbb{R}^d.$$
+\item The transformation rule of the Jacobian matrix under the transformation \eqref{eq:piolahrot} reads
+$$ D \mathbf{v}( \mathbf{x}) = S( \hat{\mathbf{x}}) + (D \mathbf{F}( \hat{\mathbf{x}}))^{-\top} \hat{D} \hat{\mathbf{v}}
+(\hat{\mathbf{x}})  (D \mathbf{F}( \hat{\mathbf{x}}))^{-1}$$
+where $S$ is a symmetric matrix.
+\item The transformation rule for the curl  under the transformation \eqref{eq:piolahrot} reads
+\begin{equation}\label{eq:curltransf}
+\nabla\times \mathbf{v} ( \mathbf{x}) = \frac{1}{J( \hat{\mathbf{x}})} D \mathbf{F}( \hat{\mathbf{x}}) \hat{\nabla}\times \hat{\mathbf{v}}( \hat{\mathbf{x}}).
+\end{equation}
+\end{enumerate}
+\end{proposition}
+ 
+\begin{proof}
+1. Can be checked by comparing the expressions on the left and right hand sides.
+
+2.  We can express\eqref{eq:piolahrot} as
+$$ \hat{\mathbf{v}}( \hat{\mathbf{x}}) = (D\mathbf{F})^\top( \hat{\mathbf{x}}) \mathbf{v}( \mathbf{F}( \hat{\mathbf{x}})),$$
+so that 
+$$  \hat{v}_i( \hat{\mathbf{x}}) = \sum_{k=1}^3 \fracp{F_k (\mathbf{\hat{x}})}{\hat{x}_i} v_k ( \mathbf{F}( \hat{\mathbf{x}})).$$
+Let us now compute the coefficient on line $i$ and column $j$ of $ D \hat{\mathbf{v}}( \hat{\mathbf{x}}).$
+$$
+\fracp{ \hat{v}_i}{ \hat{x}_j} = \sum_{k=1}^3 \left(\frac{\partial^2 F_k (\mathbf{\hat{x}})}{\partial\hat{x}_i\partial\hat{x}_j}
+v_k ( \mathbf{F}( \hat{\mathbf{x}})) \right) 
++   \sum_{k=1}^3 \left(\fracp{F_k (\mathbf{\hat{x}})}{\hat{x}_i} \sum_{l=1}^3 \fracp{ F_l}{ \hat{x}_j}\fracp{ v_k}{x_l} \right),
+$$
+so that we recognise that
+$$ \hat{D} \hat{\mathbf{v}} = \tilde{S} + (D \mathbf{F})^\top (D \mathbf{v}( \mathbf{x})) (D \mathbf{F}),$$
+ where $\tilde{S} = \sum_{k=1}^3 \left(\frac{\partial^2 F_k (\mathbf{\hat{x}})}{\partial\hat{x}_i\partial\hat{x}_j}
+v_k ( \mathbf{F}( \hat{\mathbf{x}})) \right) $ is obviously symmetric. Multiplying this expression by
+$ (D \mathbf{F})^{-\top}$ on the left and by $ (D \mathbf{F})^{-1}$ on the right yields the result. 
+
+3. Using 1. and 2. we get, for an arbitrary vector $\mathbf{w}\in \mathbb{R}^3$ we find
+\begin{equation}\label{eq:curl_transf_1}
+(\nabla\times \mathbf{v}) \times \mathbf{w} = (D \mathbf{F})^{-\top}\left( (\hat{D} \hat{\mathbf{v}})^\top - \hat{D} \hat{\mathbf{v}} \right) (D \mathbf{F})^{-1} \mathbf{w}
+=(D \mathbf{F})^{-\top} \left((\hat{\nabla}\times \hat{\mathbf{v}}) \times (D \mathbf{F})^{-1}  \mathbf{w}\right). 
+\end{equation}
+Not denoting by $ \mathbf{c}_1, \mathbf{c}_2, \mathbf{c}_3$ the columns of the matrix $(D \mathbf{F})^{-1}$
+and taking $ \mathbf{w}= \mathbf{e}_1=(1,0,0)^\top$ so that  $(D \mathbf{F})^{-1}  \mathbf{w}= \mathbf{c}_1$, we notice that
+$$( \nabla\times \mathbf{v}) \times \mathbf{e}_1 = 
+\begin{pmatrix}
+0 \\ ( \nabla\times \mathbf{v})_3 \\ -( \nabla\times \mathbf{v})_2
+\end{pmatrix}
+=
+\begin{pmatrix}
+\mathbf{c}_1 \cdot (\hat{\nabla}\times \hat{\mathbf{v}}) \times \mathbf{c}_1 \\
+\mathbf{c}_2 \cdot (\hat{\nabla}\times \hat{\mathbf{v}}) \times \mathbf{c}_1\\
+\mathbf{c}_3 \cdot (\hat{\nabla}\times \hat{\mathbf{v}}) \times \mathbf{c}_1
+\end{pmatrix}
+= 
+ \begin{pmatrix}
+0 \\
+\mathbf{c}_1  \times \mathbf{c}_2 \cdot (\hat{\nabla}\times \hat{\mathbf{v}})  \\
+-\mathbf{c}_3\times  \mathbf{c}_1 \cdot (\hat{\nabla}\times \hat{\mathbf{v}}) 
+\end{pmatrix}.
+$$
+And in the same way taking $ \mathbf{w}= \mathbf{e}_2$ the second vector of the canonical basis
+$$( \nabla\times \mathbf{v}) \times \mathbf{e}_2 = 
+\begin{pmatrix}
+- ( \nabla\times \mathbf{v})_3 \\ 0\\ ( \nabla\times \mathbf{v})_1
+\end{pmatrix}
+=
+\begin{pmatrix}
+\mathbf{c}_1 \cdot (\hat{\nabla}\times \hat{\mathbf{v}}) \times \mathbf{c}_2 \\
+\mathbf{c}_2 \cdot (\hat{\nabla}\times \hat{\mathbf{v}}) \times \mathbf{c}_2\\
+\mathbf{c}_3 \cdot (\hat{\nabla}\times \hat{\mathbf{v}}) \times \mathbf{c}_2
+\end{pmatrix}
+= 
+ \begin{pmatrix}
+-\mathbf{c}_1  \times \mathbf{c}_2 \cdot (\hat{\nabla}\times \hat{\mathbf{v}})  \\ 0\\
+\mathbf{c}_2\times  \mathbf{c}_3 \cdot (\hat{\nabla}\times \hat{\mathbf{v}}) 
+\end{pmatrix}.
+$$
+It now remains to ckeck that the inverse $D \mathbf{F}$ of $(D \mathbf{F})^{-1}$ is defined by its three
+lines $(\mathbf{c}_2\times \mathbf{c}_3)/J$,  $(\mathbf{c}_3\times \mathbf{c}_1)/J$, $(\mathbf{c}_1\times \mathbf{c}_2)/J$ to realise that the three components of the curl indeed satisfy \eqref{eq:curltransf}.
+\end{proof}
+ 
+Now using  transformation  \eqref{eq:piolahrot} one can check by direct computation that all terms appearing in the curl Green's formula \eqref{eq:greencurl} including the normal component are exactly preserved.
+\begin{proposition}
+We have the following properties:
+\begin{itemize}
+\item[(i)]
+\begin{equation}\label{eq:greencurltransf }
+\int_K \nabla\times \mathbf{u}\cdot \mathbf{v} \dd \mathbf{x} = \int_{\hat{K}} \hat{\nabla}\times \hat{\mathbf{u}}
+\cdot \hat{\mathbf{v}} \dd \hat{\mathbf{x}}
+\end{equation}
+\item[(ii)] For any face $f_i$ on the boundary of $K$ image of the face $\hat{f}_i$ of the reference element
+\begin{equation}\label{eq:greencurltransfb}\int_{f_i} \mathbf{u}\times \un \cdot \mathbf{v} \dd \boldsymbol{\sigma} =
+\int_{ \hat{f}_i} \mathbf{\hat{u}}\times \unh \cdot \mathbf{\hat{v}} \dd \hat{\boldsymbol{\sigma}}
+\end{equation}
+\end{itemize}
+\end{proposition}
+We observe in particular, that the term involving the curl is completely independent of the metric and has the same expression under any mapping. This is true also for the boundary term.
+
+
+\begin{proof}
+(i) Let us observe, as the columns of $D \mathbf{F}$ are the vectors $ \mathbf{t}_1,  \mathbf{t}_2, \mathbf{t}_3$ that due to \eqref{eq:curltransf} 
+$$ \nabla\times \mathbf{u} ( \mathbf{x}) = \frac{1}{J( \hat{\mathbf{x}})}  \left( 
+c_1 \mathbf{t}_1 + c_2 \mathbf{t}_2 + c_3 \mathbf{t}_3
+\right),$$
+where $c_1 = \partial_{ \hat{x}_2} \hat{u}_3 -  \partial_{ \hat{x}_3} \hat{u}_2$,
+$c_2 = \partial_{ \hat{x}_3} \hat{u}_1 -  \partial_{ \hat{x}_1} \hat{u}_3$,
+$c_3 = \partial_{ \hat{x}_1} \hat{u}_2 -  \partial_{ \hat{x}_2} \hat{u}_1$.
+Then, making the change of variables $ \mathbf{x}= \mathbf{F}( \hat{\mathbf{x}})$, $\dd \mathbf{x} = J( \hat{\mathbf{x}})\dd \hat{\mathbf{x}}$ and  
+ plugging this expression into \eqref{eq:greencurltransf }, we find
+\begin{multline*}
+ \int_K \nabla\times \mathbf{u}\cdot \mathbf{v} \dd \mathbf{x} = \int_{\hat{K}}   
+ \frac{1}{J( \hat{\mathbf{x}})} (c_1 \mathbf{t}_1 + c_2 \mathbf{t}_2 + c_3 \mathbf{t}_3 ) \cdot
+ (\hat{v}_1 \mathbf{n}_1+ \hat{v}_2 \mathbf{n}_2 + \hat{v}_3 \mathbf{n}_3)
+J( \hat{\mathbf{x}}) \dd \hat{\mathbf{x}} \\
+=  \int_{\hat{K}}  (c_1\hat{v}_1 + c_2\hat{v}_2+c_3\hat{v}_3)\dd \hat{\mathbf{x}} 
+= \int_{\hat{K}} \hat{\nabla} \times \hat{\mathbf{u}} \cdot \hat{\mathbf{v}} \dd \hat{\mathbf{x}}. 
+\end{multline*}
+
+(ii) Lemma \ref{lemma:unit_normal} gives us the image of the reference unit normal by the mapping.
+Let us first consider the case of a face of the reference element parallel to a coordinate plane.
+Let us  express $ \mathbf{u}$ and $ \mathbf{v}$ in the contravariant basis using formula \eqref{eq:expr_contravariant} and plug it into the expression of the left-hand side of \eqref{eq:greencurltransfb},
+considering the face orthogonal to $ \mathbf{n}_1$, the others being dealt with in the same way. Note also that the boundary is defined as a parametric surface for which the area measure is defined by
+$\dd \boldsymbol{\sigma} = \| \mathbf{t}_2\times \mathbf{t}_3 \| \dd \hat{ \boldsymbol{\sigma}}$, where
+$ \dd \hat{ \boldsymbol{\sigma}} = \dd \hat{x}_2 \dd \hat{x}_3$. We use also that  by definition of
+$ \mathbf{n}_1$ we have $\| \mathbf{t}_2\times \mathbf{t}_3 \| = J \| n_1\|$. We introduce the parameter $s$ to indicate whether $ \mathbf{n}_1$ and $ \mathbf{\nu}$ are in the same direction or not.
+\begin{multline*}
+\int_{f_i} \mathbf{u}\times \un \cdot \mathbf{v} \dd \boldsymbol{\sigma} =\int_{\hat{f}_i} ( \hat{u}_1 (\hat{\mathbf{x}}) \mathbf{n}_1(\hat{\mathbf{x}}) + 
+ \hat{u}_2 (\hat{\mathbf{x}}) \mathbf{n}_2(\hat{\mathbf{x}}) + \hat{u}_3 (\hat{\mathbf{x}}) \mathbf{n}_3(\hat{\mathbf{x}}))\times ( s \mathbf{n}_1/ \| \mathbf{n}_1\|) \\
+ \cdot ( \hat{v}_1 (\hat{\mathbf{x}}) \mathbf{n}_1(\hat{\mathbf{x}}) + 
+ \hat{v}_2 (\hat{\mathbf{x}}) \mathbf{n}_2(\hat{\mathbf{x}}) + \hat{v}_3 (\hat{\mathbf{x}}) \mathbf{n}_3(\hat{\mathbf{x}}) )J \| \mathbf{n}_1\| \dd  \hat{x}_2 \dd \hat{x}_3  \\
+ =s \int_{\hat{f}_i} ( \hat{u}_3 \hat{v}_2 -  \hat{u}_2 \hat{v}_3) (\mathbf{n}_3\times \mathbf{n}_1 \cdot \mathbf{n}_2)
+ J \dd  \hat{x}_2 \dd \hat{x}_3 = s \int_{\hat{f}_i} ( \hat{u}_3 \hat{v}_2 -  \hat{u}_2 \hat{v}_3)  \dd  \hat{x}_2 \dd \hat{x}_3 \\
+  = \int_{\hat{f}_i} \hat{\mathbf{u}}\times\unh_1\cdot  \hat{\mathbf{v}} \dd\hat{\boldsymbol{\sigma}}
+\end{multline*}
+as $\mathbf{n}_3\times \mathbf{n}_1 \cdot \mathbf{n}_2=1/J$
+\end{proof}
+
+We can now assemble the matrices involved in a variational formulation posed on $ H(\textrm{curl}, \Omega)$. Let us consider for example the variational formulation\\
+\textit{ Find $\mathbf{u}\in H(\textrm{curl}, \Omega)$ such that}
+\begin{equation}\label{eq:hcurlmapping}
+\int_\Omega \mathbf{u}\cdot \mathbf{v}\dd \mathbf{x} + \int_\Omega \curl\mathbf{u}\cdot \curl\mathbf{v}\dd \mathbf{x} = \int_\Omega \mathbf{f}\cdot \mathbf{v}\dd \mathbf{x} \quad\forall \mathbf{v}\in H(\textrm{curl}, \Omega).
+\end{equation}
+Let us build the conforming Finite Element space $V^1_h\subset H(\textrm{curl}, \Omega)$ based on the reference element $(\hat{K},\hat{P}^1,\hat{\Sigma}^1)$. For this we need a mesh denoted by 
+$\mathcal{T}=\bigcup_{1\leq e \leq N_{el}} K_i$ 
+consisting of $N_{el}$ disjoint conforming elements denoted each by $K_i$.
+On this mesh we can then define $V^1_h \subset H(\textrm{curl}, \Omega)$ by
+$$V^1_h = \{ \mathbf{v}_h\in H(\textrm{curl}, \Omega) \,|\, \mathbf{v}_{h|K_e}= (D \mathbf{F})^{-\top}\hat{\mathbf{v}}_e \circ F_e^{-1} \in \hat{P}^1, ~~ 1\leq e\leq N_{el}  \}.$$
+Now we can in the variational formulation \eqref{eq:hcurlmapping} replace  $ H(\textrm{curl}, \Omega)$ by $V^1_h$ and $ \mathbf{u}$ and $\mathbf{v}$ by their discrete counterparts 
+$$ \mathbf{u}_h ( \mathbf{x})= \sum_{j=1}^{N_1} u_j \bphi^1_j ( \mathbf{x}), ~~~~
+ \mathbf{v}_h ( \mathbf{x})= \sum_{i=1}^{N_1} v_i \bphi^1_i ( \mathbf{x}),$$
+where $ ( \bphi^1_i)_{1\leq i \leq N_1}$ stands for the basis of $V^1_h$ associated to the Finite Element. As for the $ H^1(\Omega)$ conforming case, plugging these expressions into the variational formulation leads to the matrix expression:
+$$V^\top M_1 U + V^\top A_1 U = V^\top \mathbf{b},$$
+where $M_1= ((\int_\Omega \bphi^1_i\cdot \bphi^1_j \dd \mathbf{x}))_{i,j}$ is the mass matrix in $V^1_h$,
+$A_1 =  ((\int_\Omega \curl\bphi^1_i\cdot \curl\bphi^1_j \dd \mathbf{x}))_{i,j}$, and 
+$b= (\int \mathbf{f}\cdot \bphi^1_i)_i$. There now only remains to compute these integrals. Let us start with the mass matrix  $M_1$.
+$$ \int_\Omega \bphi^1_i\cdot \bphi^1_j \dd \mathbf{x} = \sum_{e=1}^{N_{el}}
+ \int_{K_e} \bphi^1_i\cdot \bphi^1_j \dd \mathbf{x}.$$
+ Then on each element $K_e$ we make the change of variables $ \mathbf{x}= \mathbf{F}_e(\hat{\mathbf{x}})$,
+ $ \dd\mathbf{x}= J_e( \hat{\mathbf{x}})\dd \hat{\mathbf{x}}$ to get
+\begin{align*}
+   \int_{K_e} \bphi^1_i\cdot \bphi^1_j \dd \mathbf{x} &=
+ \int_{\hat{K}} (D \mathbf{F}_e)^{-\top}\hbphi^1_i\cdot  (D \mathbf{F}_e)^{-\top} \hbphi^1_j J_e\dd \hat{\mathbf{x}}, \\
+ &= \int_{\hat{K}} ( \hat{\varphi}^1_{i,1} \mathbf{n}_1 +\hat{\varphi}^1_{i,2} \mathbf{n}_2 +\hat{\varphi}^1_{i,3} \mathbf{n}_3 )
+ \cdot ( \hat{\varphi}_{j,1}^1 \mathbf{n}_1 +\hat{\varphi}_{j,2}^1 \mathbf{n}_2 +\hat{\varphi}^1_{j,3} \mathbf{n}_3 )
+ J_e\dd \hat{\mathbf{x}},\\
+ &=  \int_{\hat{K}} (\hbphi^1_i)^\top G^e_n \hbphi^1_j J_e\dd \hat{\mathbf{x}},
+ \end{align*}
+ where $G^e_n= (( \mathbf{n}_i\cdot \mathbf{n}_j))_{1\leq i,j\leq 3}$ is the contravariant metric tensor. This is the element mass matrix on the element $K_e$ as for the $ H^1(\Omega)$, the full mass matrix is obtained by summing up the contributions from the different elements.
+ 
+ The procedure is the same for the $A_1$ matrix. Let us here simply compute the expression of the element matrix, using the expression of the curl given in \eqref{eq:curltransf}:
+ \begin{align*}
+   \int_{K_e} \nabla\times\bphi^1_i\cdot \nabla\times\bphi^1_j \dd \mathbf{x} &=
+ \int_{\hat{K}} \frac{1}{J_e}(D \mathbf{F}_e)\hat{\nabla}\times\hbphi^1_i\cdot \frac{1}{J_e}(D \mathbf{F}_e)\hat{\nabla}\times \hbphi^1_j J_e\dd \hat{\mathbf{x}}, \\
+ &= \int_{\hat{K}} (c_{i,1} \mathbf{t}_1 +c_{i,2} \mathbf{t}_2 +c_{i,3} \mathbf{t}_3 )
+ \cdot (c_{j,1} \mathbf{t}_1 +c_{j,2} \mathbf{t}_2 +c_{j,3} \mathbf{t}_3 )
+\frac{1}{J_e}\dd \hat{\mathbf{x}},\\
+ &=  \int_{\hat{K}} (\hat{\nabla}\times\hbphi^1_i)^\top G^e_t \hat{\nabla}\times\hbphi^1_j \frac{1}{J_e}\dd \hat{\mathbf{x}},
+ \end{align*}
+ where we have denoted $\hat{\nabla}\times\hbphi_i=(c_{i,1},c_{i,2},c_{i,3})^\top$ and
+ $G^e_t= (( \mathbf{t}_i\cdot \mathbf{t}_j))_{1\leq i,j\leq 3}$ is the covariant metric tensor.
+
+
+\subsection{$H(\textrm{div}, \Omega)$ conforming Finite Elements}
+
+The $H(\textrm{div}, \Omega)$ function space and its conforming approximation also consist of vectors. Hence on a change of basis, one needs to decide how the components of the vectors are transformed. In order to have a natural map of the  normal to a face used in the definition of the degrees of freedom and that guarantee conformity, the vectors defining the edges of the reference element needed to be mapped to either the covariant or the contravariant basis associated to the mapping. In the  $H(\textrm{div}, \Omega)$ case it turns out that the right basis is the covariant basis $( \mathbf{t}_1, \mathbf{t}_2, \mathbf{t}_3)$. From the expression of the transformation rule for the curl \eqref{eq:curltransf} we see that components are exactly conserved if in addition we scale the length by $1/J( \hat{\mathbf{x}})$.
+This then leads to the following transformation rule 
+\begin{equation}\label{eq:piolahdiv}
+\mathbf{v}( \mathbf{x}) = \frac{1}{J (\hat{\mathbf{x}})} D \mathbf{F}(\hat{\mathbf{x}}) \hat{\mathbf{v}} (\hat{\mathbf{x}}), ~~~~\mbox{with } \mathbf{x} = F(\hat{\mathbf{x}}).
+\end{equation}
+This transformation is called the contravariant Piola transform. In the context of differential forms it is the natural pullback transformation of a 2-form (in a 3D space). 
+
+In order to get an expression of a variational formulation defined in  $H(\textrm{div}, \Omega)$, we now need to compute the curl of a vector in this basis.
+\begin{proposition} We have the following properties
+\begin{itemize}
+\item[(i)] The jacobian matrix of a vector field transforms in the following way
+\begin{equation}\label{eq:jactransfdiv}
+D \mathbf{v} =  T + \frac{1}{J( \hat{\mathbf{x}})} (D \mathbf{F}( \hat{\mathbf{x}}))^{-1} \hat{D} \hat{\mathbf{v}}( \hat{\mathbf{x}}) (D \mathbf{F}( \hat{\mathbf{x}})),
+\end{equation}
+where $T$ is a matrix with vanishing trace.
+\item[(ii)]
+The divergence transforms under the transformation rule \eqref{eq:piolahdiv}
+\begin{equation}\label{eq:divtransf}
+\nabla\cdot \mathbf{v} ( \hat{\mathbf{x}}) =  \frac{1}{J ( \hat{\mathbf{x}})} \hat{\nabla}\cdot \hat{\mathbf{v}}( \hat{\mathbf{x}}).
+\end{equation}
+\end{itemize}
+\end{proposition}
+
+\begin{proof}
+(i) The vector field $ \mathbf{v}$ given by transform \eqref{eq:piolahdiv} can also be expressed on the covariant basis by
+$$ \mathbf{v} = \frac{1}{J} ( \hat{v}_1 \mathbf{t}_1 + \hat{v}_2 \mathbf{t}_2 + \hat{v}_3 \mathbf{t}_3).$$
+Taking the dot product with $ \mathbf{n}_i$  yields
+$ \hat{v}_i =  J \mathbf{n}_i \cdot \mathbf{v}$, so that the derivative becomes
+$$ \fracp{ \hat{v}_i}{ \hat{x}_j} = \fracp{ J   \mathbf{n}_i }{ \hat{x}_j}  \cdot  \mathbf{v} +
+J   \mathbf{n}_i \cdot \fracp{ \mathbf{v} }{ \hat{x}_j}
+= \fracp{ J   \mathbf{n}_i }{ \hat{x}_j}  \cdot  \mathbf{v} +
+J  \sum_{k=1}^3 \sum_{l=1}^3\fracp{ \hat{x}_i }{ x_k}  \fracp{ v_k }{x_l}\fracp{x_l}{ \hat{x}_j},
+$$ 
+as $\mathbf{n}_i = \left( \fracp{ \hat{x}_i }{ x_1}, \fracp{ \hat{x}_i }{ x_2}, \fracp{ \hat{x}_i }{ x_3}\right)^\top$. Now denoting by $\tilde{T} = ((\fracp{ J   \mathbf{n}_i }{ \hat{x}_j}  \cdot  \mathbf{v}))_{1\leq i,j \leq 3}$, this implies  that 
+$$ \hat{D} \mathbf{\hat{v}} = \tilde{T} + J (D \mathbf{F}) D \mathbf{v} (D \mathbf{F})^{-1}.$$
+Let us not verify that the trace of $\tilde{T}$ vanishes. To this aim let us first recall that
+$$ J\mathbf{n}_1= \mathbf{t}_2\times \mathbf{t}_3, ~~ J\mathbf{n}_2= \mathbf{t}_3\times \mathbf{t}_1, ~~ J\mathbf{n}_3= \mathbf{t}_1\times \mathbf{t}_2.$$
+Moreover from the expression of $ \mathbf{t}_j$ we find that $\fracp { \mathbf{t}_i}{ \hat{x}_j}=
+\fracp { \mathbf{t}_j}{ \hat{x}_i}$, so that
+\begin{align*}
+\mathrm{tr}\, \tilde{T} &= \left( \fracp{\mathbf{t}_2}{ \hat{x}_1}\times \mathbf{t}_3
++ \mathbf{t}_2\times \fracp{\mathbf{t}_3}{ \hat{x}_1} +
+\fracp{\mathbf{t}_3}{ \hat{x}_2}\times \mathbf{t}_1
++ \mathbf{t}_3\times \fracp{\mathbf{t}_1}{ \hat{x}_2} +
+\fracp{\mathbf{t}_1}{ \hat{x}_3}\times \mathbf{t}_2
++ \mathbf{t}_1\times \fracp{\mathbf{t}_2}{ \hat{x}_3}
+\right) \cdot \mathbf{v},\\
+&= \left( \fracp{\mathbf{t}_2}{ \hat{x}_1}\times \mathbf{t}_3 +
+\mathbf{t}_3\times \fracp{\mathbf{t}_2}{ \hat{x}_1} +
+ \mathbf{t}_2\times \fracp{\mathbf{t}_3}{ \hat{x}_1} +
+ \fracp{\mathbf{t}_3}{ \hat{x}_1}\times \mathbf{t}_2 +
+\fracp{\mathbf{t}_3}{ \hat{x}_2}\times \mathbf{t}_1 + 
+ \mathbf{t}_1\times \fracp{\mathbf{t}_3}{ \hat{x}_2}
+\right) \cdot \mathbf{v}, \\
+&=0.
+\end{align*} 
+We get the desired result by dividing by $j$, multiplying by $(D \mathbf{F})^{-1}$ on the left and by
+$(D \mathbf{F})$. Indeed the matrix $T$ obtained from  $\tilde{T}$ in this process is similar to $ \tilde{T} $ up to the scalar scaling factor $J$ and as similar matrices have the same trace it follows that 
+$\mathrm{tr}\,T=0$.
+
+(ii) Relation \eqref{eq:divtransf} is obtained by taking the trace of \eqref{eq:jactransfdiv} and using again that similar matrices have the same trace and that $\mathrm{tr} \,T=0$
+
+\end{proof}
+
+
+ Now using  transformation  \eqref{eq:piolahdiv} one can check by direct computation that all terms appearing in the divergence Green's formula \eqref{eq:greendiv} including the normal component are exactly preserved.
+\begin{proposition}
+We have the following properties:
+\begin{itemize}
+\item[(i)]
+\begin{equation}\label{eq:greendivtransfgrad }
+\int_K  \mathbf{u}\cdot \nabla\varphi \dd \mathbf{x} = \int_{\hat{K}}  \hat{\mathbf{u}}\cdot \hat{\nabla}\hat{\varphi}
+ \dd \hat{\mathbf{x}}
+\end{equation}
+\item[(ii)]
+\begin{equation}\label{eq:greendivtransf }
+\int_K \nabla\cdot \mathbf{u} \,\varphi \dd \mathbf{x} = \int_{\hat{K}}  \hat{\nabla}\cdot\hat{\mathbf{u}}
+\,\hat{\varphi} \dd \hat{\mathbf{x}}
+\end{equation}
+\item[(iii)] For any face $f_i$ on the boundary of $K$ image of the face $\hat{f}_i$ of the reference element
+\begin{equation}\label{eq:greendivtransfb}\int_{f_i} \mathbf{u}\cdot \un \,\varphi \dd \boldsymbol{\sigma} =
+\int_{ \hat{f}_i} \mathbf{\hat{u}}\cdot \unh \, \hat{\varphi} \dd \hat{\boldsymbol{\sigma}}
+\end{equation}
+\end{itemize}
+\end{proposition}
+We observe in particular, that all these terms are completely independent of the metric and have the same expression under any mapping. 
+
+\begin{proof}
+(i) Let us as usual perform the change of variables $ \mathbf{x} = \mathbf{F}( \mathbf{\hat{x}})$ $ \dd \mathbf{x} = J( \hat{\mathbf{x}}) \dd \hat{\mathbf{x}}$, using the transformation rule  \eqref{eq:piolahdiv} for $ \mathbf{u}$
+ in the integral
+$$\int_K  \mathbf{u}\cdot \nabla\varphi \dd \mathbf{x} = \int_{\hat{K}} \frac{1}{J} (D \mathbf{F} )\hat{\mathbf{u}}\cdot (D \mathbf{F})^{-\top} \hat{\nabla} \hat{\varphi} J \dd \mathbf{\hat{x}}
+=  \int_{\hat{K}} 
+\hat{\mathbf{u}}\cdot \hat{\nabla} \hat{\varphi}  \dd \mathbf{\hat{x}}.$$
+
+(ii) With the same change of variable and transformation rule for $ \mathbf{u}$, using  \eqref{eq:divtransf} we find
+$$\int_K \nabla\cdot \mathbf{u} \,\varphi \dd \mathbf{x} 
+= \int_{\hat{K}} \frac{1}{J} \hat{\nabla}\cdot\hat{\mathbf{u}} \,\hat{\varphi} J \dd \hat{\mathbf{x}}
+= \int_{\hat{K}}  \hat{\nabla}\cdot\hat{\mathbf{u}}
+\,\hat{\varphi} \dd \hat{\mathbf{x}}
+$$
+
+(iii) Here the face $f_i$ is defined as a parametrized surface, the parametrization being given by
+one of the faces of the reference element. Let us do the computation for the face on the $ ( \mathbf{\hat{x}}_1,  \mathbf{\hat{x}}_2)$ plane for with the normal vector is $ \unh= - \hat{\mathbf{e}}_3$. The parametrization is then defined by 
+$$( \mathbf{\hat{x}}_1,  \mathbf{\hat{x}}_2) \mapsto \mathbf{F}( \mathbf{\hat{x}}_1,  \mathbf{\hat{x}}_2,0)$$
+and the measure is 
+$$ \dd \boldsymbol{\sigma} = \|\mathbf{t}_1\times \mathbf{t}_2\| \dd \mathbf{\hat{x}}_1
+ \dd \mathbf{\hat{x}}_2 = J\|\mathbf{n}_3\|\dd \mathbf{\hat{x}}_1
+ \dd \mathbf{\hat{x}}_2.$$
+ Moreover the outward unit normal vector is related to the contravariant vector $ \mathbf{n}_3$, which is by definition orthogonal to the face, by $ \mathbf{\nu}= -\mathbf{n}_3/\| \mathbf{n}_3\|$.
+Finally, applying the transformation rule \eqref{eq:piolahdiv} for $ \mathbf{u}$  we get 
+\begin{multline*}
+\int_{f_i} \mathbf{u}\cdot \un \,\varphi \dd \boldsymbol{\sigma} =
+-\int_{ \hat{f}_i} \frac{1}{J} (D \mathbf{F})\mathbf{\hat{u}}\cdot \frac{ \mathbf{n}_3}{\| \mathbf{n}_3\| }\hat{\varphi}  J\|\mathbf{n}_3\|\dd \mathbf{\hat{x}}_1
+ \dd \mathbf{\hat{x}}_2
+ \\=- \int_{ \hat{f}_i} (\hat{u}_1 \mathbf{t}_1 + \hat{u}_2 \mathbf{t}_2 +\hat{u}_3 \mathbf{t}_3)\cdot \mathbf{n}_3 \hat{\varphi} \dd \mathbf{\hat{x}}_1 \dd \mathbf{\hat{x}}_2 
+ =-\int_{ \hat{f}_i} \hat{u}_3 \hat{\varphi} \dd \mathbf{\hat{x}}_1 \dd \mathbf{\hat{x}}_2
+=\int_{ \hat{f}_i} \mathbf{\hat{u}}\cdot \unh \, \hat{\varphi} 
+ \dd \mathbf{\hat{x}}_1 \dd \mathbf{\hat{x}}_2
+\end{multline*}
+\end{proof}
+
+To conclude, we assemble the matrices involved in a variational formulation posed on $ H(\textrm{div}, \Omega)$. Let us consider for example the variational formulation\\
+\textit{ Find $\mathbf{u}\in H(\textrm{div}, \Omega)$ such that}
+\begin{equation}\label{eq:hdivmapping}
+\int_\Omega \mathbf{u}\cdot \mathbf{v}\dd \mathbf{x} + \int_\Omega \nabla\cdot\mathbf{u}\cdot \nabla\cdot\mathbf{v}\dd \mathbf{x} = \int_\Omega \mathbf{f}\cdot \mathbf{v}\dd \mathbf{x} \quad\forall \mathbf{v}\in H(\textrm{div}, \Omega).
+\end{equation}
+We need to build the conforming Finite Element space $V^2_h\subset H(\textrm{div}, \Omega)$ based on the $ H(\textrm{div}, \Omega)$  reference element $(\hat{K},\hat{P},\hat{\Sigma})$. For this we consider as previously a mesh denoted by $\mathcal{T}=\bigcup_{1\leq e \leq N_{el}} K_i$ 
+consisting of $N_{el}$ disjoint conforming elements denoted each by $K_i$.
+On this mesh we can then define $V^2_h \subset H(\textrm{div}, \Omega)$ by
+$$V^2_h = \{ \mathbf{v}_h\in H(\textrm{div}, \Omega) \,|\, \mathbf{v}_{h|K_e}= \frac{1}{J}(D \mathbf{F})\hat{\mathbf{v}}_e \circ F_e^{-1} \in \hat{P}, ~~ 1\leq e\leq N_{el}  \}.$$
+Now we can in the variational formulation \eqref{eq:hcurlmapping} replace  $ H(\textrm{div}, \Omega)$ by $V^2_h$ and $ \mathbf{u}$ and $\mathbf{v}$ by their discrete counterparts 
+$$ \mathbf{u}_h ( \mathbf{x})= \sum_{j=1}^{N_2} u_j \bphi^2_j ( \mathbf{x}), ~~~~
+ \mathbf{v}_h ( \mathbf{x})= \sum_{i=1}^{N_2} v_i \bphi^2_i ( \mathbf{x}),$$
+where $ ( \bphi^2_i)_{1\leq i \leq N_2}$ stands for the basis of $V^2_h$ associated to the Finite Element. As for the $ H^1(\Omega)$ and $ H(\textrm{curl}, \Omega)$ conforming case, plugging these expressions into the variational formulation leads to the matrix expression:
+$$V^\top M_2 U + V^\top A_2 U = V^\top \mathbf{b},$$
+where $M_2= ((\int_\Omega \bphi^2_i\cdot \bphi^2_j \dd \mathbf{x}))_{i,j}$ is the mass matrix in $V^2_h$,
+$A_2 =  ((\int_\Omega \nabla\cdot\bphi^2_i\, \nabla\cdot\bphi^2_j \dd \mathbf{x}))_{i,j}$, and 
+$b= (\int \mathbf{f}\cdot \bphi^2_i)_i$. There now only remains to compute these integrals. Let us start with the mass matrix  $M_2$
+$$ \int_\Omega \bphi^2_i\cdot \bphi^2_j \dd \mathbf{x} = \sum_{e=1}^{N_{el}}
+ \int_{K_e} \bphi^2_i\cdot \bphi^2_j \dd \mathbf{x}.$$
+ Then on each element $K_e$ we make the change of variables $ \mathbf{x}= \mathbf{F}_e(\hat{\mathbf{x}})$, 
+ $ \dd\mathbf{x}= J_e( \hat{\mathbf{x}})\dd \hat{\mathbf{x}}$, using the contravariant Piola transform \eqref{eq:piolahdiv} for the vectors  to get
+\begin{align*}
+   \int_{K_e} \bphi^2_i\cdot \bphi^2_j \dd \mathbf{x} &=
+ \int_{\hat{K}}  \frac{1}{J_e}(D \mathbf{F}_e)\hbphi^2_i\cdot  \frac{1}{J_e}(D \mathbf{F}_e) \hbphi^2_j J_e\dd \hat{\mathbf{x}}, \\
+ &= \int_{\hat{K}} \frac{1}{J_e} ( \hat{\varphi}^2_{i,1} \mathbf{t}_1 +\hat{\varphi}^2_{i,2} \mathbf{t}_2 +\hat{\varphi}^2_{i,3} \mathbf{t}_3 )
+ \cdot ( \hat{\varphi}^2_{j,1} \mathbf{t}_1 +\hat{\varphi}^2_{j,2} \mathbf{t}_2 +\hat{\varphi}^2_{j,3} \mathbf{t}_3 ) \dd \hat{\mathbf{x}},\\
+ &=  \int_{\hat{K}} (\hbphi^2_i)^\top G_t \hbphi^2_j \frac{1}{J_e}\dd \hat{\mathbf{x}},
+ \end{align*}
+ where $G_t= (( \mathbf{t}_i\cdot \mathbf{t}_j))_{1\leq i,j\leq 3j}$ is the covariant metric tensor. This is the element mass matrix on the element $K_e$ as for the $ H^1(\Omega)$, the full mass matrix is obtained by summing up the contributions from the different elements.
+
+The procedure is the same for the $A_2$ matrix. Let us here  compute the expression of the element matrix, using the expression of the divergence given in \eqref{eq:divtransf}:
+ \begin{align*}
+   \int_{K_e} \nabla\cdot\bphi^2_i\, \nabla\cdot\bphi^2_j \dd \mathbf{x} &=
+ \int_{\hat{K}} \frac{1}{J_e}\hat{\nabla}\cdot\hbphi^2_i\, \frac{1}{J_e}\hat{\nabla}\cdot \hbphi^2_j J_e\dd \hat{\mathbf{x}}, \\
+ &=  \int_{\hat{K}} \frac{1}{J_e}\hat{\nabla}\cdot\hbphi^2_i\, \hat{\nabla}\cdot \hbphi^2_j \dd \hat{\mathbf{x}}.
+ \end{align*}
+Note that here the divergence is a scalar. There is no metric tensor in the matrix. Only the inverse Jacobian is present because of  the mapping.
+
+
+\section{Convergence of the Finite Element method}
+
+
+The Ritz-Galerkin method consists in finding an approximate solution
+$u_h$ in a finite dimensional subspace of $V$. For convergence studies one needs to consider a sequence of subspaces of $V$ of larger and larger dimension
+so that they get closer to $V$. One then defines a sequence of problems parametrised by  $h$ that read:\\
+{\it Find $u_h\in V_h$ such that }
+\begin{equation}
+  \label{eq:fvabsdisc}
+  a(u_h,v_h)=l(v_h)\quad\forall v_h\in V_h,
+\end{equation}
+where $V_h\subset V$ is a vector space of dimension $N$. 
+Let $(\varphi_1,\dots,\varphi_N)$ a basis of $V_h$. An element $u_h\in V_h$
+can then be expanded as $u_h(x)=\sum_{j=1}^N u_j\varphi_j(x)$. Taking
+$v_h=\varphi_i$ the equation (\ref{eq:fvabsdisc}) becomes using the linearity
+$$\sum_{j=1}^N u_j a(\varphi_j,\varphi_i) = l(\varphi_i).$$
+Then using the symmetry of $a$, we notice that
+the discrete variational formulation(\ref{eq:fvabsdisc}) is equivalent
+to the linear system
+\begin{equation}
+  \label{eq:slin}
+  AU_h=L,
+\end{equation}
+where $A=(a(\varphi_i,\varphi_j))_{1\leq i,j \leq N}$, $L$ is the column vector with components $l(\varphi_i)$ and $U$ is the column vector with the unknowns $u_i$ that are the coefficients of
+$u_h$ in the basis $(\varphi_1,\dots,\varphi_N)$.
+
+\begin{theorem}
+  Assume that  $a$ is a symmetric continuous and coercive bilinear form on a Hilbert space $V$ and $l$ a continuous linear form on $V$.
+Then the system (\ref{eq:slin}) is equivalent to the discrete variational form  (\ref{eq:fvabsdisc}) and admits a unique solution
+\end{theorem}
+\begin{proof}
+    For $v_h\in V_h$, we denote by $\tilde{V}$ the vector of its components in the basis $(\varphi_1,\dots,\varphi_N)$.
+  \begin{itemize}
+  \item Thanks to the bilinearity of  $a$ and the linearity of $l$ the relation (\ref{eq:fvabsdisc})
+can be written equivalently
+\begin{equation}\label{eq:formmat}
+^t\tilde{V}AU_h=\,^t\tilde{V}L\quad\forall \tilde{V}\in \mathbb{R}^N,
+\end{equation}
+which means that the vector $AU_h-L\in \mathbb{R}^N$ is orthogonal to all the vectors of $ \mathbb{R}^N$, and so is the zero vector. Conversely it is clear that (\ref{eq:slin}) implies (\ref{eq:formmat})
+and so (\ref{eq:fvabsdisc}).
+  \item Let $v_h\in V_h$.  Then, as $a$ is
+    coercive, there exists $\alpha>0$ such that
+    $$^t\tilde{V}A\tilde{V}=a(v_h,v_h) \geq \alpha \|v_h\|^2\geq
+    0,$$
+    and $^t\tilde{V}A\tilde{V}=0=a(v_h,v_h) \Rightarrow
+    \|v_h\|=0$, which implies that $v_h=0$ and so $\tilde{V}=0$.
+    So $A$ is symmetric, positive definite and therefore invertible.
+  \end{itemize}
+\end{proof}
+
+After making sure the approximate solution exists for some given space $V_h$, one needs to make sure the approximation converges towards the exact solution. This results from two properties: 1) The Galerkin orthogonality, which comes from the conforming Gakerkin approximation,   2) The approximability property, which makes sure that for any $v\in V$ there exist $v_h$ in some finite dimensional space of the family which is close enough to $v$. 
+
+
+\begin{lemma}[C\'ea]
+Let $u\in V$ the solution of (\ref{eq:fvabs}) and $u_h\in V_h$ the solution of
+  (\ref{eq:fvabsdisc}), with $V_h\subset V$. Then
+  $$\|u-u_h\|\leq C \inf_{v_h\in V_h} \|u-v_h\|.$$
+\end{lemma}
+\begin{proof}
+We have
+  \begin{align*}
+    a(u,v)&=l(v)\quad\forall v\in V,\\
+    a(u_h,v_h)&=l(v_h)\quad\forall v_h\in V_h,
+  \end{align*}
+as $V_h\subset V$, we can take $v=v_h$ in the first equality
+and take the difference which yields
+$$a(u-u_h,v_h)=0\quad\forall v_h\in V_h.$$
+It results that $a(u-u_h,u-u_h)=a(u-u_h,u-v_h+v_h-u_h)=a(u-u_h,u-v_h)$,
+as $v_h-u_h\in V_h$ and so $a(u-u_h,v_h-u_h)=0$.
+Then there exists  $\alpha>0$ and $\beta$ such that
+\begin{align*}
+  \alpha \|u-u_h\|^2 &\leq a(u-u_h,u-u_h) \hspace{2cm}
+                               \mbox{as $a$ is coercive},\\
+  &\leq a(u-u_h,u-v_h) \quad\forall v_h\in V_h,\\
+  &\leq \beta\|u-u_h\|\|u-v_h\|\hspace{2cm}
+                               \mbox{as $a$ is continuous}.
+\end{align*}
+Whence $\|u-u_h\|\leq \frac \beta\alpha \|u-v_h\|$ for all
+$v_h\in V_h$. We get the desired results taking the infimum in $V_h$.
+\end{proof}
+ 
+ 
+ 
+For the global error estimates, we make the following hypotheses
+on the triangulation $ \mathcal{T} _h$, where we denote by $h_K$ the diameter of the circumscribed circle and $\rho_K$ the diameter of the inscribed circle of triangle $K$:
+\begin{itemize}
+\item[(H1)] We assume that the family of triangulations is regular in the following sense:
+  \begin{itemize}
+  \item[(i)] There existes a constant $\sigma$ such that
+    $$\forall K\in\cup_h \mathcal{T}_h\quad \frac{h_K}{\rho_K}\leq\sigma.$$
+  \item[(ii)] The quantity $\displaystyle h=\max_{K\in _h} h_K$ tend to 0.
+  \end{itemize}
+\item[(H2)]  All finite elements $(K,P,\Sigma)$, $K\in\cup_h\mathcal{T}_h$ are affine
+equivalent to a unique reference element $(\hat{K},\hat{P},\hat{\Sigma})$.
+\item[(H3)]  All finite elements $(K,P,\Sigma)$, $K\in\cup_h\mathcal{T}_h$ are of class
+$C^0$.
+\end{itemize}
+\begin{theorem}
+  We assume the hypotheses (H1), (H2) and (H3) are verified. Moreover we
+assume that there exists an integer $k\geq 1$ such that
+$$ \mathbb{P}_k\subset\hat{P}\subset H^1(\hat{K}),$$
+$$H^{k+1}(\hat{K})\subset C^0(\hat{K})\qquad (\mbox{true if }k+1>\frac d2, \hat{K}\subset \mathbb{R}^d).$$
+Then there exists a constant $C$ independent of $h$ such that for any function
+ $v\in H^{k+1}(\Omega)$ we have
+$$\|v-\pi_h v\|_{0}\leq Ch^{k+1}|v|_{k+1,\Omega}, ~~~~ |v-\pi_h v|_{1}\leq Ch^k|v|_{k+1,\Omega},$$
+where $\pi_h$ is the finite element interpolation operator of the finite element $(K,P,\Sigma)$
+defined by
+$$\pi_h v=\sum_{i=1}^N \sigma_i(v)\,p_i,$$
+where $\sigma_i \in \Sigma$ and $p_i$ the corresponding basis function of $P$. 
+\end{theorem}
+
+
+
+We consider a variational problem posed in  $V\subset H^1(\Omega)$.
+\begin{theorem}
+ We assume that (H1), (H2) and (H3) are verified. Moreover we assume that there exists an integer
+ $k\geq 1$ such that $k+1>\frac d2$ with $\mathbb{P}_k(\hat{K})\subset P \subset
+H^1(\hat{K})$ and that the exact solution of the variational problem is in
+$H^{k+1}(\Omega)$, then
+$$ \|u-u_h \|_{1,\Omega}\leq C h^{k}|u|_{k+1,\Omega},$$
+where $u_h\in V_h$ is the discrete solution.
+\end{theorem}
+
+\begin{proof}
+We have because of the polynomial approximation theorem
+  $$\|u-\pi_h u\|_{1,\Omega}\leq C h^{k}|u|_{k+1,\Omega}.$$
+On the other hand C\'ea's lemma gives us
+$$\|u-u_h\|_{1,\Omega}\leq C\inf_{v_h\in V_h}\|u-v_h\|_{1,\Omega}
+\leq C \|u-\pi_h u\|_{1,\Omega}.$$
+The result follows.
+\end{proof}
 
 \section{Problems}
 
 \begin{exercise}
   TODO
 \end{exercise}
-
-
-

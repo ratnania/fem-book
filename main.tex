@@ -68,6 +68,29 @@
 \newtheorem{lemma}{Lemma}
 \newcommand{\todo}[1]{\textcolor{red}{#1}}
 
+\newcommand{\intom}{\int_{\Omega}}
+\newcommand{\ut}{\boldsymbol{\tau}} % unit tangent
+\newcommand{\un}{\boldsymbol{\nu}}  % unit normal
+\newcommand{\unh}{\hat{\boldsymbol{\nu}}}  % unit normal on reference element
+\newcommand{\bphi}{\boldsymbol{\varphi}} 
+\newcommand{\hbphi}{\hat{\boldsymbol{\varphi}}} 
+\newcommand{\curl}{\nabla\times\,}
+\renewcommand{\div}{\nabla\cdot\,}
+\newcommand{\divs}{\mathrm{div}\,}
+\newcommand{\rots}{\mathrm{curl}\,}
+\newcommand{\rotv}{\mathbf{curl}\,}
+\newcommand{\intgam}{\int_{\partial\Omega}}
+
+%DG Brackets
+\newcommand{\ljump}{\left[ \!\left[ }
+\newcommand{\rjump}{\right]\! \right] }
+\newcommand{\lbjump}{\left[\!\!  \left[ }
+\newcommand{\rbjump}{\right]\!\! \right] }
+\newcommand{\lav}{\left\{ \!\left\{ }
+\newcommand{\rav}{\right\} \! \right\} }
+\newcommand{\lbav}{\left\{ \!\!\left\{ }
+\newcommand{\rbav}{\right\} \!\! \right\} }
+
 \newcommand{\nn}{\bm{n}}
 \newcommand{\ww}{\bm{w}}
 \newcommand{\ee}{\bm{e}}
@@ -318,7 +341,7 @@
 %----------------------------------------------------------------------------------------
 %	PART 3: Finite Elements method 
 %----------------------------------------------------------------------------------------
-\part{Finite Elements method (TO REPLACE/UPDATE)}
+\part{Abstract framework for Finite Elements method}
 \input{tex/part_3_chapter_1.tex}
 \input{tex/part_3_chapter_2.tex}
 \input{tex/part_3_historical_notes.tex}
@@ -326,9 +349,10 @@
 %----------------------------------------------------------------------------------------
 %	PART 4: Finite Elements method 
 %----------------------------------------------------------------------------------------
-\part{Finite Elements method (TO REPLACE/UPDATE)}
+\part{Finite Elements method}
 \input{tex/part_4_chapter_1.tex}
 \input{tex/part_4_chapter_2.tex}
+\input{tex/part_4_chapter_3.tex}
 \input{tex/part_4_historical_notes.tex}
 
 %----------------------------------------------------------------------------------------
